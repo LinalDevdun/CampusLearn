@@ -35,6 +35,50 @@ import "../../styles/lecturerTopbarSearch.css";
 import API_BASE_URL from "../../config/api";
 
 
+/* ========================================
+   PROFILE IMAGE URL
+======================================== */
+
+const getProfileImageUrl = (
+  profileImage
+) => {
+
+  if (!profileImage) {
+    return "";
+  }
+
+
+  if (
+    profileImage.startsWith(
+      "http://"
+    ) ||
+    profileImage.startsWith(
+      "https://"
+    ) ||
+    profileImage.startsWith(
+      "data:"
+    ) ||
+    profileImage.startsWith(
+      "blob:"
+    )
+  ) {
+
+    return profileImage;
+
+  }
+
+
+  const cleanPath =
+    profileImage
+      .replace(/\\/g, "/")
+      .replace(/^\/+/, "");
+
+
+  return `${API_BASE_URL}/${cleanPath}`;
+
+};
+
+
 function LecturerTopbar() {
 
   const navigate =
@@ -57,6 +101,7 @@ function LecturerTopbar() {
       name: "Lecturer User",
       email: "",
       role: "LECTURER",
+      profile_image: "",
     });
 
 
@@ -402,9 +447,8 @@ function LecturerTopbar() {
 
 
           /*
-            If Submission Alerts is OFF,
-            hide the pending submission
-            notification count.
+            Keep the existing settings
+            request and behaviour.
           */
 
           const submissionAlertsEnabled =
@@ -412,36 +456,39 @@ function LecturerTopbar() {
               ?.submission_alerts !== false;
 
 
+          void submissionAlertsEnabled;
+
+
           /* =================================
-             PENDING SUBMISSIONS
+             LECTURER NOTIFICATIONS
           ================================= */
 
           const notificationsResponse =
-              await axios.get(
-                  `${API_BASE_URL}/lecturer/notifications`,
-                  {
-                      headers,
-                  }
-              );
+            await axios.get(
+              `${API_BASE_URL}/lecturer/notifications`,
+              {
+                headers,
+              }
+            );
 
 
           const lecturerNotifications =
-              Array.isArray(
-                  notificationsResponse.data
-              )
-                  ? notificationsResponse.data
-                  : [];
+            Array.isArray(
+              notificationsResponse.data
+            )
+              ? notificationsResponse.data
+              : [];
 
 
           const unreadCount =
-              lecturerNotifications.filter(
-                  (notification) =>
-                      notification.is_read === false
-              ).length;
+            lecturerNotifications.filter(
+              (notification) =>
+                notification.is_read === false
+            ).length;
 
 
           setNotificationCount(
-              unreadCount
+            unreadCount
           );
 
 
@@ -483,6 +530,65 @@ function LecturerTopbar() {
     loadTopbarData();
 
   }, [navigate]);
+
+
+  /* ========================================
+     LIVE PROFILE IMAGE UPDATE
+  ======================================== */
+
+  useEffect(() => {
+
+    const handleProfileImageUpdate =
+      (event) => {
+
+        const updatedProfileImage =
+          typeof event.detail ===
+          "string"
+            ? event.detail
+            : event.detail
+                ?.profile_image;
+
+
+        if (
+          updatedProfileImage ===
+          undefined
+        ) {
+
+          return;
+
+        }
+
+
+        setLecturer(
+          (previousLecturer) => ({
+
+            ...previousLecturer,
+
+            profile_image:
+              updatedProfileImage,
+
+          })
+        );
+
+      };
+
+
+    window.addEventListener(
+      "lecturer-profile-image-updated",
+      handleProfileImageUpdate
+    );
+
+
+    return () => {
+
+      window.removeEventListener(
+        "lecturer-profile-image-updated",
+        handleProfileImageUpdate
+      );
+
+    };
+
+  }, []);
 
 
   /* ========================================
@@ -584,6 +690,16 @@ function LecturerTopbar() {
   const initials =
     getInitials(
       lecturer.name
+    );
+
+
+  /* ========================================
+     PROFILE IMAGE
+  ======================================== */
+
+  const profileImageUrl =
+    getProfileImageUrl(
+      lecturer.profile_image
     );
 
 
@@ -1110,11 +1226,45 @@ function LecturerTopbar() {
           >
 
 
+            {/* TOPBAR AVATAR */}
+
             <div
               className="lecturer-top-avatar"
+              style={{
+                position: "relative",
+                overflow: "hidden",
+              }}
             >
 
-              {initials}
+              <span>
+                {initials}
+              </span>
+
+
+              {profileImageUrl && (
+
+                <img
+                  src={
+                    profileImageUrl
+                  }
+                  alt={`${lecturer.name || "Lecturer"} profile`}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                  onError={(event) => {
+
+                    event.currentTarget.style.display =
+                      "none";
+
+                  }}
+                />
+
+              )}
 
             </div>
 
@@ -1165,11 +1315,45 @@ function LecturerTopbar() {
               >
 
 
+                {/* DROPDOWN AVATAR */}
+
                 <div
                   className="lecturer-dropdown-avatar"
+                  style={{
+                    position: "relative",
+                    overflow: "hidden",
+                  }}
                 >
 
-                  {initials}
+                  <span>
+                    {initials}
+                  </span>
+
+
+                  {profileImageUrl && (
+
+                    <img
+                      src={
+                        profileImageUrl
+                      }
+                      alt={`${lecturer.name || "Lecturer"} profile`}
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                      onError={(event) => {
+
+                        event.currentTarget.style.display =
+                          "none";
+
+                      }}
+                    />
+
+                  )}
 
                 </div>
 

@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -17,6 +18,8 @@ import {
   KeyRound,
   Sparkles,
   CheckCircle2,
+  Camera,
+  LoaderCircle,
 } from "lucide-react";
 
 import "../styles/adminProfile.css";
@@ -24,10 +27,58 @@ import "../styles/adminProfile.css";
 import API_BASE_URL from "../config/api";
 
 
+/* ========================================
+   PROFILE IMAGE URL
+======================================== */
+
+const getProfileImageUrl = (
+  profileImage
+) => {
+
+  if (!profileImage) {
+    return "";
+  }
+
+
+  if (
+    profileImage.startsWith(
+      "http://"
+    ) ||
+    profileImage.startsWith(
+      "https://"
+    ) ||
+    profileImage.startsWith(
+      "data:"
+    ) ||
+    profileImage.startsWith(
+      "blob:"
+    )
+  ) {
+
+    return profileImage;
+
+  }
+
+
+  const cleanPath =
+    profileImage
+      .replace(/\\/g, "/")
+      .replace(/^\/+/, "");
+
+
+  return `${API_BASE_URL}/${cleanPath}`;
+
+};
+
+
 function AdminProfile() {
 
   const navigate =
     useNavigate();
+
+
+  const fileInputRef =
+    useRef(null);
 
 
   const [
@@ -37,6 +88,7 @@ function AdminProfile() {
     name: "",
     email: "",
     role: "ADMIN",
+    profile_image: "",
   });
 
 
@@ -49,6 +101,24 @@ function AdminProfile() {
   const [
     error,
     setError,
+  ] = useState("");
+
+
+  const [
+    uploadingPhoto,
+    setUploadingPhoto,
+  ] = useState(false);
+
+
+  const [
+    photoMessage,
+    setPhotoMessage,
+  ] = useState("");
+
+
+  const [
+    photoError,
+    setPhotoError,
   ] = useState("");
 
 
@@ -168,6 +238,201 @@ function AdminProfile() {
     };
 
 
+  /* ========================================
+     UPLOAD PROFILE IMAGE
+  ======================================== */
+
+  const handleProfileImageChange =
+    async (event) => {
+
+      const file =
+        event.target.files?.[0];
+
+
+      event.target.value = "";
+
+
+      if (!file) {
+        return;
+      }
+
+
+      setPhotoMessage("");
+      setPhotoError("");
+
+
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+      ];
+
+
+      if (
+        !allowedTypes.includes(
+          file.type
+        )
+      ) {
+
+        setPhotoError(
+          "Please select a JPG, PNG or WEBP image."
+        );
+
+        return;
+
+      }
+
+
+      const maximumFileSize =
+        5 * 1024 * 1024;
+
+
+      if (
+        file.size >
+        maximumFileSize
+      ) {
+
+        setPhotoError(
+          "Profile image must be smaller than 5 MB."
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        setUploadingPhoto(true);
+
+
+        const token =
+          localStorage.getItem(
+            "token"
+          );
+
+
+        if (!token) {
+
+          navigate("/login");
+
+          return;
+
+        }
+
+
+        const formData =
+          new FormData();
+
+
+        formData.append(
+          "profileImage",
+          file
+        );
+
+
+        await axios.put(
+          `${API_BASE_URL}/me/profile-image`,
+          formData,
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
+
+
+        const profileResponse =
+          await axios.get(
+            `${API_BASE_URL}/me`,
+            {
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
+
+
+        const updatedAdmin =
+          profileResponse.data;
+
+
+        setAdmin(
+          updatedAdmin
+        );
+
+
+        window.dispatchEvent(
+          new CustomEvent(
+            "admin-profile-image-updated",
+            {
+              detail: {
+                profile_image:
+                  updatedAdmin
+                    ?.profile_image ||
+                  "",
+              },
+            }
+          )
+        );
+
+
+        setPhotoMessage(
+          "Profile picture updated successfully."
+        );
+
+
+      } catch (uploadError) {
+
+        console.error(
+          "Failed to upload admin profile image:",
+          uploadError
+        );
+
+
+        if (
+          uploadError.response?.status ===
+          401
+        ) {
+
+          localStorage.removeItem(
+            "token"
+          );
+
+          localStorage.removeItem(
+            "role"
+          );
+
+          navigate("/login");
+
+          return;
+
+        }
+
+
+        setPhotoError(
+          uploadError.response?.data?.error ||
+          "Failed to update profile picture."
+        );
+
+
+      } finally {
+
+        setUploadingPhoto(false);
+
+      }
+
+    };
+
+
+  const profileImageUrl =
+    getProfileImageUrl(
+      admin.profile_image
+    );
+
+
   if (loading) {
 
     return (
@@ -239,11 +504,130 @@ function AdminProfile() {
         <div className="ap-identity">
 
 
-          <div className="ap-avatar">
+          {/* PROFILE IMAGE */}
 
-            {getInitials(
-              admin.name
-            )}
+          <div
+            style={{
+              position: "relative",
+              flexShrink: 0,
+            }}
+          >
+
+            <div
+              className="ap-avatar"
+              style={{
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+
+              <span>
+                {getInitials(
+                  admin.name
+                )}
+              </span>
+
+
+              {profileImageUrl && (
+
+                <img
+                  src={profileImageUrl}
+                  alt={`${admin.name || "Administrator"} profile`}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                  onError={(event) => {
+
+                    event.currentTarget.style.display =
+                      "none";
+
+                  }}
+                />
+
+              )}
+
+            </div>
+
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={
+                handleProfileImageChange
+              }
+              style={{
+                display: "none",
+              }}
+            />
+
+
+            <button
+              type="button"
+              onClick={() =>
+                fileInputRef.current?.click()
+              }
+              disabled={uploadingPhoto}
+              title={
+                profileImageUrl
+                  ? "Change profile picture"
+                  : "Add profile picture"
+              }
+              aria-label={
+                profileImageUrl
+                  ? "Change profile picture"
+                  : "Add profile picture"
+              }
+              style={{
+                position: "absolute",
+                right: "-7px",
+                bottom: "-7px",
+                width: "36px",
+                height: "36px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "11px",
+                border:
+                  "3px solid #ffffff",
+                background:
+                  "#ffffff",
+                color:
+                  "#2563eb",
+                boxShadow:
+                  "0 6px 18px rgba(15, 23, 42, 0.16)",
+                cursor:
+                  uploadingPhoto
+                    ? "not-allowed"
+                    : "pointer",
+                opacity:
+                  uploadingPhoto
+                    ? 0.7
+                    : 1,
+                zIndex: 3,
+              }}
+            >
+
+              {uploadingPhoto ? (
+
+                <LoaderCircle
+                  size={17}
+                />
+
+              ) : (
+
+                <Camera
+                  size={17}
+                />
+
+              )}
+
+            </button>
 
           </div>
 
@@ -272,6 +656,42 @@ function AdminProfile() {
               Active Administrator
 
             </div>
+
+
+            {photoMessage && (
+
+              <p
+                style={{
+                  marginTop: "10px",
+                  color: "#15803d",
+                  fontWeight: 700,
+                  fontSize: "12px",
+                }}
+              >
+
+                {photoMessage}
+
+              </p>
+
+            )}
+
+
+            {photoError && (
+
+              <p
+                style={{
+                  marginTop: "10px",
+                  color: "#dc2626",
+                  fontWeight: 700,
+                  fontSize: "12px",
+                }}
+              >
+
+                {photoError}
+
+              </p>
+
+            )}
 
           </div>
 

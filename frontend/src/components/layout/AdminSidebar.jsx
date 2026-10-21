@@ -24,20 +24,67 @@ import {
 import API_BASE_URL from "../../config/api";
 
 
+/* ========================================
+   PROFILE IMAGE URL
+======================================== */
+
+const getProfileImageUrl = (
+  profileImage
+) => {
+
+  if (!profileImage) {
+    return "";
+  }
+
+
+  if (
+    profileImage.startsWith(
+      "http://"
+    ) ||
+    profileImage.startsWith(
+      "https://"
+    ) ||
+    profileImage.startsWith(
+      "data:"
+    ) ||
+    profileImage.startsWith(
+      "blob:"
+    )
+  ) {
+
+    return profileImage;
+
+  }
+
+
+  const cleanPath =
+    profileImage
+      .replace(/\\/g, "/")
+      .replace(/^\/+/, "");
+
+
+  return `${API_BASE_URL}/${cleanPath}`;
+
+};
+
+
 function AdminSidebar() {
 
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate =
+    useNavigate();
+
+  const location =
+    useLocation();
 
 
-  /* ========================================
-     ADMIN DATA
-  ======================================== */
-
-  const [admin, setAdmin] = useState({
+  const [
+    admin,
+    setAdmin,
+  ] = useState({
     name: "Admin User",
     email: "",
     role: "ADMIN",
+    profile_image: "",
   });
 
 
@@ -47,60 +94,71 @@ function AdminSidebar() {
 
   useEffect(() => {
 
-    const fetchAdmin = async () => {
+    const fetchAdmin =
+      async () => {
 
-      try {
+        try {
 
-        const token =
-          localStorage.getItem("token");
-
-
-        if (!token) {
-
-          navigate("/login");
-
-          return;
-
-        }
+          const token =
+            localStorage.getItem(
+              "token"
+            );
 
 
-        const response =
-          await axios.get(
-            `${API_BASE_URL}/me`,
-            {
-              headers: {
-                Authorization:
-                  `Bearer ${token}`,
-              },
-            }
+          if (!token) {
+
+            navigate("/login");
+
+            return;
+
+          }
+
+
+          const response =
+            await axios.get(
+              `${API_BASE_URL}/me`,
+              {
+                headers: {
+                  Authorization:
+                    `Bearer ${token}`,
+                },
+              }
+            );
+
+
+          setAdmin(
+            response.data
           );
 
 
-        setAdmin(response.data);
+        } catch (error) {
 
-      } catch (error) {
-
-        console.error(
-          "Failed to load admin:",
-          error
-        );
+          console.error(
+            "Failed to load admin:",
+            error
+          );
 
 
-        if (
-          error.response?.status === 401 ||
-          error.response?.status === 403
-        ) {
+          if (
+            error.response?.status === 401 ||
+            error.response?.status === 403
+          ) {
 
-          localStorage.removeItem("token");
-          localStorage.removeItem("role");
+            localStorage.removeItem(
+              "token"
+            );
 
-          navigate("/login");
+            localStorage.removeItem(
+              "role"
+            );
+
+            navigate("/login");
+
+          }
 
         }
 
-      }
-
-    };
+      };
 
 
     fetchAdmin();
@@ -109,55 +167,117 @@ function AdminSidebar() {
 
 
   /* ========================================
-     INITIALS
+     LIVE PROFILE IMAGE UPDATE
   ======================================== */
 
-  const getInitials = (name) => {
+  useEffect(() => {
 
-    if (!name) {
-      return "AD";
-    }
+    const handleProfileImageUpdate =
+      (event) => {
+
+        const updatedProfileImage =
+          typeof event.detail ===
+          "string"
+            ? event.detail
+            : event.detail
+                ?.profile_image;
 
 
-    return name
-      .split(" ")
-      .filter(Boolean)
-      .map(
-        (word) =>
-          word.charAt(0)
-      )
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
+        if (
+          updatedProfileImage ===
+          undefined
+        ) {
 
-  };
+          return;
+
+        }
+
+
+        setAdmin(
+          (previousAdmin) => ({
+
+            ...previousAdmin,
+
+            profile_image:
+              updatedProfileImage,
+
+          })
+        );
+
+      };
+
+
+    window.addEventListener(
+      "admin-profile-image-updated",
+      handleProfileImageUpdate
+    );
+
+
+    return () => {
+
+      window.removeEventListener(
+        "admin-profile-image-updated",
+        handleProfileImageUpdate
+      );
+
+    };
+
+  }, []);
+
+
+  const getInitials =
+    (name) => {
+
+      if (!name) {
+        return "AD";
+      }
+
+
+      return name
+        .split(" ")
+        .filter(Boolean)
+        .map(
+          (word) =>
+            word.charAt(0)
+        )
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
+
+    };
 
 
   const initials =
-    getInitials(admin.name);
+    getInitials(
+      admin.name
+    );
 
 
-  /* ========================================
-     ACTIVE PAGE HELPER
-  ======================================== */
-
-  const getNavClass = (path) => {
-
-    return location.pathname === path
-      ? "admin-nav-item admin-nav-active"
-      : "admin-nav-item";
-
-  };
+  const profileImageUrl =
+    getProfileImageUrl(
+      admin.profile_image
+    );
 
 
-  /* ========================================
-     LOGOUT
-  ======================================== */
+  const getNavClass =
+    (path) => {
+
+      return location.pathname === path
+        ? "admin-nav-item admin-nav-active"
+        : "admin-nav-item";
+
+    };
+
 
   const handleLogout = () => {
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
+    localStorage.removeItem(
+      "token"
+    );
+
+    localStorage.removeItem(
+      "role"
+    );
 
     navigate("/login");
 
@@ -165,10 +285,9 @@ function AdminSidebar() {
 
 
   return (
+
     <aside className="admin-sidebar">
 
-
-      {/* LOGO */}
 
       <div className="admin-logo">
 
@@ -202,9 +321,6 @@ function AdminSidebar() {
       </div>
 
 
-
-      {/* NAVIGATION */}
-
       <div className="admin-navigation">
 
 
@@ -218,12 +334,12 @@ function AdminSidebar() {
         <nav className="admin-menu">
 
 
-          {/* DASHBOARD */}
-
           <button
-            className={getNavClass(
-              "/admin-dashboard"
-            )}
+            className={
+              getNavClass(
+                "/admin-dashboard"
+              )
+            }
             onClick={() =>
               navigate(
                 "/admin-dashboard"
@@ -240,13 +356,12 @@ function AdminSidebar() {
           </button>
 
 
-
-          {/* USER MANAGEMENT */}
-
           <button
-            className={getNavClass(
-              "/admin-users"
-            )}
+            className={
+              getNavClass(
+                "/admin-users"
+              )
+            }
             onClick={() =>
               navigate(
                 "/admin-users"
@@ -263,13 +378,12 @@ function AdminSidebar() {
           </button>
 
 
-
-          {/* STUDENTS */}
-
           <button
-            className={getNavClass(
-              "/admin/students"
-            )}
+            className={
+              getNavClass(
+                "/admin/students"
+              )
+            }
             onClick={() =>
               navigate(
                 "/admin/students"
@@ -286,13 +400,12 @@ function AdminSidebar() {
           </button>
 
 
-
-          {/* COURSES */}
-
           <button
-            className={getNavClass(
-              "/admin/courses"
-            )}
+            className={
+              getNavClass(
+                "/admin/courses"
+              )
+            }
             onClick={() =>
               navigate(
                 "/admin/courses"
@@ -311,9 +424,6 @@ function AdminSidebar() {
         </nav>
 
 
-
-        {/* SYSTEM */}
-
         <p className="admin-section-label admin-second-section">
 
           SYSTEM
@@ -324,12 +434,12 @@ function AdminSidebar() {
         <nav className="admin-menu">
 
 
-          {/* REPORTS */}
-
           <button
-            className={getNavClass(
-              "/admin/reports"
-            )}
+            className={
+              getNavClass(
+                "/admin/reports"
+              )
+            }
             onClick={() =>
               navigate(
                 "/admin/reports"
@@ -346,13 +456,12 @@ function AdminSidebar() {
           </button>
 
 
-
-          {/* SETTINGS */}
-
           <button
-            className={getNavClass(
-              "/admin/settings"
-            )}
+            className={
+              getNavClass(
+                "/admin/settings"
+              )
+            }
             onClick={() =>
               navigate(
                 "/admin/settings"
@@ -373,17 +482,14 @@ function AdminSidebar() {
       </div>
 
 
-
-      {/* BOTTOM */}
-
       <div className="admin-sidebar-bottom">
 
 
-        {/* LOGOUT */}
-
         <button
           className="admin-logout"
-          onClick={handleLogout}
+          onClick={
+            handleLogout
+          }
         >
 
           <LogOut
@@ -395,14 +501,43 @@ function AdminSidebar() {
         </button>
 
 
-
-        {/* ADMIN PROFILE */}
-
         <div className="admin-user-card">
 
-          <div className="admin-avatar">
+          <div
+            className="admin-avatar"
+            style={{
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
 
-            {initials}
+            <span>
+              {initials}
+            </span>
+
+
+            {profileImageUrl && (
+
+              <img
+                src={profileImageUrl}
+                alt={`${admin.name || "Administrator"} profile`}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                }}
+                onError={(event) => {
+
+                  event.currentTarget.style.display =
+                    "none";
+
+                }}
+              />
+
+            )}
 
           </div>
 
@@ -424,7 +559,9 @@ function AdminSidebar() {
       </div>
 
     </aside>
+
   );
+
 }
 
 

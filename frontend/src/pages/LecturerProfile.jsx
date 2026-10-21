@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -15,11 +16,81 @@ import {
   ShieldCheck,
   GraduationCap,
   Sparkles,
+  Camera,
+  LoaderCircle,
 } from "lucide-react";
 
 import "../styles/lecturerProfile.css";
 
 import API_BASE_URL from "../config/api";
+
+
+/* =========================================
+   INITIALS
+========================================= */
+
+const getInitials = (name) => {
+
+  if (!name) {
+    return "LE";
+  }
+
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map(
+      (word) =>
+        word.charAt(0)
+    )
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+};
+
+
+/* =========================================
+   PROFILE IMAGE URL
+========================================= */
+
+const getProfileImageUrl = (
+  profileImage
+) => {
+
+  if (!profileImage) {
+    return "";
+  }
+
+
+  if (
+    profileImage.startsWith(
+      "http://"
+    ) ||
+    profileImage.startsWith(
+      "https://"
+    ) ||
+    profileImage.startsWith(
+      "data:"
+    ) ||
+    profileImage.startsWith(
+      "blob:"
+    )
+  ) {
+
+    return profileImage;
+
+  }
+
+
+  const cleanPath =
+    profileImage
+      .replace(/\\/g, "/")
+      .replace(/^\/+/, "");
+
+
+  return `${API_BASE_URL}/${cleanPath}`;
+
+};
 
 
 function LecturerProfile() {
@@ -28,20 +99,51 @@ function LecturerProfile() {
     useNavigate();
 
 
-  const [lecturer, setLecturer] =
-    useState({
-      name: "",
-      email: "",
-      role: "LECTURER",
-    });
+  const fileInputRef =
+    useRef(null);
 
 
-  const [loading, setLoading] =
-    useState(true);
+  const [
+    lecturer,
+    setLecturer,
+  ] = useState({
+
+    name: "",
+    email: "",
+    role: "LECTURER",
+    profile_image: "",
+
+  });
 
 
-  const [error, setError] =
-    useState("");
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
+
+
+  const [
+    error,
+    setError,
+  ] = useState("");
+
+
+  const [
+    uploadingPhoto,
+    setUploadingPhoto,
+  ] = useState(false);
+
+
+  const [
+    photoMessage,
+    setPhotoMessage,
+  ] = useState("");
+
+
+  const [
+    photoError,
+    setPhotoError,
+  ] = useState("");
 
 
   /* ========================================
@@ -96,8 +198,10 @@ function LecturerProfile() {
 
 
           if (
-            loadError.response?.status === 401 ||
-            loadError.response?.status === 403
+            loadError.response?.status ===
+              401 ||
+            loadError.response?.status ===
+              403
           ) {
 
             localStorage.removeItem(
@@ -135,28 +239,248 @@ function LecturerProfile() {
 
 
   /* ========================================
-     INITIALS
+     UPLOAD PROFILE IMAGE
   ======================================== */
 
-  const getInitials = (name) => {
+  const handleProfileImageChange =
+    async (event) => {
 
-    if (!name) {
-      return "LE";
-    }
+      const file =
+        event.target.files?.[0];
 
 
-    return name
-      .split(" ")
-      .filter(Boolean)
-      .map(
-        (word) =>
-          word.charAt(0)
-      )
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
+      /*
+        Allow selecting the same image again
+        after this upload.
+      */
 
-  };
+      event.target.value = "";
+
+
+      if (!file) {
+        return;
+      }
+
+
+      setPhotoMessage("");
+
+      setPhotoError("");
+
+
+      /* =====================================
+         FILE TYPE VALIDATION
+      ===================================== */
+
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+      ];
+
+
+      if (
+        !allowedTypes.includes(
+          file.type
+        )
+      ) {
+
+        setPhotoError(
+          "Please select a JPG, PNG or WEBP image."
+        );
+
+        return;
+
+      }
+
+
+      /* =====================================
+         FILE SIZE VALIDATION
+         Maximum 5 MB
+      ===================================== */
+
+      const maximumFileSize =
+        5 * 1024 * 1024;
+
+
+      if (
+        file.size >
+        maximumFileSize
+      ) {
+
+        setPhotoError(
+          "Profile image must be smaller than 5 MB."
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        setUploadingPhoto(true);
+
+
+        const token =
+          localStorage.getItem(
+            "token"
+          );
+
+
+        if (!token) {
+
+          navigate("/login");
+
+          return;
+
+        }
+
+
+        const formData =
+          new FormData();
+
+
+        formData.append(
+          "profileImage",
+          file
+        );
+
+
+        /* =====================================
+           UPLOAD IMAGE
+        ===================================== */
+
+        await axios.put(
+          `${API_BASE_URL}/me/profile-image`,
+          formData,
+          {
+            headers: {
+
+              Authorization:
+                `Bearer ${token}`,
+
+            },
+          }
+        );
+
+
+        /* =====================================
+           RELOAD PROFILE FROM DATABASE
+        ===================================== */
+
+        const profileResponse =
+          await axios.get(
+            `${API_BASE_URL}/me`,
+            {
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
+
+
+        const updatedLecturer =
+          profileResponse.data;
+
+
+        setLecturer(
+          updatedLecturer
+        );
+
+
+        /*
+          Immediately tell the Lecturer
+          Topbar and Sidebar about the
+          new profile image.
+        */
+
+        window.dispatchEvent(
+          new CustomEvent(
+            "lecturer-profile-image-updated",
+            {
+              detail: {
+                profile_image:
+                  updatedLecturer
+                    ?.profile_image ||
+                  "",
+              },
+            }
+          )
+        );
+
+
+        setPhotoMessage(
+          "Profile picture updated successfully."
+        );
+
+
+      } catch (uploadError) {
+
+        console.error(
+          "Failed to upload lecturer profile image:",
+          uploadError
+        );
+
+
+        if (
+          uploadError.response?.status ===
+            401 ||
+          uploadError.response?.status ===
+            403
+        ) {
+
+          /*
+            Do not automatically log out for
+            a 403 caused by a backend role
+            restriction on this upload route.
+          */
+
+          if (
+            uploadError.response?.status ===
+            401
+          ) {
+
+            localStorage.removeItem(
+              "token"
+            );
+
+            localStorage.removeItem(
+              "role"
+            );
+
+            navigate("/login");
+
+            return;
+
+          }
+
+        }
+
+
+        setPhotoError(
+          uploadError.response?.data?.error ||
+          "Failed to update profile picture."
+        );
+
+
+      } finally {
+
+        setUploadingPhoto(false);
+
+      }
+
+    };
+
+
+  /* ========================================
+     PROFILE IMAGE
+  ======================================== */
+
+  const profileImageUrl =
+    getProfileImageUrl(
+      lecturer.profile_image
+    );
 
 
   /* ========================================
@@ -288,13 +612,159 @@ function LecturerProfile() {
             </div>
 
 
-            <div className="lp-avatar">
+            {/* ================================
+                PROFILE IMAGE / INITIALS
+            ================================ */}
 
-              {getInitials(
-                lecturer.name
+            <div
+              className="lp-avatar"
+              style={{
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+
+              <span>
+
+                {getInitials(
+                  lecturer.name
+                )}
+
+              </span>
+
+
+              {profileImageUrl && (
+
+                <img
+                  src={profileImageUrl}
+                  alt={`${lecturer.name || "Lecturer"} profile`}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                  onError={(event) => {
+
+                    event.currentTarget.style.display =
+                      "none";
+
+                  }}
+                />
+
               )}
 
             </div>
+
+
+            {/* HIDDEN FILE INPUT */}
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={
+                handleProfileImageChange
+              }
+              style={{
+                display: "none",
+              }}
+            />
+
+
+            {/* CHANGE PHOTO BUTTON */}
+
+            <button
+              type="button"
+              onClick={() =>
+                fileInputRef.current?.click()
+              }
+              disabled={uploadingPhoto}
+              style={{
+                marginTop: "14px",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+                minHeight: "38px",
+                padding: "9px 16px",
+                borderRadius: "10px",
+                border:
+                  "1px solid rgba(255,255,255,0.25)",
+                background:
+                  "rgba(255,255,255,0.14)",
+                color: "inherit",
+                font: "inherit",
+                fontWeight: 700,
+                cursor:
+                  uploadingPhoto
+                    ? "not-allowed"
+                    : "pointer",
+                opacity:
+                  uploadingPhoto
+                    ? 0.7
+                    : 1,
+              }}
+            >
+
+              {uploadingPhoto ? (
+
+                <LoaderCircle
+                  size={15}
+                />
+
+              ) : (
+
+                <Camera
+                  size={15}
+                />
+
+              )}
+
+
+              {uploadingPhoto
+                ? "Uploading..."
+                : profileImageUrl
+                  ? "Change Photo"
+                  : "Add Photo"}
+
+            </button>
+
+
+            {photoMessage && (
+
+              <div
+                style={{
+                  marginTop: "10px",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                }}
+              >
+
+                {photoMessage}
+
+              </div>
+
+            )}
+
+
+            {photoError && (
+
+              <div
+                style={{
+                  marginTop: "10px",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                }}
+              >
+
+                {photoError}
+
+              </div>
+
+            )}
 
 
             <h2>

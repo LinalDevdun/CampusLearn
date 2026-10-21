@@ -4,14 +4,11 @@ import {
   useState,
 } from "react";
 
-
 import {
   useNavigate,
 } from "react-router-dom";
 
-
 import axios from "axios";
-
 
 import {
   Bell,
@@ -30,11 +27,45 @@ import {
   BarChart3,
 } from "lucide-react";
 
-
 import "../../styles/adminTopbar.css";
 
 import API_BASE_URL from "../../config/api";
 
+
+/* ========================================
+   PROFILE IMAGE URL
+======================================== */
+
+const getProfileImageUrl = (
+  profileImage
+) => {
+
+  if (!profileImage) {
+    return "";
+  }
+
+
+  if (
+    profileImage.startsWith("http://") ||
+    profileImage.startsWith("https://") ||
+    profileImage.startsWith("data:") ||
+    profileImage.startsWith("blob:")
+  ) {
+
+    return profileImage;
+
+  }
+
+
+  const cleanPath =
+    profileImage
+      .replace(/\\/g, "/")
+      .replace(/^\/+/, "");
+
+
+  return `${API_BASE_URL}/${cleanPath}`;
+
+};
 
 
 function AdminTopbar() {
@@ -55,7 +86,6 @@ function AdminTopbar() {
     useRef(null);
 
 
-
   /* ========================================
      ADMIN DATA
   ======================================== */
@@ -71,8 +101,9 @@ function AdminTopbar() {
 
     role: "ADMIN",
 
-  });
+    profile_image: "",
 
+  });
 
 
   /* ========================================
@@ -85,7 +116,6 @@ function AdminTopbar() {
   ] = useState(false);
 
 
-
   /* ========================================
      ADD NEW DROPDOWN
   ======================================== */
@@ -94,7 +124,6 @@ function AdminTopbar() {
     createOpen,
     setCreateOpen,
   ] = useState(false);
-
 
 
   /* ========================================
@@ -129,7 +158,6 @@ function AdminTopbar() {
     searchLoading,
     setSearchLoading,
   ] = useState(false);
-
 
 
   /* ========================================
@@ -283,7 +311,6 @@ function AdminTopbar() {
   ];
 
 
-
   /* ========================================
      GET LOGGED-IN ADMIN
   ======================================== */
@@ -376,6 +403,64 @@ function AdminTopbar() {
   }, [navigate]);
 
 
+  /* ========================================
+     LIVE PROFILE IMAGE UPDATE
+  ======================================== */
+
+  useEffect(() => {
+
+    const handleProfileImageUpdate =
+      (event) => {
+
+        const updatedProfileImage =
+          typeof event.detail ===
+          "string"
+            ? event.detail
+            : event.detail
+                ?.profile_image;
+
+
+        if (
+          updatedProfileImage ===
+          undefined
+        ) {
+
+          return;
+
+        }
+
+
+        setAdmin(
+          (previousAdmin) => ({
+
+            ...previousAdmin,
+
+            profile_image:
+              updatedProfileImage,
+
+          })
+        );
+
+      };
+
+
+    window.addEventListener(
+      "admin-profile-image-updated",
+      handleProfileImageUpdate
+    );
+
+
+    return () => {
+
+      window.removeEventListener(
+        "admin-profile-image-updated",
+        handleProfileImageUpdate
+      );
+
+    };
+
+  }, []);
+
 
   /* ========================================
      CLOSE DROPDOWNS
@@ -429,7 +514,7 @@ function AdminTopbar() {
 
         if (
           event.key ===
-            "Escape"
+          "Escape"
         ) {
 
           setProfileOpen(false);
@@ -473,9 +558,8 @@ function AdminTopbar() {
   }, []);
 
 
-
   /* ========================================
-     INITIALS
+     INITIALS + PROFILE IMAGE
   ======================================== */
 
   const getInitials =
@@ -507,6 +591,11 @@ function AdminTopbar() {
       admin.name
     );
 
+
+  const profileImageUrl =
+    getProfileImageUrl(
+      admin.profile_image
+    );
 
 
   /* ========================================
@@ -644,7 +733,6 @@ function AdminTopbar() {
     };
 
 
-
   /* ========================================
      SEARCH FILTERING
   ======================================== */
@@ -653,7 +741,6 @@ function AdminTopbar() {
     searchTerm
       .trim()
       .toLowerCase();
-
 
 
   const pageSearchResults =
@@ -700,7 +787,6 @@ function AdminTopbar() {
           ? 6
           : 8
       );
-
 
 
   const userSearchResults =
@@ -760,7 +846,6 @@ function AdminTopbar() {
       : [];
 
 
-
   const courseSearchResults =
     normalizedSearch
 
@@ -818,7 +903,6 @@ function AdminTopbar() {
       : [];
 
 
-
   const hasSearchResults =
 
     pageSearchResults.length > 0 ||
@@ -826,7 +910,6 @@ function AdminTopbar() {
     userSearchResults.length > 0 ||
 
     courseSearchResults.length > 0;
-
 
 
   /* ========================================
@@ -870,13 +953,12 @@ function AdminTopbar() {
     };
 
 
-
   const handleSearchKeyDown =
     (event) => {
 
       if (
         event.key ===
-          "Escape"
+        "Escape"
       ) {
 
         setSearchOpen(
@@ -890,7 +972,7 @@ function AdminTopbar() {
 
       if (
         event.key !==
-          "Enter"
+        "Enter"
       ) {
 
         return;
@@ -903,7 +985,7 @@ function AdminTopbar() {
 
       if (
         pageSearchResults.length >
-          0
+        0
       ) {
 
         goToSearchResult(
@@ -920,7 +1002,7 @@ function AdminTopbar() {
 
       if (
         userSearchResults.length >
-          0
+        0
       ) {
 
         const user =
@@ -929,7 +1011,7 @@ function AdminTopbar() {
 
         if (
           user.role ===
-            "STUDENT"
+          "STUDENT"
         ) {
 
           goToSearchResult(
@@ -951,7 +1033,7 @@ function AdminTopbar() {
 
       if (
         courseSearchResults.length >
-          0
+        0
       ) {
 
         goToSearchResult(
@@ -961,7 +1043,6 @@ function AdminTopbar() {
       }
 
     };
-
 
 
   /* ========================================
@@ -992,7 +1073,6 @@ function AdminTopbar() {
   };
 
 
-
   /* ========================================
      CHANGE PASSWORD
   ======================================== */
@@ -1018,14 +1098,6 @@ function AdminTopbar() {
       "/admin/settings"
     );
 
-
-    /*
-      Admin password management already
-      exists inside the Admin Settings page.
-
-      After navigation, scroll to the
-      password vault section.
-    */
 
     setTimeout(() => {
 
@@ -1053,7 +1125,6 @@ function AdminTopbar() {
     }, 250);
 
   };
-
 
 
   /* ========================================
@@ -1100,7 +1171,6 @@ function AdminTopbar() {
     };
 
 
-
   /* ========================================
      LOGOUT
   ======================================== */
@@ -1142,7 +1212,6 @@ function AdminTopbar() {
     );
 
   };
-
 
 
   return (
@@ -1298,7 +1367,6 @@ function AdminTopbar() {
             )}
 
 
-
             {/* =================================
                 SEARCH RESULTS
             ================================= */}
@@ -1391,7 +1459,6 @@ function AdminTopbar() {
                 }
 
 
-
                 {/* USERS */}
 
                 {
@@ -1423,7 +1490,7 @@ function AdminTopbar() {
 
                                 if (
                                   user.role ===
-                                    "STUDENT"
+                                  "STUDENT"
                                 ) {
 
                                   goToSearchResult(
@@ -1490,7 +1557,6 @@ function AdminTopbar() {
 
                   )
                 }
-
 
 
                 {/* COURSES */}
@@ -1579,7 +1645,6 @@ function AdminTopbar() {
                 }
 
 
-
                 {/* LOADING */}
 
                 {searchLoading && (
@@ -1591,7 +1656,6 @@ function AdminTopbar() {
                   </div>
 
                 )}
-
 
 
                 {/* NO RESULTS */}
@@ -1635,7 +1699,6 @@ function AdminTopbar() {
         )}
 
       </div>
-
 
 
       {/* ====================================
@@ -1707,7 +1770,6 @@ function AdminTopbar() {
           </button>
 
 
-
           {createOpen && (
 
             <div className="admin-create-dropdown">
@@ -1737,22 +1799,16 @@ function AdminTopbar() {
                 <div className="admin-create-option-text">
 
                   <strong>
-
                     Add Student
-
                   </strong>
 
-
                   <span>
-
                     Create a new learner account
-
                   </span>
 
                 </div>
 
               </button>
-
 
 
               {/* LECTURER */}
@@ -1779,22 +1835,16 @@ function AdminTopbar() {
                 <div className="admin-create-option-text">
 
                   <strong>
-
                     Add Lecturer
-
                   </strong>
 
-
                   <span>
-
                     Create a teaching account
-
                   </span>
 
                 </div>
 
               </button>
-
 
 
               {/* ADMIN */}
@@ -1821,16 +1871,11 @@ function AdminTopbar() {
                 <div className="admin-create-option-text">
 
                   <strong>
-
                     Add Administrator
-
                   </strong>
 
-
                   <span>
-
                     Create an admin account
-
                   </span>
 
                 </div>
@@ -1842,7 +1887,6 @@ function AdminTopbar() {
           )}
 
         </div>
-
 
 
         {/* ====================================
@@ -1874,7 +1918,6 @@ function AdminTopbar() {
         </button>
 
 
-
         {/* ====================================
             PROFILE
         ==================================== */}
@@ -1883,7 +1926,6 @@ function AdminTopbar() {
           className="admin-profile-wrapper"
           ref={profileRef}
         >
-
 
           <button
             type="button"
@@ -1919,9 +1961,57 @@ function AdminTopbar() {
           >
 
 
-            <div className="admin-top-avatar">
+            {/* TOPBAR PROFILE IMAGE */}
 
-              {initials}
+            <div
+              className="admin-top-avatar"
+              style={{
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+
+              <span>
+                {initials}
+              </span>
+
+
+              {profileImageUrl && (
+
+                <img
+                  src={
+                    profileImageUrl
+                  }
+                  alt={
+                    `${admin.name || "Administrator"} profile`
+                  }
+                  style={{
+                    position:
+                      "absolute",
+                    inset: 0,
+                    width:
+                      "100%",
+                    height:
+                      "100%",
+                    objectFit:
+                      "cover",
+                    display:
+                      "block",
+                  }}
+                  onError={
+                    (event) => {
+
+                      event
+                        .currentTarget
+                        .style
+                        .display =
+                        "none";
+
+                    }
+                  }
+                />
+
+              )}
 
             </div>
 
@@ -1957,7 +2047,6 @@ function AdminTopbar() {
           </button>
 
 
-
           {/* ==================================
               PROFILE DROPDOWN
           ================================== */}
@@ -1972,9 +2061,59 @@ function AdminTopbar() {
               <div className="admin-dropdown-header">
 
 
-                <div className="admin-dropdown-avatar">
+                {/* DROPDOWN PROFILE IMAGE */}
 
-                  {initials}
+                <div
+                  className="admin-dropdown-avatar"
+                  style={{
+                    position:
+                      "relative",
+                    overflow:
+                      "hidden",
+                  }}
+                >
+
+                  <span>
+                    {initials}
+                  </span>
+
+
+                  {profileImageUrl && (
+
+                    <img
+                      src={
+                        profileImageUrl
+                      }
+                      alt={
+                        `${admin.name || "Administrator"} profile`
+                      }
+                      style={{
+                        position:
+                          "absolute",
+                        inset: 0,
+                        width:
+                          "100%",
+                        height:
+                          "100%",
+                        objectFit:
+                          "cover",
+                        display:
+                          "block",
+                      }}
+                      onError={
+                        (event) => {
+
+                          event
+                            .currentTarget
+                            .style
+                            .display =
+                            "none";
+
+                        }
+                      }
+                    />
+
+                  )}
 
                 </div>
 
@@ -2011,7 +2150,6 @@ function AdminTopbar() {
                 </div>
 
               </div>
-
 
 
               {/* ACCOUNT MENU */}
@@ -2073,7 +2211,6 @@ function AdminTopbar() {
                 </button>
 
 
-
                 {/* SYSTEM SETTINGS */}
 
                 <button
@@ -2117,7 +2254,6 @@ function AdminTopbar() {
                   />
 
                 </button>
-
 
 
                 {/* CHANGE PASSWORD */}
@@ -2165,7 +2301,6 @@ function AdminTopbar() {
                 </button>
 
               </div>
-
 
 
               {/* LOGOUT */}

@@ -24,22 +24,99 @@ import {
 import API_BASE_URL from "../../config/api";
 
 
+/* =========================================
+   INITIALS
+========================================= */
+
+const getInitials = (name) => {
+
+  if (!name) {
+    return "LE";
+  }
+
+
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map(
+      (word) =>
+        word.charAt(0)
+    )
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+};
+
+
+/* =========================================
+   PROFILE IMAGE URL
+========================================= */
+
+const getProfileImageUrl = (
+  profileImage
+) => {
+
+  if (!profileImage) {
+    return "";
+  }
+
+
+  if (
+    profileImage.startsWith(
+      "http://"
+    ) ||
+    profileImage.startsWith(
+      "https://"
+    ) ||
+    profileImage.startsWith(
+      "data:"
+    ) ||
+    profileImage.startsWith(
+      "blob:"
+    )
+  ) {
+
+    return profileImage;
+
+  }
+
+
+  const cleanPath =
+    profileImage
+      .replace(/\\/g, "/")
+      .replace(/^\/+/, "");
+
+
+  return `${API_BASE_URL}/${cleanPath}`;
+
+};
+
+
 function LecturerSidebar() {
 
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate =
+    useNavigate();
+
+  const location =
+    useLocation();
 
 
   /* ========================================
      LECTURER DATA
   ======================================== */
 
-  const [lecturer, setLecturer] =
-    useState({
-      name: "Lecturer User",
-      email: "",
-      role: "LECTURER",
-    });
+  const [
+    lecturer,
+    setLecturer,
+  ] = useState({
+
+    name: "Lecturer User",
+    email: "",
+    role: "LECTURER",
+    profile_image: "",
+
+  });
 
 
   /* ========================================
@@ -48,65 +125,75 @@ function LecturerSidebar() {
 
   useEffect(() => {
 
-    const fetchLecturer = async () => {
+    const fetchLecturer =
+      async () => {
 
-      try {
+        try {
 
-        const token =
-          localStorage.getItem("token");
+          const token =
+            localStorage.getItem(
+              "token"
+            );
 
 
-        if (!token) {
+          if (!token) {
 
-          navigate("/login");
+            navigate("/login");
 
-          return;
+            return;
+
+          }
+
+
+          const response =
+            await axios.get(
+              `${API_BASE_URL}/me`,
+              {
+                headers: {
+
+                  Authorization:
+                    `Bearer ${token}`,
+
+                },
+              }
+            );
+
+
+          setLecturer(
+            response.data
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Failed to load lecturer:",
+            error
+          );
+
+
+          if (
+            error.response?.status ===
+              401 ||
+            error.response?.status ===
+              403
+          ) {
+
+            localStorage.removeItem(
+              "token"
+            );
+
+            localStorage.removeItem(
+              "role"
+            );
+
+            navigate("/login");
+
+          }
 
         }
 
-
-        const response =
-          await axios.get(
-            `${API_BASE_URL}/me`,
-            {
-              headers: {
-                Authorization:
-                  `Bearer ${token}`,
-              },
-            }
-          );
-
-
-        setLecturer(response.data);
-
-      } catch (error) {
-
-        console.error(
-          "Failed to load lecturer:",
-          error
-        );
-
-
-        if (
-          error.response?.status === 401 ||
-          error.response?.status === 403
-        ) {
-
-          localStorage.removeItem(
-            "token"
-          );
-
-          localStorage.removeItem(
-            "role"
-          );
-
-          navigate("/login");
-
-        }
-
-      }
-
-    };
+      };
 
 
     fetchLecturer();
@@ -115,32 +202,78 @@ function LecturerSidebar() {
 
 
   /* ========================================
-     INITIALS
+     LIVE PROFILE IMAGE UPDATE
   ======================================== */
 
-  const getInitials = (name) => {
+  useEffect(() => {
 
-    if (!name) {
-      return "LE";
-    }
+    const handleProfileImageUpdate =
+      (event) => {
+
+        const updatedProfileImage =
+          typeof event.detail ===
+          "string"
+            ? event.detail
+            : event.detail
+                ?.profile_image;
 
 
-    return name
-      .split(" ")
-      .filter(Boolean)
-      .map(
-        (word) =>
-          word.charAt(0)
-      )
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
+        if (
+          updatedProfileImage ===
+          undefined
+        ) {
 
-  };
+          return;
 
+        }
+
+
+        setLecturer(
+          (previousLecturer) => ({
+
+            ...previousLecturer,
+
+            profile_image:
+              updatedProfileImage,
+
+          })
+        );
+
+      };
+
+
+    window.addEventListener(
+      "lecturer-profile-image-updated",
+      handleProfileImageUpdate
+    );
+
+
+    return () => {
+
+      window.removeEventListener(
+        "lecturer-profile-image-updated",
+        handleProfileImageUpdate
+      );
+
+    };
+
+  }, []);
+
+
+  /* ========================================
+     INITIALS + PROFILE IMAGE
+  ======================================== */
 
   const initials =
-    getInitials(lecturer.name);
+    getInitials(
+      lecturer.name
+    );
+
+
+  const profileImageUrl =
+    getProfileImageUrl(
+      lecturer.profile_image
+    );
 
 
   /* ========================================
@@ -149,9 +282,13 @@ function LecturerSidebar() {
 
   const handleLogout = () => {
 
-    localStorage.removeItem("token");
+    localStorage.removeItem(
+      "token"
+    );
 
-    localStorage.removeItem("role");
+    localStorage.removeItem(
+      "role"
+    );
 
     navigate("/login");
 
@@ -162,72 +299,87 @@ function LecturerSidebar() {
      SCROLL TO DASHBOARD SECTION
   ======================================== */
 
-  const scrollToSection = (sectionId) => {
+  const scrollToSection =
+    (sectionId) => {
 
-    if (
-      location.pathname ===
-      "/lecturer-dashboard"
-    ) {
+      if (
+        location.pathname ===
+        "/lecturer-dashboard"
+      ) {
 
-      const section =
-        document.getElementById(
-          sectionId
-        );
-
-
-      if (section) {
-
-        section.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-
-      }
-
-      return;
-
-    }
+        const section =
+          document.getElementById(
+            sectionId
+          );
 
 
-    navigate("/lecturer-dashboard");
+        if (section) {
 
+          section.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
 
-    setTimeout(() => {
+        }
 
-      const section =
-        document.getElementById(
-          sectionId
-        );
-
-
-      if (section) {
-
-        section.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
+        return;
 
       }
 
-    }, 150);
 
-  };
+      navigate(
+        "/lecturer-dashboard"
+      );
+
+
+      setTimeout(() => {
+
+        const section =
+          document.getElementById(
+            sectionId
+          );
+
+
+        if (section) {
+
+          section.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+
+        }
+
+      }, 150);
+
+    };
+
+
+  /*
+    Keep this function because it was part
+    of the existing Lecturer Sidebar logic.
+  */
+
+  void scrollToSection;
 
 
   /* ========================================
      ACTIVE PAGE HELPER
   ======================================== */
 
-  const getNavClass = (path) => {
+  const getNavClass =
+    (path) => {
 
-    return location.pathname === path
-      ? "lecturer-nav-item lecturer-nav-active"
-      : "lecturer-nav-item";
+      return (
+        location.pathname === path
+          ? "lecturer-nav-item lecturer-nav-active"
+          : "lecturer-nav-item"
+      );
 
-  };
+    };
 
 
   return (
+
     <aside className="lecturer-sidebar">
 
 
@@ -236,6 +388,7 @@ function LecturerSidebar() {
       ==================================== */}
 
       <div className="lecturer-logo">
+
 
         <div className="lecturer-logo-icon">
 
@@ -248,6 +401,7 @@ function LecturerSidebar() {
 
 
         <div>
+
 
           <div className="lecturer-logo-title">
 
@@ -262,10 +416,11 @@ function LecturerSidebar() {
 
           </div>
 
+
         </div>
 
-      </div>
 
+      </div>
 
 
       {/* ====================================
@@ -288,9 +443,11 @@ function LecturerSidebar() {
           {/* DASHBOARD */}
 
           <button
-            className={getNavClass(
-              "/lecturer-dashboard"
-            )}
+            className={
+              getNavClass(
+                "/lecturer-dashboard"
+              )
+            }
             onClick={() =>
               navigate(
                 "/lecturer-dashboard"
@@ -307,13 +464,14 @@ function LecturerSidebar() {
           </button>
 
 
-
           {/* MY COURSES */}
 
           <button
-            className={getNavClass(
-              "/lecturer/courses"
-            )}
+            className={
+              getNavClass(
+                "/lecturer/courses"
+              )
+            }
             onClick={() =>
               navigate(
                 "/lecturer/courses"
@@ -330,13 +488,14 @@ function LecturerSidebar() {
           </button>
 
 
-
           {/* ASSIGNMENTS */}
 
           <button
-            className={getNavClass(
-              "/lecturer/assignments"
-            )}
+            className={
+              getNavClass(
+                "/lecturer/assignments"
+              )
+            }
             onClick={() =>
               navigate(
                 "/lecturer/assignments"
@@ -353,13 +512,14 @@ function LecturerSidebar() {
           </button>
 
 
-
           {/* SUBMISSIONS */}
 
           <button
-            className={getNavClass(
-              "/lecturer/submissions"
-            )}
+            className={
+              getNavClass(
+                "/lecturer/submissions"
+              )
+            }
             onClick={() =>
               navigate(
                 "/lecturer/submissions"
@@ -376,13 +536,14 @@ function LecturerSidebar() {
           </button>
 
 
-
           {/* GRADING */}
 
           <button
-            className={getNavClass(
-              "/lecturer/grading"
-            )}
+            className={
+              getNavClass(
+                "/lecturer/grading"
+              )
+            }
             onClick={() =>
               navigate(
                 "/lecturer/grading"
@@ -399,13 +560,14 @@ function LecturerSidebar() {
           </button>
 
 
-
           {/* STUDENTS */}
 
           <button
-            className={getNavClass(
-              "/lecturer/students"
-            )}
+            className={
+              getNavClass(
+                "/lecturer/students"
+              )
+            }
             onClick={() =>
               navigate(
                 "/lecturer/students"
@@ -421,8 +583,8 @@ function LecturerSidebar() {
 
           </button>
 
-        </nav>
 
+        </nav>
 
 
         {/* ==================================
@@ -439,29 +601,32 @@ function LecturerSidebar() {
         <nav className="lecturer-menu">
 
 
-          {/* AI TEACHING ASSISTANT */}
-
           <button
-            className={getNavClass(
-              "/lecturer/tutor"
-            )}
+            className={
+              getNavClass(
+                "/lecturer/tutor"
+              )
+            }
             onClick={() =>
               navigate(
                 "/lecturer/tutor"
               )
             }
           >
+
             <Sparkles
               size={19}
             />
 
             AI Teaching Assistant
+
           </button>
+
 
         </nav>
 
-      </div>
 
+      </div>
 
 
       {/* ====================================
@@ -475,7 +640,9 @@ function LecturerSidebar() {
 
         <button
           className="lecturer-logout"
-          onClick={handleLogout}
+          onClick={
+            handleLogout
+          }
         >
 
           <LogOut
@@ -487,20 +654,56 @@ function LecturerSidebar() {
         </button>
 
 
-
-        {/* REAL LECTURER */}
+        {/* ==================================
+            REAL LECTURER
+        ================================== */}
 
         <div className="lecturer-user-card">
 
 
-          <div className="lecturer-avatar">
+          <div
+            className="lecturer-avatar"
+            style={{
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
 
-            {initials}
+            <span>
+              {initials}
+            </span>
+
+
+            {profileImageUrl && (
+
+              <img
+                src={
+                  profileImageUrl
+                }
+                alt={`${lecturer.name || "Lecturer"} profile`}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                }}
+                onError={(event) => {
+
+                  event.currentTarget.style.display =
+                    "none";
+
+                }}
+              />
+
+            )}
 
           </div>
 
 
           <div>
+
 
             <strong>
 
@@ -508,18 +711,25 @@ function LecturerSidebar() {
 
             </strong>
 
+
             <span>
               Lecturer
             </span>
 
+
           </div>
+
 
         </div>
 
+
       </div>
 
+
     </aside>
+
   );
+
 }
 
 

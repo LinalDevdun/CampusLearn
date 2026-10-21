@@ -669,7 +669,8 @@ app.get(
 );
 
 /* =========================================
-   UPDATE STUDENT PROFILE IMAGE
+   UPDATE USER PROFILE IMAGE
+   STUDENT + LECTURER + ADMIN
 ========================================= */
 
 app.put(
@@ -677,7 +678,11 @@ app.put(
 
     authenticateToken,
 
-    authorizeRoles('STUDENT'),
+    authorizeRoles(
+        'STUDENT',
+        'LECTURER',
+        'ADMIN'
+    ),
 
     profileUpload.single(
         'profileImage'
@@ -695,6 +700,10 @@ app.put(
                 req.file;
 
 
+            /* =========================================
+               REQUIRE IMAGE
+            ========================================= */
+
             if (!file) {
 
                 return res
@@ -707,6 +716,10 @@ app.put(
             }
 
 
+            /* =========================================
+               NORMALIZE FILE PATH
+            ========================================= */
+
             const profileImagePath =
                 file.path
                     .replace(
@@ -714,6 +727,10 @@ app.put(
                         '/'
                     );
 
+
+            /* =========================================
+               UPDATE PROFILE IMAGE
+            ========================================= */
 
             const updatedUser =
                 await pool.query(
@@ -742,19 +759,45 @@ app.put(
                 );
 
 
+            /* =========================================
+               USER NOT FOUND
+            ========================================= */
+
             if (
                 updatedUser.rows.length === 0
             ) {
+
+                /*
+                  Multer already saved the uploaded
+                  image, so remove it if no user exists.
+                */
+
+                if (
+                    fs.existsSync(
+                        file.path
+                    )
+                ) {
+
+                    fs.unlinkSync(
+                        file.path
+                    );
+
+                }
+
 
                 return res
                     .status(404)
                     .json({
                         error:
-                            'Student not found.'
+                            'User not found.'
                     });
 
             }
 
+
+            /* =========================================
+               SUCCESS
+            ========================================= */
 
             res.json({
 
@@ -768,6 +811,39 @@ app.put(
 
 
         } catch (error) {
+
+            /*
+              If the database update fails after
+              Multer saved the image, clean up
+              the unused uploaded file.
+            */
+
+            if (
+                req.file &&
+                fs.existsSync(
+                    req.file.path
+                )
+            ) {
+
+                try {
+
+                    fs.unlinkSync(
+                        req.file.path
+                    );
+
+                } catch (
+                    cleanupError
+                ) {
+
+                    console.error(
+                        'Profile image cleanup warning:',
+                        cleanupError.message
+                    );
+
+                }
+
+            }
+
 
             console.error(
                 'Update Profile Image Error:',
