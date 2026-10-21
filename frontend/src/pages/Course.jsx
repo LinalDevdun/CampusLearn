@@ -894,7 +894,7 @@ function Course() {
 
 
             <h3>
-              AI Study Assistant
+              AI Study Tutor
             </h3>
 
 

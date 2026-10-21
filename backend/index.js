@@ -332,7 +332,7 @@ app.get(
     (req, res) => {
 
         res.send(
-            'AI Study Assistant Backend is running!'
+            'CampusLearn Backend is running!'
         );
 
     }
