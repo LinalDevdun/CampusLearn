@@ -18,6 +18,12 @@ import {
   BarChart3,
   Activity,
   CircleCheckBig,
+  Sparkles,
+  ShieldCheck,
+  UserRoundCog,
+  Clock3,
+  Gauge,
+  ArrowUpRight,
 } from "lucide-react";
 
 import "../styles/adminReports.css";
@@ -87,10 +93,8 @@ function AdminReports() {
               "http://localhost:5000/admin/reports/overview",
               {
                 headers: {
-
                   Authorization:
                     `Bearer ${token}`,
-
                 },
               }
             );
@@ -153,7 +157,7 @@ function AdminReports() {
 
 
   /* ========================================
-     DEFAULT SAFE VALUES
+     SAFE VALUES
   ======================================== */
 
   const summary =
@@ -215,7 +219,7 @@ function AdminReports() {
 
 
   /* ========================================
-     FORMAT PERCENT
+     HELPERS
   ======================================== */
 
   const formatPercent =
@@ -226,7 +230,9 @@ function AdminReports() {
 
 
       if (
-        Number.isInteger(number)
+        Number.isInteger(
+          number
+        )
       ) {
 
         return `${number}%`;
@@ -234,13 +240,29 @@ function AdminReports() {
       }
 
 
-      return `${number.toFixed(1)}%`;
+      return `${number.toFixed(
+        1
+      )}%`;
+
+    };
+
+
+  const clampPercent =
+    (value) => {
+
+      return Math.min(
+        Math.max(
+          Number(value) || 0,
+          0
+        ),
+        100
+      );
 
     };
 
 
   /* ========================================
-     FORMAT ACTIVITY TIME
+     ACTIVITY TIME
   ======================================== */
 
   const formatActivityTime =
@@ -354,463 +376,464 @@ function AdminReports() {
 
 
   /* ========================================
-     EXPORT
-     Step 31G
+     DERIVED ANALYTICS
   ======================================== */
 
-const handleExportReport = () => {
-
-  if (!reportData) {
-
-    alert(
-      "Report data is not available yet."
+  const totalRoleUsers =
+    Number(
+      userDistribution.students
+    ) +
+    Number(
+      userDistribution.lecturers
+    ) +
+    Number(
+      userDistribution.administrators
     );
 
-    return;
+
+  const studentShare =
+    totalRoleUsers > 0
+      ? (
+          Number(
+            userDistribution.students
+          ) /
+          totalRoleUsers
+        ) * 100
+      : 0;
+
+
+  const lecturerShare =
+    totalRoleUsers > 0
+      ? (
+          Number(
+            userDistribution.lecturers
+          ) /
+          totalRoleUsers
+        ) * 100
+      : 0;
+
+
+  const adminShare =
+    Math.max(
+      0,
+      100 -
+      studentShare -
+      lecturerShare
+    );
+
+
+  const activeRate =
+    Number(
+      summary.total_users
+    ) > 0
+      ? Math.round(
+          (
+            Number(
+              summary.active_accounts
+            ) /
+            Number(
+              summary.total_users
+            )
+          ) * 100
+        )
+      : 0;
+
+
+  const totalEnrollment =
+    courseData.reduce(
+      (
+        total,
+        course
+      ) =>
+        total +
+        (
+          Number(
+            course.students
+          ) || 0
+        ),
+      0
+    );
+
+
+  /* ========================================
+     EXPORT REPORT
+  ======================================== */
+
+  const handleExportReport =
+    () => {
+
+      if (!reportData) {
+
+        alert(
+          "Report data is not available yet."
+        );
+
+        return;
+
+      }
+
+
+      const escapeCSV =
+        (value) => {
+
+          if (
+            value === null ||
+            value === undefined
+          ) {
+
+            return "";
+
+          }
+
+
+          const text =
+            String(value);
+
+
+          return `"${text.replace(
+            /"/g,
+            '""'
+          )}"`;
+
+        };
+
+
+      const rows = [];
+
+
+      rows.push([
+        "CampusLearn Reports & Analytics",
+      ]);
+
+
+      rows.push([
+        "Generated",
+        new Date().toLocaleString(),
+      ]);
+
+
+      rows.push([]);
+
+
+      /* SUMMARY */
+
+      rows.push([
+        "SUMMARY",
+      ]);
+
+
+      rows.push([
+        "Metric",
+        "Value",
+      ]);
+
+
+      rows.push([
+        "Total Users",
+        summary.total_users,
+      ]);
+
+
+      rows.push([
+        "Students",
+        summary.students,
+      ]);
+
+
+      rows.push([
+        "Lecturers",
+        summary.lecturers,
+      ]);
+
+
+      rows.push([
+        "Administrators",
+        summary.administrators,
+      ]);
+
+
+      rows.push([
+        "Active Accounts",
+        summary.active_accounts,
+      ]);
+
+
+      rows.push([
+        "Active Courses",
+        summary.active_courses,
+      ]);
+
+
+      rows.push([
+        "Average Score",
+        `${summary.average_score}%`,
+      ]);
+
+
+      rows.push([]);
+
+
+      /* PERFORMANCE */
+
+      rows.push([
+        "ACADEMIC PERFORMANCE",
+      ]);
+
+
+      rows.push([
+        "Metric",
+        "Percentage",
+      ]);
+
+
+      rows.push([
+        "Average Student Score",
+        `${academicPerformance.average_score}%`,
+      ]);
+
+
+      rows.push([
+        "Assignment Completion",
+        `${academicPerformance.assignment_completion}%`,
+      ]);
+
+
+      rows.push([
+        "Full Assignment Completion",
+        `${academicPerformance.full_assignment_completion}%`,
+      ]);
+
+
+      rows.push([]);
+
+
+      /* COURSE ENROLLMENT */
+
+      rows.push([
+        "COURSE ENROLLMENT",
+      ]);
+
+
+      rows.push([
+        "Course",
+        "Program",
+        "Batch",
+        "Students",
+        "Relative Enrollment %",
+      ]);
+
+
+      courseData.forEach(
+        (course) => {
+
+          rows.push([
+            course.name,
+            course.degree || "",
+            course.batch || "",
+            course.students,
+            `${course.percentage}%`,
+          ]);
+
+        }
+      );
+
+
+      rows.push([]);
+
+
+      /* USER DISTRIBUTION */
+
+      rows.push([
+        "USER DISTRIBUTION",
+      ]);
+
+
+      rows.push([
+        "Role",
+        "Count",
+      ]);
+
+
+      rows.push([
+        "Students",
+        userDistribution.students,
+      ]);
+
+
+      rows.push([
+        "Lecturers",
+        userDistribution.lecturers,
+      ]);
+
+
+      rows.push([
+        "Administrators",
+        userDistribution.administrators,
+      ]);
+
+
+      rows.push([
+        "Active Accounts",
+        userDistribution.active_accounts,
+      ]);
+
+
+      rows.push([]);
+
+
+      /* RECENT ACTIVITY */
+
+      rows.push([
+        "RECENT ACTIVITY",
+      ]);
+
+
+      rows.push([
+        "Type",
+        "Title",
+        "Description",
+        "Date / Time",
+      ]);
+
+
+      recentActivity.forEach(
+        (activity) => {
+
+          rows.push([
+            activity.event_type,
+            activity.title,
+            activity.description,
+            activity.event_time
+              ? new Date(
+                  activity.event_time
+                ).toLocaleString()
+              : "",
+          ]);
+
+        }
+      );
+
+
+      const csvContent =
+        rows
+          .map(
+            (row) =>
+              row
+                .map(
+                  escapeCSV
+                )
+                .join(",")
+          )
+          .join("\n");
+
+
+      const blob =
+        new Blob(
+          [
+            "\uFEFF",
+            csvContent,
+          ],
+          {
+            type:
+              "text/csv;charset=utf-8;",
+          }
+        );
+
+
+      const url =
+        URL.createObjectURL(
+          blob
+        );
+
+
+      const link =
+        document.createElement(
+          "a"
+        );
+
+
+      const date =
+        new Date()
+          .toISOString()
+          .split("T")[0];
+
+
+      link.href =
+        url;
+
+
+      link.download =
+        `CampusLearn_Report_${date}.csv`;
+
+
+      document.body.appendChild(
+        link
+      );
+
+
+      link.click();
+
+
+      document.body.removeChild(
+        link
+      );
+
+
+      URL.revokeObjectURL(
+        url
+      );
+
+    };
+
+
+  /* ========================================
+     LOADING
+  ======================================== */
+
+  if (loading) {
+
+    return (
+
+      <div className="admin-reports-page">
+
+        <div className="ar-page-state">
+
+          <div className="ar-spinner" />
+
+          <h3>
+            Building analytics snapshot
+          </h3>
+
+          <p>
+            Getting the latest CampusLearn
+            statistics from PostgreSQL.
+          </p>
+
+        </div>
+
+      </div>
+
+    );
+
   }
 
 
   /* ========================================
-     CSV HELPER
+     ERROR
   ======================================== */
 
-  const escapeCSV = (value) => {
+  if (error) {
 
-    if (
-      value === null ||
-      value === undefined
-    ) {
+    return (
 
-      return "";
+      <div className="admin-reports-page">
 
-    }
+        <div className="ar-page-state ar-error-state">
 
-
-    const text =
-      String(value);
-
-
-    return `"${text.replace(
-      /"/g,
-      '""'
-    )}"`;
-
-  };
-
-
-  /* ========================================
-     BUILD REPORT
-  ======================================== */
-
-  const rows = [];
-
-
-  rows.push([
-    "CampusLearn Reports & Analytics"
-  ]);
-
-
-  rows.push([
-    "Generated",
-    new Date().toLocaleString()
-  ]);
-
-
-  rows.push([]);
-
-
-
-  /* ========================================
-     SUMMARY
-  ======================================== */
-
-  rows.push([
-    "SUMMARY"
-  ]);
-
-
-  rows.push([
-    "Metric",
-    "Value"
-  ]);
-
-
-  rows.push([
-    "Total Users",
-    summary.total_users
-  ]);
-
-
-  rows.push([
-    "Students",
-    summary.students
-  ]);
-
-
-  rows.push([
-    "Lecturers",
-    summary.lecturers
-  ]);
-
-
-  rows.push([
-    "Administrators",
-    summary.administrators
-  ]);
-
-
-  rows.push([
-    "Active Accounts",
-    summary.active_accounts
-  ]);
-
-
-  rows.push([
-    "Active Courses",
-    summary.active_courses
-  ]);
-
-
-  rows.push([
-    "Average Score",
-    `${summary.average_score}%`
-  ]);
-
-
-  rows.push([]);
-
-
-
-  /* ========================================
-     ACADEMIC PERFORMANCE
-  ======================================== */
-
-  rows.push([
-    "ACADEMIC PERFORMANCE"
-  ]);
-
-
-  rows.push([
-    "Metric",
-    "Percentage"
-  ]);
-
-
-  rows.push([
-    "Average Student Score",
-    `${academicPerformance.average_score}%`
-  ]);
-
-
-  rows.push([
-    "Assignment Completion",
-    `${academicPerformance.assignment_completion}%`
-  ]);
-
-
-  rows.push([
-    "Full Assignment Completion",
-    `${academicPerformance.full_assignment_completion}%`
-  ]);
-
-
-  rows.push([]);
-
-
-
-  /* ========================================
-     COURSE ENROLLMENT
-  ======================================== */
-
-  rows.push([
-    "COURSE ENROLLMENT"
-  ]);
-
-
-  rows.push([
-    "Course",
-    "Program",
-    "Batch",
-    "Students",
-    "Relative Enrollment %"
-  ]);
-
-
-  courseData.forEach(
-    (course) => {
-
-      rows.push([
-        course.name,
-        course.degree || "",
-        course.batch || "",
-        course.students,
-        `${course.percentage}%`
-      ]);
-
-    }
-  );
-
-
-  rows.push([]);
-
-
-
-  /* ========================================
-     USER DISTRIBUTION
-  ======================================== */
-
-  rows.push([
-    "USER DISTRIBUTION"
-  ]);
-
-
-  rows.push([
-    "Role",
-    "Count"
-  ]);
-
-
-  rows.push([
-    "Students",
-    userDistribution.students
-  ]);
-
-
-  rows.push([
-    "Lecturers",
-    userDistribution.lecturers
-  ]);
-
-
-  rows.push([
-    "Administrators",
-    userDistribution.administrators
-  ]);
-
-
-  rows.push([
-    "Active Accounts",
-    userDistribution.active_accounts
-  ]);
-
-
-  rows.push([]);
-
-
-
-  /* ========================================
-     RECENT ACTIVITY
-  ======================================== */
-
-  rows.push([
-    "RECENT ACTIVITY"
-  ]);
-
-
-  rows.push([
-    "Type",
-    "Title",
-    "Description",
-    "Date / Time"
-  ]);
-
-
-  recentActivity.forEach(
-    (activity) => {
-
-      rows.push([
-        activity.event_type,
-        activity.title,
-        activity.description,
-        activity.event_time
-          ? new Date(
-              activity.event_time
-            ).toLocaleString()
-          : ""
-      ]);
-
-    }
-  );
-
-
-  /* ========================================
-     CONVERT TO CSV
-  ======================================== */
-
-  const csvContent =
-    rows
-      .map(
-        (row) =>
-          row
-            .map(
-              escapeCSV
-            )
-            .join(",")
-      )
-      .join("\n");
-
-
-  /* ========================================
-     CREATE FILE
-  ======================================== */
-
-  const blob =
-    new Blob(
-      [
-        "\uFEFF",
-        csvContent
-      ],
-      {
-        type:
-          "text/csv;charset=utf-8;"
-      }
-    );
-
-
-  const url =
-    URL.createObjectURL(
-      blob
-    );
-
-
-  const link =
-    document.createElement(
-      "a"
-    );
-
-
-  const date =
-    new Date()
-      .toISOString()
-      .split("T")[0];
-
-
-  link.href =
-    url;
-
-
-  link.download =
-    `CampusLearn_Report_${date}.csv`;
-
-
-  document.body.appendChild(
-    link
-  );
-
-
-  link.click();
-
-
-  document.body.removeChild(
-    link
-  );
-
-
-  URL.revokeObjectURL(
-    url
-  );
-
-};
-
-
-  return (
-
-    <div className="admin-reports-page">
-
-
-      {/* ====================================
-          HEADER
-      ==================================== */}
-
-      <section className="ar-header">
-
-        <div>
-
-          <h1>
-            Reports & Analytics
-          </h1>
-
-          <p>
-            Monitor platform activity,
-            academic performance and
-            system statistics.
-          </p>
-
-        </div>
-
-
-        <button
-          className="ar-export-button"
-          onClick={
-            handleExportReport
-          }
-        >
-
-          <Download size={16} />
-
-          Export Report
-
-        </button>
-
-      </section>
-
-
-
-      {/* ====================================
-          LOADING
-      ==================================== */}
-
-      {loading && (
-
-        <div
-          style={{
-            padding: "30px",
-            background: "#ffffff",
-            borderRadius: "16px",
-            textAlign: "center",
-            marginBottom: "24px",
-          }}
-        >
-
-          <BarChart3
-            size={28}
-          />
+          <BarChart3 size={30} />
 
           <h3>
-            Loading reports...
-          </h3>
-
-          <p>
-            Getting real analytics
-            from PostgreSQL.
-          </p>
-
-        </div>
-
-      )}
-
-
-
-      {/* ====================================
-          ERROR
-      ==================================== */}
-
-      {!loading &&
-        error && (
-
-        <div
-          style={{
-            padding: "30px",
-            background: "#ffffff",
-            borderRadius: "16px",
-            textAlign: "center",
-            marginBottom: "24px",
-            color: "#dc2626",
-          }}
-        >
-
-          <h3>
-            Unable to load reports
+            Unable to load analytics
           </h3>
 
           <p>
@@ -819,628 +842,798 @@ const handleExportReport = () => {
 
         </div>
 
-      )}
+      </div>
 
+    );
+
+  }
+
+
+  return (
+
+    <div className="admin-reports-page">
 
 
       {/* ====================================
-          REPORT CONTENT
+          REPORT HEADER
       ==================================== */}
 
-      {!loading &&
-        !error && (
-
-        <>
+      <section className="ar-report-header">
 
 
-          {/* ====================================
-              SUMMARY
-          ==================================== */}
-
-          <section className="ar-summary">
+        <div>
 
 
-            {/* TOTAL USERS */}
+          <div className="ar-eyebrow">
 
-            <div className="ar-summary-card ar-teal">
+            <Sparkles size={12} />
 
-              <div className="ar-summary-icon">
+            CAMPUS INTELLIGENCE
 
-                <Users size={21} />
-
-              </div>
+          </div>
 
 
-              <div>
+          <h1>
+            Reports & Analytics
+          </h1>
 
-                <strong>
-                  {
+
+          <p>
+
+            A live view of platform
+            engagement, enrollment and
+            academic performance.
+
+          </p>
+
+
+        </div>
+
+
+        <button
+          type="button"
+          className="ar-export-button"
+          onClick={
+            handleExportReport
+          }
+        >
+
+          <Download size={15} />
+
+          Export Report
+
+        </button>
+
+
+      </section>
+
+
+      {/* ====================================
+          ANALYTICS BRIEF
+      ==================================== */}
+
+      <section className="ar-briefing">
+
+
+        {/* LEFT */}
+
+        <div className="ar-briefing-main">
+
+
+          <div className="ar-briefing-label">
+
+            <Activity size={13} />
+
+            LIVE PLATFORM SNAPSHOT
+
+          </div>
+
+
+          <h2>
+            CampusLearn at a glance.
+          </h2>
+
+
+          <p>
+
+            Current system activity
+            summarized into one
+            administrative performance
+            view.
+
+          </p>
+
+
+          <div className="ar-briefing-metrics">
+
+
+            <BriefMetric
+              label="Users"
+              value={
+                summary.total_users
+              }
+            />
+
+
+            <BriefMetric
+              label="Students"
+              value={
+                summary.students
+              }
+            />
+
+
+            <BriefMetric
+              label="Courses"
+              value={
+                summary.active_courses
+              }
+            />
+
+
+            <BriefMetric
+              label="Enrollments"
+              value={
+                totalEnrollment
+              }
+            />
+
+
+          </div>
+
+
+        </div>
+
+
+        {/* SCORE */}
+
+        <div className="ar-score-focus">
+
+
+          <div className="ar-score-top">
+
+            <span>
+              ACADEMIC SCORE
+            </span>
+
+            <TrendingUp
+              size={17}
+            />
+
+          </div>
+
+
+          <div
+            className="ar-score-ring"
+            style={{
+              "--score":
+                `${clampPercent(
+                  summary.average_score
+                ) * 3.6}deg`,
+            }}
+          >
+
+            <div>
+
+              <strong>
+
+                {formatPercent(
+                  summary.average_score
+                )}
+
+              </strong>
+
+              <span>
+                AVERAGE
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <p>
+            Platform-wide graded
+            assessment performance.
+          </p>
+
+
+        </div>
+
+
+        {/* ACCOUNT HEALTH */}
+
+        <div className="ar-health-focus">
+
+
+          <div className="ar-health-icon">
+
+            <ShieldCheck
+              size={20}
+            />
+
+          </div>
+
+
+          <span>
+            ACCOUNT HEALTH
+          </span>
+
+
+          <h3>
+            {activeRate}% Active
+          </h3>
+
+
+          <div className="ar-health-track">
+
+            <div
+              style={{
+                width:
+                  `${activeRate}%`,
+              }}
+            />
+
+          </div>
+
+
+          <div className="ar-health-meta">
+
+            <span>
+              {
+                summary.active_accounts
+              } active
+            </span>
+
+            <span>
+              {
+                Math.max(
+                  Number(
                     summary.total_users
+                  ) -
+                  Number(
+                    summary.active_accounts
+                  ),
+                  0
+                )
+              } inactive
+            </span>
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+      {/* ====================================
+          COURSE ENROLLMENT LANDSCAPE
+      ==================================== */}
+
+      <section className="ar-enrollment-panel">
+
+
+        <div className="ar-section-heading">
+
+
+          <div>
+
+
+            <div className="ar-section-kicker">
+
+              <BarChart3 size={12} />
+
+              ENROLLMENT LANDSCAPE
+
+            </div>
+
+
+            <h2>
+              Course Participation
+            </h2>
+
+
+            <p>
+              Compare student enrollment
+              across active courses.
+            </p>
+
+
+          </div>
+
+
+          <div className="ar-enrollment-total">
+
+            <span>
+              TOTAL ENROLLMENTS
+            </span>
+
+            <strong>
+              {totalEnrollment}
+            </strong>
+
+          </div>
+
+
+        </div>
+
+
+        {courseData.length ===
+        0 ? (
+
+          <div className="ar-inline-empty">
+
+            No course enrollment data
+            available yet.
+
+          </div>
+
+        ) : (
+
+          <div className="ar-course-landscape">
+
+
+            {courseData.map(
+              (
+                course,
+                index
+              ) => (
+
+                <div
+                  className="ar-course-row"
+                  key={
+                    course.id ||
+                    `${course.name}-${index}`
                   }
-                </strong>
+                >
 
-                <span>
-                  Total Users
-                </span>
 
-              </div>
+                  <div className="ar-course-number">
 
-            </div>
-
-
-
-            {/* STUDENTS */}
-
-            <div className="ar-summary-card ar-purple">
-
-              <div className="ar-summary-icon">
-
-                <GraduationCap
-                  size={21}
-                />
-
-              </div>
-
-
-              <div>
-
-                <strong>
-                  {
-                    summary.students
-                  }
-                </strong>
-
-                <span>
-                  Students
-                </span>
-
-              </div>
-
-            </div>
-
-
-
-            {/* COURSES */}
-
-            <div className="ar-summary-card ar-blue">
-
-              <div className="ar-summary-icon">
-
-                <BookOpen size={21} />
-
-              </div>
-
-
-              <div>
-
-                <strong>
-                  {
-                    summary.active_courses
-                  }
-                </strong>
-
-                <span>
-                  Active Courses
-                </span>
-
-              </div>
-
-            </div>
-
-
-
-            {/* AVERAGE SCORE */}
-
-            <div className="ar-summary-card ar-orange">
-
-              <div className="ar-summary-icon">
-
-                <TrendingUp
-                  size={21}
-                />
-
-              </div>
-
-
-              <div>
-
-                <strong>
-
-                  {formatPercent(
-                    summary.average_score
-                  )}
-
-                </strong>
-
-                <span>
-                  Average Score
-                </span>
-
-              </div>
-
-            </div>
-
-          </section>
-
-
-
-          {/* ====================================
-              MAIN GRID
-          ==================================== */}
-
-          <section className="ar-main-grid">
-
-
-            {/* ==================================
-                COURSE ENROLLMENT
-            ================================== */}
-
-            <div className="ar-panel">
-
-              <div className="ar-panel-header">
-
-                <div>
-
-                  <h2>
-                    Course Enrollment
-                  </h2>
-
-                  <p>
-                    Current student
-                    distribution across
-                    courses.
-                  </p>
-
-                </div>
-
-
-                <BarChart3
-                  size={19}
-                />
-
-              </div>
-
-
-
-              <div className="ar-course-chart">
-
-
-                {courseData.length ===
-                  0 && (
-
-                  <div
-                    style={{
-                      padding:
-                        "22px 0",
-                      textAlign:
-                        "center",
-                    }}
-                  >
-
-                    <p>
-                      No course enrollment
-                      data available yet.
-                    </p>
+                    {String(
+                      index + 1
+                    ).padStart(
+                      2,
+                      "0"
+                    )}
 
                   </div>
 
-                )}
+
+                  <div className="ar-course-content">
 
 
+                    <div className="ar-course-info">
 
-                {courseData.map(
-                  (course) => (
 
-                    <div
-                      className="ar-course-row"
-                      key={course.id}
-                    >
-
-                      <div className="ar-course-info">
-
-                        <span>
-                          {course.name}
-                        </span>
-
+                      <div>
 
                         <strong>
+                          {course.name}
+                        </strong>
 
+                        <span>
+
+                          {course.degree ||
+                            "Program not assigned"}
+
+                          {course.batch
+                            ? ` · Batch ${course.batch}`
+                            : ""}
+
+                        </span>
+
+                      </div>
+
+
+                      <div className="ar-course-count">
+
+                        <strong>
                           {course.students}
-                          {" "}
+                        </strong>
 
+                        <span>
                           {course.students ===
                           1
                             ? "student"
                             : "students"}
-
-                        </strong>
-
-                      </div>
-
-
-                      <div className="ar-progress-track">
-
-                        <div
-                          className="ar-progress-fill"
-
-                          style={{
-                            width:
-                              `${course.percentage}%`,
-                          }}
-                        />
+                        </span>
 
                       </div>
+
 
                     </div>
 
-                  )
-                )}
+
+                    <div className="ar-progress-track">
+
+                      <div
+                        className="ar-progress-fill"
+                        style={{
+                          width:
+                            `${clampPercent(
+                              course.percentage
+                            )}%`,
+                        }}
+                      />
+
+                    </div>
+
+
+                  </div>
+
+
+                </div>
+
+              )
+            )}
+
+
+          </div>
+
+        )}
+
+
+      </section>
+
+
+      {/* ====================================
+          INSIGHT GRID
+      ==================================== */}
+
+      <section className="ar-insight-grid">
+
+
+        {/* USER MIX */}
+
+        <div className="ar-insight-panel ar-user-mix-panel">
+
+
+          <div className="ar-panel-heading">
+
+            <div>
+
+              <span>
+                COMMUNITY MIX
+              </span>
+
+              <h2>
+                User Distribution
+              </h2>
+
+              <p>
+                Registered accounts by role.
+              </p>
+
+            </div>
+
+
+            <Users size={18} />
+
+          </div>
+
+
+          <div className="ar-user-mix-content">
+
+
+            <div
+              className="ar-user-donut"
+              style={{
+                background:
+                  `conic-gradient(
+                    #7c4fe0 0 ${studentShare}%,
+                    #4058df ${studentShare}% ${studentShare + lecturerShare}%,
+                    #0f8f83 ${studentShare + lecturerShare}% 100%
+                  )`,
+              }}
+            >
+
+              <div>
+
+                <strong>
+                  {totalRoleUsers}
+                </strong>
+
+                <span>
+                  USERS
+                </span>
 
               </div>
 
             </div>
 
 
+            <div className="ar-user-legend">
+
+
+              <UserLegend
+                colorClass="ar-dot-student"
+                label="Students"
+                value={
+                  userDistribution
+                    .students
+                }
+                percent={
+                  studentShare
+                }
+              />
+
+
+              <UserLegend
+                colorClass="ar-dot-lecturer"
+                label="Lecturers"
+                value={
+                  userDistribution
+                    .lecturers
+                }
+                percent={
+                  lecturerShare
+                }
+              />
+
+
+              <UserLegend
+                colorClass="ar-dot-admin"
+                label="Administrators"
+                value={
+                  userDistribution
+                    .administrators
+                }
+                percent={
+                  adminShare
+                }
+              />
 
-            {/* ==================================
-                USER DISTRIBUTION
-            ================================== */}
-
-            <div className="ar-panel">
-
-              <div className="ar-panel-header">
-
-                <div>
-
-                  <h2>
-                    User Distribution
-                  </h2>
-
-                  <p>
-                    Registered users by
-                    account type.
-                  </p>
-
-                </div>
-
-              </div>
-
-
-
-              <div className="ar-user-distribution">
-
-
-                {/* STUDENTS */}
-
-                <div className="ar-user-item">
-
-                  <div
-                    className="
-                      ar-user-dot
-                      ar-user-student
-                    "
-                  />
-
-
-                  <div>
-
-                    <span>
-                      Students
-                    </span>
-
-                    <strong>
-                      {
-                        userDistribution
-                          .students
-                      }
-                    </strong>
-
-                  </div>
-
-                </div>
-
-
-
-                {/* LECTURERS */}
-
-                <div className="ar-user-item">
-
-                  <div
-                    className="
-                      ar-user-dot
-                      ar-user-lecturer
-                    "
-                  />
-
-
-                  <div>
-
-                    <span>
-                      Lecturers
-                    </span>
-
-                    <strong>
-                      {
-                        userDistribution
-                          .lecturers
-                      }
-                    </strong>
-
-                  </div>
-
-                </div>
-
-
-
-                {/* ADMINS */}
-
-                <div className="ar-user-item">
-
-                  <div
-                    className="
-                      ar-user-dot
-                      ar-user-admin
-                    "
-                  />
-
-
-                  <div>
-
-                    <span>
-                      Administrators
-                    </span>
-
-                    <strong>
-                      {
-                        userDistribution
-                          .administrators
-                      }
-                    </strong>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-
-
-              {/* ACTIVE ACCOUNTS */}
-
-              <div className="ar-total-users">
-
-                <Users size={22} />
-
-
-                <div>
-
-                  <span>
-                    Total Registered
-                  </span>
-
-
-                  <strong>
-
-                    {
-                      userDistribution
-                        .active_accounts
-                    }
-
-                    {" "}Active Accounts
-
-                  </strong>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </section>
-
-
-
-          {/* ====================================
-              SECOND GRID
-          ==================================== */}
-
-          <section className="ar-second-grid">
-
-
-            {/* ==================================
-                PERFORMANCE
-            ================================== */}
-
-            <div className="ar-panel">
-
-              <div className="ar-panel-header">
-
-                <div>
-
-                  <h2>
-                    Academic Performance
-                  </h2>
-
-                  <p>
-                    Current platform-wide
-                    performance indicators.
-                  </p>
-
-                </div>
-
-              </div>
-
-
-
-              <div className="ar-performance-list">
-
-
-                {/* AVERAGE SCORE */}
-
-                <div>
-
-                  <div className="ar-performance-icon">
-
-                    <TrendingUp
-                      size={18}
-                    />
-
-                  </div>
-
-
-                  <span>
-                    Average Student Score
-                  </span>
-
-
-                  <strong>
-
-                    {formatPercent(
-                      academicPerformance
-                        .average_score
-                    )}
-
-                  </strong>
-
-                </div>
-
-
-
-                {/* ASSIGNMENT COMPLETION */}
-
-                <div>
-
-                  <div className="ar-performance-icon">
-
-                    <CircleCheckBig
-                      size={18}
-                    />
-
-                  </div>
-
-
-                  <span>
-                    Assignment Completion
-                  </span>
-
-
-                  <strong>
-
-                    {formatPercent(
-                      academicPerformance
-                        .assignment_completion
-                    )}
-
-                  </strong>
-
-                </div>
-
-
-
-                {/* FULL COMPLETION */}
-
-                <div>
-
-                  <div className="ar-performance-icon">
-
-                    <BookOpen
-                      size={18}
-                    />
-
-                  </div>
-
-
-                  <span>
-                    Full Assignment Completion
-                  </span>
-
-
-                  <strong>
-
-                    {formatPercent(
-                      academicPerformance
-                        .full_assignment_completion
-                    )}
-
-                  </strong>
-
-                </div>
-
-              </div>
 
             </div>
 
 
-
-            {/* ==================================
-                RECENT ACTIVITY
-            ================================== */}
-
-            <div className="ar-panel">
-
-              <div className="ar-panel-header">
-
-                <div>
-
-                  <h2>
-                    Recent Activity
-                  </h2>
-
-                  <p>
-                    Latest platform events.
-                  </p>
-
-                </div>
+          </div>
 
 
-                <Activity size={19} />
+          <div className="ar-active-account-note">
 
-              </div>
+            <CircleCheckBig
+              size={17}
+            />
+
+            <div>
+
+              <span>
+                ACTIVE ACCOUNTS
+              </span>
+
+              <strong>
+
+                {
+                  userDistribution
+                    .active_accounts
+                }{" "}
+                accounts currently enabled
+
+              </strong>
+
+            </div>
+
+          </div>
 
 
+        </div>
 
-              <div className="ar-activity-list">
+
+        {/* ACADEMIC PERFORMANCE */}
+
+        <div className="ar-insight-panel">
 
 
-                {recentActivity.length ===
-                  0 && (
+          <div className="ar-panel-heading">
 
-                  <div
-                    style={{
-                      padding:
-                        "20px 0",
-                    }}
-                  >
+            <div>
 
-                    <p>
-                      No recent activity
-                      available yet.
-                    </p>
+              <span>
+                LEARNING OUTCOMES
+              </span>
+
+              <h2>
+                Academic Performance
+              </h2>
+
+              <p>
+                Platform-wide performance
+                indicators.
+              </p>
+
+            </div>
+
+
+            <Gauge size={18} />
+
+          </div>
+
+
+          <div className="ar-performance-stack">
+
+
+            <PerformanceMetric
+              icon={
+                <TrendingUp
+                  size={17}
+                />
+              }
+              label="Average Student Score"
+              value={
+                academicPerformance
+                  .average_score
+              }
+              formattedValue={
+                formatPercent(
+                  academicPerformance
+                    .average_score
+                )
+              }
+              className="ar-performance-score"
+            />
+
+
+            <PerformanceMetric
+              icon={
+                <CircleCheckBig
+                  size={17}
+                />
+              }
+              label="Assignment Completion"
+              value={
+                academicPerformance
+                  .assignment_completion
+              }
+              formattedValue={
+                formatPercent(
+                  academicPerformance
+                    .assignment_completion
+                )
+              }
+              className="ar-performance-completion"
+            />
+
+
+            <PerformanceMetric
+              icon={
+                <BookOpen
+                  size={17}
+                />
+              }
+              label="Full Assignment Completion"
+              value={
+                academicPerformance
+                  .full_assignment_completion
+              }
+              formattedValue={
+                formatPercent(
+                  academicPerformance
+                    .full_assignment_completion
+                )
+              }
+              className="ar-performance-full"
+            />
+
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+      {/* ====================================
+          RECENT ACTIVITY
+      ==================================== */}
+
+      <section className="ar-activity-panel">
+
+
+        <div className="ar-section-heading">
+
+
+          <div>
+
+
+            <div className="ar-section-kicker">
+
+              <Clock3 size={12} />
+
+              SYSTEM TIMELINE
+
+            </div>
+
+
+            <h2>
+              Recent Activity
+            </h2>
+
+
+            <p>
+              Latest events recorded across
+              CampusLearn.
+            </p>
+
+
+          </div>
+
+
+          <div className="ar-live-badge">
+
+            <span />
+
+            Live activity
+
+          </div>
+
+
+        </div>
+
+
+        {recentActivity.length ===
+        0 ? (
+
+          <div className="ar-inline-empty">
+
+            No recent activity
+            available yet.
+
+          </div>
+
+        ) : (
+
+          <div className="ar-activity-timeline">
+
+
+            {recentActivity.map(
+              (
+                activity,
+                index
+              ) => (
+
+                <div
+                  className="ar-activity-item"
+                  key={
+                    `${activity.event_type}-${activity.event_time}-${index}`
+                  }
+                >
+
+
+                  <div className="ar-timeline-column">
+
+                    <div className="ar-activity-dot" />
+
+                    {index !==
+                      recentActivity.length -
+                        1 && (
+
+                      <div className="ar-timeline-line" />
+
+                    )}
 
                   </div>
 
-                )}
+
+                  <div className="ar-activity-content">
 
 
-
-                {recentActivity.map(
-                  (
-                    activity,
-                    index
-                  ) => (
-
-                    <div
-                      className="ar-activity-item"
-
-                      key={
-                        `${activity.event_type}-${activity.event_time}-${index}`
-                      }
-                    >
-
-                      <div className="ar-activity-dot" />
+                    <div className="ar-activity-top">
 
 
                       <div>
+
+                        <span>
+                          {
+                            activity.event_type ||
+                            "ACTIVITY"
+                          }
+                        </span>
 
                         <strong>
                           {
@@ -1448,38 +1641,208 @@ const handleExportReport = () => {
                           }
                         </strong>
 
-
-                        <p>
-                          {
-                            activity.description
-                          }
-                        </p>
+                      </div>
 
 
-                        <span>
+                      <div className="ar-activity-time">
 
-                          {formatActivityTime(
-                            activity.event_time
-                          )}
+                        <Clock3
+                          size={11}
+                        />
 
-                        </span>
+                        {formatActivityTime(
+                          activity.event_time
+                        )}
 
                       </div>
 
+
                     </div>
 
-                  )
-                )}
 
-              </div>
+                    <p>
+                      {
+                        activity.description
+                      }
+                    </p>
 
-            </div>
 
-          </section>
+                  </div>
 
-        </>
 
-      )}
+                </div>
+
+              )
+            )}
+
+
+          </div>
+
+        )}
+
+
+      </section>
+
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   BRIEF METRIC
+======================================== */
+
+function BriefMetric({
+  label,
+  value,
+}) {
+
+  return (
+
+    <div className="ar-brief-metric">
+
+      <strong>
+        {value}
+      </strong>
+
+      <span>
+        {label}
+      </span>
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   USER LEGEND
+======================================== */
+
+function UserLegend({
+  colorClass,
+  label,
+  value,
+  percent,
+}) {
+
+  return (
+
+    <div className="ar-user-legend-item">
+
+
+      <div
+        className={
+          `ar-user-legend-dot ${colorClass}`
+        }
+      />
+
+
+      <div>
+
+        <span>
+          {label}
+        </span>
+
+        <small>
+          {Math.round(
+            percent
+          )}% of users
+        </small>
+
+      </div>
+
+
+      <strong>
+        {value}
+      </strong>
+
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   PERFORMANCE METRIC
+======================================== */
+
+function PerformanceMetric({
+  icon,
+  label,
+  value,
+  formattedValue,
+  className,
+}) {
+
+  const percent =
+    Math.min(
+      Math.max(
+        Number(value) || 0,
+        0
+      ),
+      100
+    );
+
+
+  return (
+
+    <div
+      className={
+        `ar-performance-card ${className}`
+      }
+    >
+
+
+      <div className="ar-performance-top">
+
+
+        <div className="ar-performance-icon">
+
+          {icon}
+
+        </div>
+
+
+        <div>
+
+          <span>
+            {label}
+          </span>
+
+          <strong>
+            {formattedValue}
+          </strong>
+
+        </div>
+
+
+        <ArrowUpRight
+          className="ar-performance-arrow"
+          size={14}
+        />
+
+
+      </div>
+
+
+      <div className="ar-performance-track">
+
+        <div
+          style={{
+            width:
+              `${percent}%`,
+          }}
+        />
+
+      </div>
+
 
     </div>
 

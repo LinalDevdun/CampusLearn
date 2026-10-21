@@ -5,7 +5,9 @@ import {
   useState,
 } from "react";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import axios from "axios";
 
@@ -20,43 +22,67 @@ import {
   Upload,
   Pencil,
   Trash2,
+  Eye,
+  Sparkles,
+  SlidersHorizontal,
+  RefreshCw,
+  CircleCheckBig,
+  Layers3,
+  UserRoundCog,
+  Activity,
+  Paperclip,
 } from "lucide-react";
 
 import "../styles/adminCourses.css";
 
 
 function AdminCourses() {
-  const navigate = useNavigate();
+
+  const navigate =
+    useNavigate();
 
 
   /* ========================================
      COURSES
   ======================================== */
 
-  const [courses, setCourses] =
-    useState([]);
+  const [
+    courses,
+    setCourses,
+  ] = useState([]);
 
-  const [loading, setLoading] =
-    useState(true);
 
-  const [error, setError] =
-    useState("");
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
+
+
+  const [
+    error,
+    setError,
+  ] = useState("");
 
 
   /* ========================================
      LECTURERS
   ======================================== */
 
-  const [lecturers, setLecturers] =
-    useState([]);
+  const [
+    lecturers,
+    setLecturers,
+  ] = useState([]);
 
 
   /* ========================================
      SEARCH + FILTER
   ======================================== */
 
-  const [searchTerm, setSearchTerm] =
-    useState("");
+  const [
+    searchTerm,
+    setSearchTerm,
+  ] = useState("");
+
 
   const [
     programFilter,
@@ -93,7 +119,7 @@ function AdminCourses() {
 
 
   /* ========================================
-     CREATE / EDIT COURSE MODAL
+     CREATE / EDIT COURSE
   ======================================== */
 
   const [
@@ -133,7 +159,7 @@ function AdminCourses() {
 
 
   /* ========================================
-     DELETE STATE
+     DELETE
   ======================================== */
 
   const [
@@ -143,7 +169,7 @@ function AdminCourses() {
 
 
   /* ========================================
-     AUTH ERROR HELPER
+     AUTH ERROR
   ======================================== */
 
   const handleAuthError =
@@ -151,10 +177,8 @@ function AdminCourses() {
       (error) => {
 
         if (
-          error.response?.status ===
-            401 ||
-          error.response?.status ===
-            403
+          error.response?.status === 401 ||
+          error.response?.status === 403
         ) {
 
           localStorage.removeItem(
@@ -269,6 +293,7 @@ function AdminCourses() {
 
                 status:
                   "Active",
+
               })
             );
 
@@ -291,7 +316,9 @@ function AdminCourses() {
               error
             )
           ) {
+
             return;
+
           }
 
 
@@ -400,14 +427,17 @@ function AdminCourses() {
 
 
   /* ========================================
-     CREATE COURSE MODAL
+     CREATE COURSE
   ======================================== */
 
   const openCreateModal = () => {
 
-    setEditingCourse(null);
+    setEditingCourse(
+      null
+    );
 
     setFormError("");
+
 
     setCourseForm({
       courseTitle: "",
@@ -417,13 +447,16 @@ function AdminCourses() {
       file: null,
     });
 
-    setCourseModalOpen(true);
+
+    setCourseModalOpen(
+      true
+    );
 
   };
 
 
   /* ========================================
-     EDIT COURSE MODAL
+     EDIT COURSE
   ======================================== */
 
   const openEditModal =
@@ -434,6 +467,7 @@ function AdminCourses() {
       );
 
       setFormError("");
+
 
       setCourseForm({
 
@@ -461,6 +495,7 @@ function AdminCourses() {
 
         file:
           null,
+
       });
 
 
@@ -482,11 +517,16 @@ function AdminCourses() {
     }
 
 
-    setCourseModalOpen(false);
+    setCourseModalOpen(
+      false
+    );
 
-    setEditingCourse(null);
+    setEditingCourse(
+      null
+    );
 
     setFormError("");
+
 
     setCourseForm({
       courseTitle: "",
@@ -610,9 +650,7 @@ function AdminCourses() {
         }
 
 
-        /* ==============================
-           EDIT
-        ============================== */
+        /* EDIT */
 
         if (editingCourse) {
 
@@ -635,9 +673,7 @@ function AdminCourses() {
         }
 
 
-        /* ==============================
-           CREATE
-        ============================== */
+        /* CREATE */
 
         else {
 
@@ -694,7 +730,9 @@ function AdminCourses() {
             error
           )
         ) {
+
           return;
+
         }
 
 
@@ -707,7 +745,9 @@ function AdminCourses() {
 
       } finally {
 
-        setSavingCourse(false);
+        setSavingCourse(
+          false
+        );
 
       }
 
@@ -728,9 +768,7 @@ function AdminCourses() {
 
 
       if (!confirmed) {
-
         return;
-
       }
 
 
@@ -788,7 +826,9 @@ function AdminCourses() {
             error
           )
         ) {
+
           return;
+
         }
 
 
@@ -811,7 +851,7 @@ function AdminCourses() {
 
 
   /* ========================================
-     OPEN VIEW COURSE
+     OPEN COURSE DETAILS
   ======================================== */
 
   const openCourseDetails =
@@ -825,7 +865,9 @@ function AdminCourses() {
 
       setLessonsError("");
 
-      setLessonsLoading(true);
+      setLessonsLoading(
+        true
+      );
 
 
       try {
@@ -879,7 +921,9 @@ function AdminCourses() {
             error
           )
         ) {
+
           return;
+
         }
 
 
@@ -892,7 +936,9 @@ function AdminCourses() {
 
       } finally {
 
-        setLessonsLoading(false);
+        setLessonsLoading(
+          false
+        );
 
       }
 
@@ -900,18 +946,22 @@ function AdminCourses() {
 
 
   /* ========================================
-     CLOSE VIEW COURSE
+     CLOSE COURSE DETAILS
   ======================================== */
 
   const closeCourseDetails = () => {
 
-    setSelectedCourse(null);
+    setSelectedCourse(
+      null
+    );
 
     setCourseLessons([]);
 
     setLessonsError("");
 
-    setLessonsLoading(false);
+    setLessonsLoading(
+      false
+    );
 
   };
 
@@ -929,7 +979,9 @@ function AdminCourses() {
           event.key !==
           "Escape"
         ) {
+
           return;
+
         }
 
 
@@ -1046,10 +1098,8 @@ function AdminCourses() {
 
 
           const matchesProgram =
-
             programFilter ===
               "ALL" ||
-
             course.program ===
               programFilter;
 
@@ -1118,564 +1168,797 @@ function AdminCourses() {
     );
 
 
+  const totalEnrollments =
+    courses.reduce(
+      (total, course) =>
+        total +
+        course.students,
+      0
+    );
+
+
+  const coursesWithLecturers =
+    courses.filter(
+      (course) =>
+        course.lecturer !==
+        "Not assigned"
+    ).length;
+
+
+  const lecturerCoverage =
+    totalCourses > 0
+      ? Math.round(
+          (
+            coursesWithLecturers /
+            totalCourses
+          ) * 100
+        )
+      : 0;
+
+
+  const filtersActive =
+    Boolean(
+      searchTerm.trim()
+    ) ||
+    programFilter !== "ALL";
+
+
+  const clearFilters = () => {
+
+    setSearchTerm("");
+
+    setProgramFilter(
+      "ALL"
+    );
+
+  };
+
+
   return (
 
     <div className="admin-courses-page">
 
 
       {/* ====================================
-          HEADER
+          CATALOG HERO
       ==================================== */}
 
-      <section className="ac-header">
+      <section className="ac-catalog-hero">
 
-        <div>
+
+        <div className="ac-hero-copy">
+
+
+          <div className="ac-eyebrow">
+
+            <Sparkles size={12} />
+
+            ACADEMIC CATALOG CONTROL
+
+          </div>
+
 
           <h1>
             Courses
           </h1>
 
+
           <p>
-            Manage academic modules,
-            lecturers and student groups.
+
+            Organize modules, teaching
+            assignments, student groups
+            and learning resources across
+            CampusLearn.
+
           </p>
 
-        </div>
 
+          <div className="ac-hero-tags">
 
-        <button
-          className="ac-create-button"
-          onClick={
-            openCreateModal
-          }
-        >
-
-          <Plus size={16} />
-
-          Create Course
-
-        </button>
-
-      </section>
-
-
-
-      {/* ====================================
-          SUMMARY
-      ==================================== */}
-
-      <section className="ac-summary">
-
-
-        <div className="ac-summary-card ac-teal">
-
-          <div className="ac-summary-icon">
-
-            <BookOpen size={21} />
-
-          </div>
-
-          <div>
-
-            <strong>
-              {totalCourses}
-            </strong>
 
             <span>
-              Active Courses
+
+              <BookOpen
+                size={13}
+              />
+
+              {totalCourses} active courses
+
             </span>
 
+
+            <span>
+
+              <GraduationCap
+                size={13}
+              />
+
+              {studyPrograms} programs
+
+            </span>
+
+
+            <span>
+
+              <Users
+                size={13}
+              />
+
+              {totalEnrollments} enrollments
+
+            </span>
+
+
           </div>
+
 
         </div>
 
 
+        {/* CATALOG CONTROL CARD */}
 
-        <div className="ac-summary-card ac-purple">
+        <div className="ac-catalog-control">
 
-          <div className="ac-summary-icon">
 
-            <GraduationCap
-              size={21}
+          <div className="ac-control-top">
+
+
+            <div>
+
+              <span>
+                CATALOG READINESS
+              </span>
+
+              <strong>
+                {lecturerCoverage}%
+              </strong>
+
+              <small>
+                lecturer coverage
+              </small>
+
+            </div>
+
+
+            <div className="ac-control-icon">
+
+              <Layers3 size={22} />
+
+            </div>
+
+
+          </div>
+
+
+          <div className="ac-control-track">
+
+            <div
+              style={{
+                width:
+                  `${lecturerCoverage}%`,
+              }}
             />
 
           </div>
 
-          <div>
 
-            <strong>
-              {studyPrograms}
-            </strong>
+          <div className="ac-control-meta">
 
             <span>
-              Study Programs
+              {
+                coursesWithLecturers
+              } assigned
+            </span>
+
+            <span>
+              {
+                totalCourses -
+                coursesWithLecturers
+              } unassigned
             </span>
 
           </div>
 
-        </div>
 
+          <button
+            type="button"
+            className="ac-hero-create"
+            onClick={
+              openCreateModal
+            }
+          >
 
+            <Plus size={15} />
 
-        <div className="ac-summary-card ac-blue">
+            Create New Course
 
-          <div className="ac-summary-icon">
+          </button>
 
-            <Users size={21} />
-
-          </div>
-
-          <div>
-
-            <strong>
-              {batches}
-            </strong>
-
-            <span>
-              Course Batches
-            </span>
-
-          </div>
 
         </div>
 
-
-
-        <div className="ac-summary-card ac-orange">
-
-          <div className="ac-summary-icon">
-
-            <FileText size={21} />
-
-          </div>
-
-          <div>
-
-            <strong>
-              {uploadedMaterials}
-            </strong>
-
-            <span>
-              Learning Materials
-            </span>
-
-          </div>
-
-        </div>
 
       </section>
 
 
-
       {/* ====================================
-          SEARCH + FILTER
+          CATALOG OVERVIEW
       ==================================== */}
 
-      <section className="ac-toolbar">
+      <section className="ac-overview-strip">
 
-        <div className="ac-search">
 
-          <Search size={17} />
+        <OverviewItem
+          icon={
+            <BookOpen size={19} />
+          }
+          label="Active Courses"
+          value={totalCourses}
+          description="Current modules"
+          className="ac-overview-teal"
+        />
 
-          <input
-            type="text"
-            placeholder="Search courses..."
-            value={searchTerm}
-            onChange={(event) =>
-              setSearchTerm(
-                event.target.value
-              )
-            }
-          />
+
+        <div className="ac-overview-divider" />
+
+
+        <OverviewItem
+          icon={
+            <GraduationCap
+              size={19}
+            />
+          }
+          label="Study Programs"
+          value={studyPrograms}
+          description="Degree pathways"
+          className="ac-overview-purple"
+        />
+
+
+        <div className="ac-overview-divider" />
+
+
+        <OverviewItem
+          icon={
+            <Users size={19} />
+          }
+          label="Course Batches"
+          value={batches}
+          description="Active cohorts"
+          className="ac-overview-blue"
+        />
+
+
+        <div className="ac-overview-divider" />
+
+
+        <OverviewItem
+          icon={
+            <FileText size={19} />
+          }
+          label="Materials"
+          value={uploadedMaterials}
+          description="Learning resources"
+          className="ac-overview-orange"
+        />
+
+
+      </section>
+
+
+      {/* ====================================
+          COURSE LIBRARY
+      ==================================== */}
+
+      <section className="ac-library">
+
+
+        <div className="ac-library-header">
+
+
+          <div>
+
+            <span>
+              COURSE PORTFOLIO
+            </span>
+
+            <h2>
+              Academic Course Library
+            </h2>
+
+            <p>
+
+              Browse, review and maintain
+              every CampusLearn module.
+
+            </p>
+
+          </div>
+
+
+          <div className="ac-results-count">
+
+            <strong>
+              {filteredCourses.length}
+            </strong>
+
+            <span>
+              of {totalCourses} shown
+            </span>
+
+          </div>
+
 
         </div>
 
 
-        <select
-          value={programFilter}
-          onChange={(event) =>
-            setProgramFilter(
-              event.target.value
-            )
-          }
-        >
+        {/* ==================================
+            SEARCH + FILTER
+        ================================== */}
 
-          <option value="ALL">
-            All Programs
-          </option>
+        <div className="ac-toolbar">
 
 
-          {programOptions.map(
-            (program) => (
+          <div className="ac-search">
 
-              <option
-                key={program}
-                value={program}
-              >
+            <Search size={17} />
 
-                {program}
+            <input
+              type="text"
+              placeholder="Search course, program, batch or lecturer..."
+              value={searchTerm}
+              onChange={
+                (event) =>
+                  setSearchTerm(
+                    event.target.value
+                  )
+              }
+            />
 
+          </div>
+
+
+          <div className="ac-filter-label">
+
+            <SlidersHorizontal
+              size={14}
+            />
+
+            Program
+
+          </div>
+
+
+          <div className="ac-toolbar-actions">
+
+
+            <select
+              value={programFilter}
+              onChange={
+                (event) =>
+                  setProgramFilter(
+                    event.target.value
+                  )
+              }
+            >
+
+              <option value="ALL">
+                All Programs
               </option>
 
-            )
-          )}
 
-        </select>
+              {programOptions.map(
+                (program) => (
 
-      </section>
+                  <option
+                    key={program}
+                    value={program}
+                  >
 
+                    {program}
 
+                  </option>
 
-      {/* ====================================
-          LOADING
-      ==================================== */}
+                )
+              )}
 
-      {loading && (
-
-        <div className="ac-empty">
-
-          <BookOpen size={28} />
-
-          <h3>
-            Loading courses...
-          </h3>
-
-          <p>
-            Getting course information
-            from PostgreSQL.
-          </p>
-
-        </div>
-
-      )}
+            </select>
 
 
+            {filtersActive && (
 
-      {/* ====================================
-          ERROR
-      ==================================== */}
-
-      {!loading && error && (
-
-        <div className="ac-empty">
-
-          <BookOpen size={28} />
-
-          <h3>
-            Unable to load courses
-          </h3>
-
-          <p>
-            {error}
-          </p>
-
-        </div>
-
-      )}
-
-
-
-      {/* ====================================
-          COURSE GRID
-      ==================================== */}
-
-      {!loading &&
-        !error && (
-
-        <section className="ac-grid">
-
-          {filteredCourses.map(
-            (course) => (
-
-              <article
-                className="ac-card"
-                key={course.id}
+              <button
+                type="button"
+                className="ac-reset-button"
+                onClick={
+                  clearFilters
+                }
               >
 
+                <RefreshCw
+                  size={13}
+                />
 
-                <div className="ac-card-header">
+                Reset
 
-                  <div className="ac-course-icon">
+              </button>
 
-                    <BookOpen
-                      size={22}
-                    />
+            )}
 
-                  </div>
 
+          </div>
 
-                  <span className="ac-active-badge">
-
-                    {course.status}
-
-                  </span>
-
-                </div>
-
-
-
-                <span className="ac-course-code">
-
-                  COURSE #{course.id}
-
-                </span>
-
-
-
-                <h3>
-                  {course.title}
-                </h3>
-
-
-
-                <p className="ac-program">
-
-                  <GraduationCap
-                    size={13}
-                  />
-
-                  {course.program}
-
-                </p>
-
-
-
-                <div className="ac-info-list">
-
-
-                  <div>
-
-                    <Users size={13} />
-
-                    <span>
-
-                      {course.students}{" "}
-
-                      {course.students ===
-                      1
-                        ? "Student"
-                        : "Students"}
-
-                    </span>
-
-                  </div>
-
-
-
-                  <div>
-
-                    <FileText
-                      size={13}
-                    />
-
-                    <span>
-
-                      {course.materials}{" "}
-
-                      {course.materials ===
-                      1
-                        ? "Material"
-                        : "Materials"}
-
-                    </span>
-
-                  </div>
-
-
-
-                  <div>
-
-                    <GraduationCap
-                      size={13}
-                    />
-
-                    <span>
-                      {course.lecturer}
-                    </span>
-
-                  </div>
-
-                </div>
-
-
-
-                <div className="ac-batch">
-
-                  {course.batch ===
-                  "Not assigned"
-                    ? "Batch not assigned"
-                    : `Batch ${course.batch}`}
-
-                </div>
-
-
-
-                {/* =================================
-                    ACTIONS
-                ================================= */}
-
-                <div
-                  className="ac-actions"
-
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns:
-                      "1fr auto auto",
-                    gap: "8px",
-                  }}
-                >
-
-
-                  {/* VIEW */}
-
-                  <button
-                    className="ac-edit-button"
-                    onClick={() =>
-                      openCourseDetails(
-                        course
-                      )
-                    }
-                  >
-
-                    View Course
-
-                  </button>
-
-
-
-                  {/* EDIT */}
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      openEditModal(
-                        course
-                      )
-                    }
-
-                    title="Edit Course"
-
-                    style={{
-                      width: "42px",
-                      height: "42px",
-                      border:
-                        "1px solid #dbeafe",
-                      borderRadius:
-                        "10px",
-                      background:
-                        "#eff6ff",
-                      color:
-                        "#2563eb",
-                      display: "flex",
-                      alignItems:
-                        "center",
-                      justifyContent:
-                        "center",
-                      cursor:
-                        "pointer",
-                    }}
-                  >
-
-                    <Pencil
-                      size={17}
-                    />
-
-                  </button>
-
-
-
-                  {/* DELETE */}
-
-                  <button
-                    type="button"
-
-                    onClick={() =>
-                      deleteCourse(
-                        course
-                      )
-                    }
-
-                    disabled={
-                      deletingCourseId ===
-                      course.id
-                    }
-
-                    title="Delete Course"
-
-                    style={{
-                      width: "42px",
-                      height: "42px",
-                      border:
-                        "1px solid #fee2e2",
-                      borderRadius:
-                        "10px",
-                      background:
-                        "#fef2f2",
-                      color:
-                        "#ef4444",
-                      display: "flex",
-                      alignItems:
-                        "center",
-                      justifyContent:
-                        "center",
-                      cursor:
-                        deletingCourseId ===
-                        course.id
-                          ? "not-allowed"
-                          : "pointer",
-                      opacity:
-                        deletingCourseId ===
-                        course.id
-                          ? 0.6
-                          : 1,
-                    }}
-                  >
-
-                    <Trash2
-                      size={17}
-                    />
-
-                  </button>
-
-                </div>
-
-              </article>
-
-            )
-          )}
-
-        </section>
-
-      )}
-
-
-
-      {/* ====================================
-          EMPTY RESULT
-      ==================================== */}
-
-      {!loading &&
-        !error &&
-        filteredCourses.length ===
-          0 && (
-
-        <div className="ac-empty">
-
-          <BookOpen size={28} />
-
-          <h3>
-            No courses found
-          </h3>
-
-          <p>
-            Try changing your search
-            or program filter.
-          </p>
 
         </div>
 
-      )}
 
+        {/* ==================================
+            CONTENT
+        ================================== */}
+
+        <div className="ac-library-content">
+
+
+          {/* LOADING */}
+
+          {loading && (
+
+            <div className="ac-empty">
+
+              <div className="ac-spinner" />
+
+              <h3>
+                Loading course catalog
+              </h3>
+
+              <p>
+                Getting course information
+                from PostgreSQL.
+              </p>
+
+            </div>
+
+          )}
+
+
+          {/* ERROR */}
+
+          {!loading &&
+            error && (
+
+            <div className="ac-empty ac-error-state">
+
+              <BookOpen size={28} />
+
+              <h3>
+                Unable to load courses
+              </h3>
+
+              <p>
+                {error}
+              </p>
+
+            </div>
+
+          )}
+
+
+          {/* GRID */}
+
+          {!loading &&
+            !error &&
+            filteredCourses.length >
+              0 && (
+
+            <section className="ac-grid">
+
+
+              {filteredCourses.map(
+                (course) => (
+
+                  <article
+                    className="ac-card"
+                    key={course.id}
+                  >
+
+
+                    <div className="ac-card-accent" />
+
+
+                    {/* CARD HEADER */}
+
+                    <div className="ac-card-header">
+
+
+                      <div className="ac-course-icon">
+
+                        <BookOpen
+                          size={21}
+                        />
+
+                      </div>
+
+
+                      <span className="ac-active-badge">
+
+                        <i />
+
+                        {course.status}
+
+                      </span>
+
+
+                    </div>
+
+
+                    {/* TITLE */}
+
+                    <div className="ac-course-heading">
+
+                      <span className="ac-course-code">
+
+                        COURSE #
+                        {String(
+                          course.id
+                        ).padStart(
+                          2,
+                          "0"
+                        )}
+
+                      </span>
+
+
+                      <h3>
+                        {course.title}
+                      </h3>
+
+
+                      <div className="ac-program">
+
+                        <GraduationCap
+                          size={13}
+                        />
+
+                        <span>
+                          {course.program}
+                        </span>
+
+                      </div>
+
+                    </div>
+
+
+                    {/* METRICS */}
+
+                    <div className="ac-card-metrics">
+
+
+                      <CourseMetric
+                        icon={
+                          <Users
+                            size={14}
+                          />
+                        }
+                        value={
+                          course.students
+                        }
+                        label="Students"
+                      />
+
+
+                      <CourseMetric
+                        icon={
+                          <FileText
+                            size={14}
+                          />
+                        }
+                        value={
+                          course.materials
+                        }
+                        label="Materials"
+                      />
+
+
+                      <CourseMetric
+                        icon={
+                          <BookOpen
+                            size={14}
+                          />
+                        }
+                        value={
+                          course.lessons
+                        }
+                        label="Lessons"
+                      />
+
+
+                    </div>
+
+
+                    {/* LECTURER */}
+
+                    <div className="ac-lecturer-block">
+
+
+                      <div className="ac-lecturer-icon">
+
+                        <UserRoundCog
+                          size={15}
+                        />
+
+                      </div>
+
+
+                      <div>
+
+                        <span>
+                          COURSE LECTURER
+                        </span>
+
+                        <strong>
+                          {
+                            course.lecturer
+                          }
+                        </strong>
+
+                      </div>
+
+
+                    </div>
+
+
+                    {/* BATCH */}
+
+                    <div className="ac-batch">
+
+                      <Layers3
+                        size={13}
+                      />
+
+                      {course.batch ===
+                      "Not assigned"
+                        ? "Batch not assigned"
+                        : `Batch ${course.batch}`}
+
+                    </div>
+
+
+                    {/* ACTIONS */}
+
+                    <div className="ac-actions">
+
+
+                      <button
+                        type="button"
+                        className="ac-view-button"
+                        onClick={() =>
+                          openCourseDetails(
+                            course
+                          )
+                        }
+                      >
+
+                        <Eye
+                          size={14}
+                        />
+
+                        View Course
+
+                      </button>
+
+
+                      <button
+                        type="button"
+                        className="ac-edit-button"
+                        onClick={() =>
+                          openEditModal(
+                            course
+                          )
+                        }
+                        title="Edit Course"
+                      >
+
+                        <Pencil
+                          size={14}
+                        />
+
+                      </button>
+
+
+                      <button
+                        type="button"
+                        className="ac-delete-button"
+                        onClick={() =>
+                          deleteCourse(
+                            course
+                          )
+                        }
+                        disabled={
+                          deletingCourseId ===
+                          course.id
+                        }
+                        title="Delete Course"
+                      >
+
+                        <Trash2
+                          size={14}
+                        />
+
+                      </button>
+
+
+                    </div>
+
+
+                  </article>
+
+                )
+              )}
+
+
+            </section>
+
+          )}
+
+
+          {/* EMPTY */}
+
+          {!loading &&
+            !error &&
+            filteredCourses.length ===
+              0 && (
+
+            <div className="ac-empty">
+
+
+              <div className="ac-empty-icon">
+
+                <Search
+                  size={23}
+                />
+
+              </div>
+
+
+              <h3>
+                No matching courses
+              </h3>
+
+
+              <p>
+
+                Try another search term
+                or reset the program filter.
+
+              </p>
+
+
+              {filtersActive && (
+
+                <button
+                  type="button"
+                  className="ac-empty-reset"
+                  onClick={
+                    clearFilters
+                  }
+                >
+
+                  Reset Filters
+
+                </button>
+
+              )}
+
+
+            </div>
+
+          )}
+
+
+        </div>
+
+
+      </section>
 
 
       {/* ====================================
@@ -1686,86 +1969,79 @@ function AdminCourses() {
 
         <div
           className="ac-modal-overlay"
-
           onClick={
             closeCourseModal
           }
-
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 10000,
-            display: "flex",
-            alignItems:
-              "flex-start",
-            justifyContent:
-              "center",
-            overflowY: "auto",
-            padding:
-              "24px 16px",
-            boxSizing:
-              "border-box",
-          }}
         >
+
 
           <div
             className="ac-modal"
-
-            onClick={(event) =>
-              event.stopPropagation()
+            onClick={
+              (event) =>
+                event.stopPropagation()
             }
-
-            style={{
-              width: "100%",
-              maxWidth: "680px",
-              maxHeight:
-                "calc(100vh - 48px)",
-              overflowY: "auto",
-              position:
-                "relative",
-            }}
           >
 
 
             {/* HEADER */}
 
-            <div
-              className="ac-modal-header"
+            <div className="ac-modal-header">
 
-              style={{
-                position: "sticky",
-                top: 0,
-                zIndex: 20,
-                background:
-                  "#ffffff",
-                paddingBottom:
-                  "16px",
-              }}
-            >
 
-              <div>
+              <div className="ac-modal-title">
 
-                <h2>
 
-                  {editingCourse
-                    ? "Edit Course"
-                    : "Create Course"}
+                <div className="ac-modal-title-icon">
 
-                </h2>
+                  {editingCourse ? (
 
-                <p>
+                    <Pencil
+                      size={19}
+                    />
 
-                  {editingCourse
-                    ? "Update course information."
-                    : "Add a new course to CampusLearn."}
+                  ) : (
 
-                </p>
+                    <Plus
+                      size={20}
+                    />
+
+                  )}
+
+                </div>
+
+
+                <div>
+
+                  <span>
+                    COURSE MANAGEMENT
+                  </span>
+
+                  <h2>
+
+                    {editingCourse
+                      ? "Edit Course"
+                      : "Create Course"}
+
+                  </h2>
+
+                  <p>
+
+                    {editingCourse
+                      ? "Update course, lecturer and learning material information."
+                      : "Add a new academic module to the CampusLearn catalog."}
+
+                  </p>
+
+                </div>
+
 
               </div>
 
 
               <button
                 type="button"
+                className="ac-modal-close"
                 onClick={
                   closeCourseModal
                 }
@@ -1774,13 +2050,15 @@ function AdminCourses() {
                 }
               >
 
-                <X size={20} />
+                <X size={18} />
 
               </button>
+
 
             </div>
 
 
+            {/* FORM */}
 
             <form
               className="ac-form"
@@ -1790,24 +2068,9 @@ function AdminCourses() {
             >
 
 
-              {/* ERROR */}
-
               {formError && (
 
-                <div
-                  style={{
-                    padding:
-                      "12px 14px",
-                    borderRadius:
-                      "10px",
-                    background:
-                      "#fef2f2",
-                    color:
-                      "#dc2626",
-                    fontSize:
-                      "13px",
-                  }}
-                >
+                <div className="ac-form-error">
 
                   {formError}
 
@@ -1815,6 +2078,12 @@ function AdminCourses() {
 
               )}
 
+
+              <div className="ac-form-section-label">
+
+                COURSE INFORMATION
+
+              </div>
 
 
               {/* TITLE */}
@@ -1828,91 +2097,90 @@ function AdminCourses() {
                 <input
                   type="text"
                   placeholder="e.g. Cloud Computing"
-
                   value={
-                    courseForm.courseTitle
+                    courseForm
+                      .courseTitle
                   }
+                  onChange={
+                    (event) =>
+                      setCourseForm({
+                        ...courseForm,
 
-                  onChange={(event) =>
-                    setCourseForm({
-                      ...courseForm,
-
-                      courseTitle:
-                        event.target.value,
-                    })
+                        courseTitle:
+                          event.target
+                            .value,
+                      })
                   }
-
                   required
                 />
 
               </div>
 
 
+              <div className="ac-form-row">
 
-              {/* PROGRAM */}
 
-              <div className="ac-form-group">
+                {/* PROGRAM */}
 
-                <label>
-                  Program / Degree
-                </label>
+                <div className="ac-form-group">
 
-                <input
-                  type="text"
+                  <label>
+                    Program / Degree
+                  </label>
 
-                  placeholder="e.g. BSc Computer Science"
+                  <input
+                    type="text"
+                    placeholder="e.g. BSc Computer Science"
+                    value={
+                      courseForm.degree
+                    }
+                    onChange={
+                      (event) =>
+                        setCourseForm({
+                          ...courseForm,
 
-                  value={
-                    courseForm.degree
-                  }
+                          degree:
+                            event.target
+                              .value,
+                        })
+                    }
+                    required
+                  />
 
-                  onChange={(event) =>
-                    setCourseForm({
-                      ...courseForm,
+                </div>
 
-                      degree:
-                        event.target.value,
-                    })
-                  }
 
-                  required
-                />
+                {/* BATCH */}
+
+                <div className="ac-form-group">
+
+                  <label>
+                    Batch
+                  </label>
+
+                  <input
+                    type="text"
+                    placeholder="e.g. 26.1"
+                    value={
+                      courseForm.batch
+                    }
+                    onChange={
+                      (event) =>
+                        setCourseForm({
+                          ...courseForm,
+
+                          batch:
+                            event.target
+                              .value,
+                        })
+                    }
+                    required
+                  />
+
+                </div>
+
 
               </div>
-
-
-
-              {/* BATCH */}
-
-              <div className="ac-form-group">
-
-                <label>
-                  Batch
-                </label>
-
-                <input
-                  type="text"
-
-                  placeholder="e.g. 26.1"
-
-                  value={
-                    courseForm.batch
-                  }
-
-                  onChange={(event) =>
-                    setCourseForm({
-                      ...courseForm,
-
-                      batch:
-                        event.target.value,
-                    })
-                  }
-
-                  required
-                />
-
-              </div>
-
 
 
               {/* LECTURER */}
@@ -1925,16 +2193,18 @@ function AdminCourses() {
 
                 <select
                   value={
-                    courseForm.lecturerId
+                    courseForm
+                      .lecturerId
                   }
+                  onChange={
+                    (event) =>
+                      setCourseForm({
+                        ...courseForm,
 
-                  onChange={(event) =>
-                    setCourseForm({
-                      ...courseForm,
-
-                      lecturerId:
-                        event.target.value,
-                    })
+                        lecturerId:
+                          event.target
+                            .value,
+                      })
                   }
                 >
 
@@ -1950,7 +2220,6 @@ function AdminCourses() {
                         key={
                           lecturer.id
                         }
-
                         value={
                           lecturer.id
                         }
@@ -1970,6 +2239,12 @@ function AdminCourses() {
               </div>
 
 
+              <div className="ac-form-section-label ac-material-label">
+
+                LEARNING RESOURCE
+
+              </div>
+
 
               {/* FILE */}
 
@@ -1985,77 +2260,60 @@ function AdminCourses() {
 
 
                 {editingCourse &&
-                  editingCourse.filePath && (
+                  editingCourse
+                    .filePath && (
 
-                  <div
-                    style={{
-                      padding:
-                        "10px 12px",
-                      marginBottom:
-                        "10px",
-                      borderRadius:
-                        "8px",
-                      background:
-                        "#ecfdf5",
-                      color:
-                        "#047857",
-                      fontSize:
-                        "12px",
-                    }}
-                  >
+                  <div className="ac-existing-material">
 
-                    Current course material
-                    is uploaded.
+                    <CircleCheckBig
+                      size={15}
+                    />
 
-                    If you do not choose
-                    another file, the
-                    existing material will
-                    remain unchanged.
+                    <div>
+
+                      <strong>
+                        Existing material saved
+                      </strong>
+
+                      <span>
+                        Leave the file field empty
+                        to keep the current material.
+                      </span>
+
+                    </div>
 
                   </div>
 
                 )}
 
 
-                <div
-                  style={{
-                    border:
-                      "1px dashed #cbd5e1",
-                    borderRadius:
-                      "12px",
-                    padding:
-                      "16px",
-                    background:
-                      "#f8fafc",
-                  }}
-                >
+                <label className="ac-upload-zone">
 
-                  <div
-                    style={{
-                      display:
-                        "flex",
-                      alignItems:
-                        "center",
-                      gap: "10px",
-                      marginBottom:
-                        "10px",
-                    }}
-                  >
 
-                    <Upload
-                      size={19}
-                    />
+                  <div className="ac-upload-icon">
 
-                    <span
-                      style={{
-                        fontSize:
-                          "13px",
-                      }}
-                    >
+                    <Upload size={21} />
 
-                      {editingCourse
-                        ? "Choose a new file only if you want to replace it"
-                        : "Upload course material"}
+                  </div>
+
+
+                  <div>
+
+                    <strong>
+
+                      {courseForm.file
+                        ? courseForm.file.name
+                        : editingCourse
+                          ? "Choose a replacement file"
+                          : "Upload course material"}
+
+                    </strong>
+
+                    <span>
+
+                      {courseForm.file
+                        ? "New file selected"
+                        : "Click here to choose a file from your computer"}
 
                     </span>
 
@@ -2064,37 +2322,37 @@ function AdminCourses() {
 
                   <input
                     type="file"
+                    onChange={
+                      (event) =>
+                        setCourseForm({
+                          ...courseForm,
 
-                    onChange={(event) =>
-                      setCourseForm({
-                        ...courseForm,
-
-                        file:
-                          event.target
-                            .files?.[0] ||
-                          null,
-                      })
+                          file:
+                            event.target
+                              .files?.[0] ||
+                            null,
+                        })
                     }
                   />
 
-                </div>
+
+                </label>
+
 
               </div>
-
 
 
               {/* BUTTONS */}
 
               <div className="ac-modal-actions">
 
+
                 <button
                   type="button"
                   className="ac-cancel-button"
-
                   onClick={
                     closeCourseModal
                   }
-
                   disabled={
                     savingCourse
                   }
@@ -2108,11 +2366,21 @@ function AdminCourses() {
                 <button
                   type="submit"
                   className="ac-save-button"
-
                   disabled={
                     savingCourse
                   }
                 >
+
+                  {editingCourse ? (
+                    <Pencil
+                      size={14}
+                    />
+                  ) : (
+                    <Plus
+                      size={15}
+                    />
+                  )}
+
 
                   {savingCourse
                     ? editingCourse
@@ -2124,16 +2392,19 @@ function AdminCourses() {
 
                 </button>
 
+
               </div>
+
 
             </form>
 
+
           </div>
+
 
         </div>
 
       )}
-
 
 
       {/* ====================================
@@ -2144,309 +2415,279 @@ function AdminCourses() {
 
         <div
           className="ac-modal-overlay"
-
           onClick={
             closeCourseDetails
           }
-
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 9999,
-            display: "flex",
-            alignItems:
-              "flex-start",
-            justifyContent:
-              "center",
-            overflowY: "auto",
-            padding:
-              "24px 16px",
-            boxSizing:
-              "border-box",
-          }}
         >
 
+
           <div
-            className="ac-modal"
-
-            onClick={(event) =>
-              event.stopPropagation()
+            className="ac-course-view-modal"
+            onClick={
+              (event) =>
+                event.stopPropagation()
             }
-
-            style={{
-              width: "100%",
-              maxWidth: "720px",
-              maxHeight:
-                "calc(100vh - 48px)",
-              overflowY: "auto",
-              position:
-                "relative",
-            }}
           >
 
 
-            <div
-              className="ac-modal-header"
+            {/* HERO */}
 
-              style={{
-                position: "sticky",
-                top: 0,
-                zIndex: 20,
-                background:
-                  "#ffffff",
-                paddingBottom:
-                  "16px",
-              }}
-            >
+            <div className="ac-view-hero">
 
-              <div>
+
+              <div className="ac-view-hero-icon">
+
+                <BookOpen
+                  size={24}
+                />
+
+              </div>
+
+
+              <div className="ac-view-title">
+
+                <span>
+                  COURSE #
+                  {String(
+                    selectedCourse.id
+                  ).padStart(
+                    2,
+                    "0"
+                  )}
+                </span>
 
                 <h2>
-                  Course Details
+                  {
+                    selectedCourse
+                      .title
+                  }
                 </h2>
 
                 <p>
-                  Course, lecturer and
-                  lesson information.
+
+                  {
+                    selectedCourse
+                      .program
+                  }
+
+                  <i />
+
+                  {
+                    selectedCourse
+                      .batch ===
+                    "Not assigned"
+                      ? "No batch"
+                      : `Batch ${selectedCourse.batch}`
+                  }
+
                 </p>
 
               </div>
 
 
+              <span className="ac-view-status">
+
+                <CircleCheckBig
+                  size={12}
+                />
+
+                Active
+
+              </span>
+
+
               <button
                 type="button"
-
+                className="ac-view-close"
                 onClick={
                   closeCourseDetails
                 }
               >
 
-                <X size={20} />
+                <X size={18} />
 
               </button>
+
 
             </div>
 
 
+            <div className="ac-view-body">
 
-            <div className="ac-form">
 
+              {/* COURSE SNAPSHOT */}
 
-              <div className="ac-form-group">
+              <div className="ac-view-section-heading">
 
-                <label>
-                  Course Title
-                </label>
+                <span>
+                  COURSE SNAPSHOT
+                </span>
 
-                <input
-                  value={
-                    selectedCourse.title
-                  }
-                  readOnly
-                />
+                <h3>
+                  Module Information
+                </h3>
 
               </div>
 
 
+              <div className="ac-view-details">
 
-              <div className="ac-form-row">
+
+                <ViewDetail
+                  icon={
+                    <UserRoundCog
+                      size={16}
+                    />
+                  }
+                  label="Lecturer"
+                  value={
+                    selectedCourse
+                      .lecturer
+                  }
+                />
 
 
-                <div className="ac-form-group">
+                <ViewDetail
+                  icon={
+                    <Users
+                      size={16}
+                    />
+                  }
+                  label="Students"
+                  value={
+                    selectedCourse
+                      .students
+                  }
+                />
 
-                  <label>
-                    Database Course ID
-                  </label>
 
-                  <input
-                    value={
-                      selectedCourse.id
-                    }
-                    readOnly
+                <ViewDetail
+                  icon={
+                    <BookOpen
+                      size={16}
+                    />
+                  }
+                  label="Lessons"
+                  value={
+                    selectedCourse
+                      .lessons
+                  }
+                />
+
+
+                <ViewDetail
+                  icon={
+                    <Paperclip
+                      size={16}
+                    />
+                  }
+                  label="Materials"
+                  value={
+                    selectedCourse
+                      .materials
+                  }
+                />
+
+
+              </div>
+
+
+              {/* MAIN MATERIAL */}
+
+              <div className="ac-material-status">
+
+
+                <div className="ac-material-status-icon">
+
+                  <FileText
+                    size={17}
                   />
 
                 </div>
 
 
-                <div className="ac-form-group">
+                <div>
 
-                  <label>
-                    Batch
-                  </label>
+                  <span>
+                    MAIN COURSE MATERIAL
+                  </span>
 
-                  <input
-                    value={
-                      selectedCourse.batch
-                    }
-                    readOnly
-                  />
+                  <strong>
 
-                </div>
+                    {selectedCourse.filePath
+                      ? "Material uploaded"
+                      : "No material uploaded"}
 
-              </div>
-
-
-
-              <div className="ac-form-group">
-
-                <label>
-                  Program
-                </label>
-
-                <input
-                  value={
-                    selectedCourse.program
-                  }
-                  readOnly
-                />
-
-              </div>
-
-
-
-              <div className="ac-form-group">
-
-                <label>
-                  Lecturer
-                </label>
-
-                <input
-                  value={
-                    selectedCourse.lecturer
-                  }
-                  readOnly
-                />
-
-              </div>
-
-
-
-              <div className="ac-form-row">
-
-
-                <div className="ac-form-group">
-
-                  <label>
-                    Students
-                  </label>
-
-                  <input
-                    value={
-                      selectedCourse.students
-                    }
-                    readOnly
-                  />
+                  </strong>
 
                 </div>
 
 
-                <div className="ac-form-group">
-
-                  <label>
-                    Learning Materials
-                  </label>
-
-                  <input
-                    value={
-                      selectedCourse.materials
-                    }
-                    readOnly
-                  />
-
-                </div>
-
-              </div>
-
-
-
-              <div className="ac-form-group">
-
-                <label>
-                  Lessons
-                </label>
-
-                <input
-                  value={
-                    selectedCourse.lessons
+                <div
+                  className={
+                    selectedCourse
+                      .filePath
+                      ? "ac-material-dot ac-material-dot-active"
+                      : "ac-material-dot"
                   }
-                  readOnly
                 />
 
               </div>
 
 
+              {/* LESSONS */}
 
-              <div className="ac-form-group">
+              <div className="ac-view-section-heading ac-lessons-heading">
 
-                <label>
-                  Main Course Material
-                </label>
+                <span>
+                  LEARNING STRUCTURE
+                </span>
 
-                <input
-                  value={
-                    selectedCourse.filePath
-                      ? "Uploaded"
-                      : "Not uploaded"
-                  }
-                  readOnly
-                />
-
-              </div>
-
-
-
-              {/* =================================
-                  LESSONS
-              ================================= */}
-
-              <div className="ac-form-group">
-
-                <label>
+                <h3>
                   Course Lessons
-                </label>
+                </h3>
+
+              </div>
+
+
+              <div className="ac-lessons-area">
 
 
                 {lessonsLoading && (
 
-                  <div
-                    style={{
-                      padding:
-                        "20px",
-                      textAlign:
-                        "center",
-                      border:
-                        "1px solid #e2e8f0",
-                      borderRadius:
-                        "12px",
-                    }}
-                  >
+                  <div className="ac-lessons-state">
 
-                    Loading lessons...
+                    <div className="ac-spinner" />
+
+                    <strong>
+                      Loading lessons
+                    </strong>
 
                   </div>
 
                 )}
-
 
 
                 {!lessonsLoading &&
                   lessonsError && (
 
-                  <div
-                    style={{
-                      padding:
-                        "15px",
-                      color:
-                        "#dc2626",
-                    }}
-                  >
+                  <div className="ac-lessons-state ac-lessons-error">
 
-                    {lessonsError}
+                    <BookOpen
+                      size={22}
+                    />
+
+                    <strong>
+                      Unable to load lessons
+                    </strong>
+
+                    <span>
+                      {lessonsError}
+                    </span>
 
                   </div>
 
                 )}
-
 
 
                 {!lessonsLoading &&
@@ -2454,35 +2695,28 @@ function AdminCourses() {
                   courseLessons.length ===
                     0 && (
 
-                  <div
-                    style={{
-                      padding:
-                        "20px",
-                      textAlign:
-                        "center",
-                      border:
-                        "1px solid #e2e8f0",
-                      borderRadius:
-                        "12px",
-                      background:
-                        "#f8fafc",
-                    }}
-                  >
+                  <div className="ac-lessons-state">
 
-                    <BookOpen
-                      size={22}
-                    />
+                    <div className="ac-empty-icon">
 
-                    <p>
-                      No lessons have been
-                      added to this course
-                      yet.
-                    </p>
+                      <BookOpen
+                        size={21}
+                      />
+
+                    </div>
+
+                    <strong>
+                      No lessons yet
+                    </strong>
+
+                    <span>
+                      Lessons added to this
+                      course will appear here.
+                    </span>
 
                   </div>
 
                 )}
-
 
 
                 {!lessonsLoading &&
@@ -2490,15 +2724,8 @@ function AdminCourses() {
                   courseLessons.length >
                     0 && (
 
-                  <div
-                    style={{
-                      display:
-                        "flex",
-                      flexDirection:
-                        "column",
-                      gap: "10px",
-                    }}
-                  >
+                  <div className="ac-lessons-list">
+
 
                     {courseLessons.map(
                       (
@@ -2507,94 +2734,223 @@ function AdminCourses() {
                       ) => (
 
                         <div
+                          className="ac-lesson-item"
                           key={
                             lesson.id ||
                             index
                           }
-
-                          style={{
-                            padding:
-                              "14px",
-                            border:
-                              "1px solid #e2e8f0",
-                            borderRadius:
-                              "12px",
-                            background:
-                              "#f8fafc",
-                          }}
                         >
 
-                          <strong>
 
-                            Lesson{" "}
+                          <div className="ac-lesson-number">
 
-                            {lesson.order_number ||
-                              index + 1}
+                            {String(
+                              lesson
+                                .order_number ||
+                              index + 1
+                            ).padStart(
+                              2,
+                              "0"
+                            )}
 
-                            :{" "}
-
-                            {lesson.title ||
-                              `Lesson ${
-                                index + 1
-                              }`}
-
-                          </strong>
+                          </div>
 
 
-                          {lesson.description && (
+                          <div>
 
-                            <p
-                              style={{
-                                marginBottom:
-                                  0,
-                              }}
-                            >
+                            <span>
+                              LESSON
+                            </span>
 
-                              {
-                                lesson.description
-                              }
+                            <strong>
 
-                            </p>
+                              {lesson.title ||
+                                `Lesson ${
+                                  index + 1
+                                }`}
 
-                          )}
+                            </strong>
+
+
+                            {lesson.description && (
+
+                              <p>
+                                {
+                                  lesson
+                                    .description
+                                }
+                              </p>
+
+                            )}
+
+
+                          </div>
+
 
                         </div>
 
                       )
                     )}
 
+
                   </div>
 
                 )}
 
+
               </div>
 
 
+              <div className="ac-view-footer">
 
-              <div className="ac-modal-actions">
 
                 <button
                   type="button"
-                  className="ac-cancel-button"
-
                   onClick={
                     closeCourseDetails
                   }
                 >
 
-                  Close
+                  Close Course
 
                 </button>
 
+
               </div>
+
 
             </div>
 
+
           </div>
+
 
         </div>
 
       )}
+
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   OVERVIEW ITEM
+======================================== */
+
+function OverviewItem({
+  icon,
+  label,
+  value,
+  description,
+  className,
+}) {
+
+  return (
+
+    <div
+      className={
+        `ac-overview-item ${className}`
+      }
+    >
+
+      <div className="ac-overview-icon">
+
+        {icon}
+
+      </div>
+
+
+      <div>
+
+        <span>
+          {label}
+        </span>
+
+        <strong>
+          {value}
+        </strong>
+
+        <small>
+          {description}
+        </small>
+
+      </div>
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   COURSE METRIC
+======================================== */
+
+function CourseMetric({
+  icon,
+  value,
+  label,
+}) {
+
+  return (
+
+    <div className="ac-metric">
+
+      <div>
+        {icon}
+      </div>
+
+      <strong>
+        {value}
+      </strong>
+
+      <span>
+        {label}
+      </span>
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   VIEW DETAIL
+======================================== */
+
+function ViewDetail({
+  icon,
+  label,
+  value,
+}) {
+
+  return (
+
+    <div className="ac-view-detail">
+
+      <div className="ac-view-detail-icon">
+
+        {icon}
+
+      </div>
+
+      <div>
+
+        <span>
+          {label}
+        </span>
+
+        <strong>
+          {value}
+        </strong>
+
+      </div>
 
     </div>
 

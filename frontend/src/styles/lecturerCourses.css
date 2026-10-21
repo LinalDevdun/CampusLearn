@@ -5,9 +5,7 @@
 .lecturer-courses-page {
   width: 100%;
   max-width: 1440px;
-
   margin: 0 auto;
-
   padding: 34px 36px 58px;
 }
 
@@ -114,7 +112,7 @@
 
   border-radius: 99px;
 
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 800;
 
   letter-spacing: 0.09em;
@@ -154,7 +152,7 @@
   color:
     rgba(255, 255, 255, 0.73);
 
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.7;
 }
 
@@ -184,7 +182,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 800;
 
   cursor: pointer;
@@ -332,7 +330,7 @@
 
   color: #8b94a7;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -437,7 +435,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 650;
 }
 
@@ -475,7 +473,7 @@
 .lc-portfolio-footer strong {
   color: #344054;
 
-  font-size: 8px;
+  font-size: 12px;
 }
 
 
@@ -484,7 +482,7 @@
 
   color: #98a2b3;
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
@@ -506,7 +504,7 @@
 
   border-radius: 12px;
 
-  font-size: 10px;
+  font-size: 12px;
 }
 
 
@@ -580,7 +578,7 @@
 
   color: #98a2b3;
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
@@ -589,7 +587,7 @@
 
   color: #344054;
 
-  font-size: 8px;
+  font-size: 12px;
 }
 
 
@@ -637,7 +635,7 @@
 
   font-family: inherit;
 
-  font-size: 9px;
+  font-size: 12px;
 
   transition:
     background 0.18s ease,
@@ -683,7 +681,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 12px;
 
   font-weight: 700;
 }
@@ -716,7 +714,7 @@
 
   color: #4058df;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -741,7 +739,7 @@
 
   color: #98a2b3;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -760,7 +758,7 @@
 
   border-radius: 8px;
 
-  font-size: 10px;
+  font-size: 12px;
 
   font-weight: 800;
 }
@@ -769,7 +767,7 @@
 .lc-results-count span {
   color: #7d89a1;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 650;
 }
@@ -936,7 +934,7 @@
   color:
     rgba(255, 255, 255, 0.77);
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -1003,7 +1001,7 @@
 
   border-radius: 8px;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 750;
 
@@ -1032,7 +1030,7 @@
 
   color: #4058df;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 750;
 }
@@ -1057,7 +1055,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 11px;
   line-height: 1.6;
 }
 
@@ -1112,7 +1110,7 @@
 
   color: #344054;
 
-  font-size: 9px;
+  font-size: 11px;
 
   font-weight: 800;
 
@@ -1127,7 +1125,7 @@
 
   color: #98a2b3;
 
-  font-size: 5px;
+  font-size: 10px;
 }
 
 
@@ -1173,7 +1171,7 @@
 
   font-family: inherit;
 
-  font-size: 7px;
+  font-size: 11px;
 
   font-weight: 750;
 
@@ -1252,7 +1250,7 @@
 
   font-family: inherit;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 700;
 
@@ -1314,7 +1312,7 @@
 
   color: #344054;
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 
@@ -1325,7 +1323,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1343,7 +1341,7 @@
 
   color: #98a2b3;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -1464,7 +1462,7 @@
 
   color: #4058df;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -1490,7 +1488,7 @@
 
   color: #98a2b3;
 
-  font-size: 8px;
+  font-size: 11px;
 
   line-height: 1.55;
 }
@@ -1554,7 +1552,7 @@
 .lecturer-form-group label {
   color: #344054;
 
-  font-size: 8px;
+  font-size: 12px;
 
   font-weight: 750;
 }
@@ -1582,7 +1580,7 @@
 
   font-family: inherit;
 
-  font-size: 9px;
+  font-size: 12px;
 
   transition:
     background 0.18s ease,
@@ -1627,7 +1625,7 @@
 .lecturer-form-help {
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 
   line-height: 1.5;
 }
@@ -1674,7 +1672,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 11px;
 
   font-weight: 750;
 
@@ -1723,7 +1721,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 11px;
 
   font-weight: 700;
 

@@ -794,7 +794,7 @@ function Dashboard() {
           <button
             className="dashboard-text-button"
             onClick={() =>
-              navigate("/courses")
+              navigate("/my-courses")
             }
           >
 
@@ -957,7 +957,7 @@ function Dashboard() {
                           className="continue-button"
                           onClick={() =>
                             navigate(
-                              "/courses"
+                              "/my-courses"
                             )
                           }
                         >

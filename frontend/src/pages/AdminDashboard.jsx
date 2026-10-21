@@ -23,6 +23,12 @@ import {
   Server,
   CircleCheckBig,
   ArrowRight,
+  Activity,
+  UserCog,
+  Sparkles,
+  TrendingUp,
+  Clock3,
+  ExternalLink,
 } from "lucide-react";
 
 import "../styles/adminDashboard.css";
@@ -146,8 +152,7 @@ function AdminDashboard() {
 
 
       return (
-        words[0]
-          .charAt(0) +
+        words[0].charAt(0) +
         words[
           words.length - 1
         ].charAt(0)
@@ -175,23 +180,17 @@ function AdminDashboard() {
 
 
       if (upper === "ADMIN") {
-
         return "Admin";
-
       }
 
 
       if (upper === "LECTURER") {
-
         return "Lecturer";
-
       }
 
 
       if (upper === "STUDENT") {
-
         return "Student";
-
       }
 
 
@@ -272,10 +271,14 @@ function AdminDashboard() {
 
 
           const config = {
+
             headers: {
+
               Authorization:
                 `Bearer ${token}`,
+
             },
+
           };
 
 
@@ -304,32 +307,21 @@ function AdminDashboard() {
             ]);
 
 
-          /* ==============================
-             ADMIN
-          ============================== */
+          /* ADMIN */
 
           setAdmin(
             adminResponse.data
           );
 
 
-          /* ==============================
-             REPORT DATA
-          ============================== */
+          /* REPORT DATA */
 
           setReportData(
             reportsResponse.data
           );
 
 
-          /* ==============================
-             LATEST USER ACCOUNTS
-
-             We do not currently store
-             created_at for users, so we
-             use the highest IDs as the
-             newest account records.
-          ============================== */
+          /* LATEST USERS */
 
           const users =
             Array.isArray(
@@ -448,17 +440,11 @@ function AdminDashboard() {
     reportData?.summary || {
 
       total_users: 0,
-
       students: 0,
-
       lecturers: 0,
-
       administrators: 0,
-
       active_accounts: 0,
-
       active_courses: 0,
-
       average_score: 0,
 
     };
@@ -469,14 +455,52 @@ function AdminDashboard() {
       ?.user_distribution || {
 
       students: 0,
-
       lecturers: 0,
-
       administrators: 0,
-
       active_accounts: 0,
 
     };
+
+
+  /* ========================================
+     DERIVED VALUES
+  ======================================== */
+
+  const totalDistribution =
+    Number(distribution.students || 0) +
+    Number(distribution.lecturers || 0) +
+    Number(distribution.administrators || 0);
+
+
+  const getPercentage =
+    (value) => {
+
+      if (!totalDistribution) {
+        return 0;
+      }
+
+      return Math.round(
+        (Number(value || 0) /
+          totalDistribution) *
+          100
+      );
+
+    };
+
+
+  const activeRate =
+    Number(summary.total_users) > 0
+      ? Math.round(
+          (
+            Number(
+              summary.active_accounts || 0
+            ) /
+            Number(
+              summary.total_users
+            )
+          ) * 100
+        )
+      : 0;
 
 
   /* ========================================
@@ -486,57 +510,49 @@ function AdminDashboard() {
   const stats = [
 
     {
-      label:
-        "Total Users",
-
+      label: "Total Users",
       value:
         summary.total_users,
-
+      description:
+        "All platform accounts",
       icon:
         Users,
-
       className:
         "ad-stat-teal",
     },
 
     {
-      label:
-        "Students",
-
+      label: "Students",
       value:
         summary.students,
-
+      description:
+        "Registered learners",
       icon:
         GraduationCap,
-
       className:
         "ad-stat-purple",
     },
 
     {
-      label:
-        "Lecturers",
-
+      label: "Lecturers",
       value:
         summary.lecturers,
-
+      description:
+        "Teaching staff",
       icon:
-        Users,
-
+        UserCog,
       className:
         "ad-stat-blue",
     },
 
     {
-      label:
-        "Active Courses",
-
+      label: "Active Courses",
       value:
         summary.active_courses,
-
+      description:
+        "Current modules",
       icon:
         BookOpen,
-
       className:
         "ad-stat-orange",
     },
@@ -551,54 +567,45 @@ function AdminDashboard() {
   const userDistribution = [
 
     {
-      label:
-        "Students",
-
+      label: "Students",
       count:
         distribution.students,
-
       description:
         "Registered student accounts",
-
       icon:
         GraduationCap,
-
       className:
         "ad-role-student",
+      barClass:
+        "ad-role-bar-purple",
     },
 
     {
-      label:
-        "Lecturers",
-
+      label: "Lecturers",
       count:
         distribution.lecturers,
-
       description:
         "Teaching staff accounts",
-
       icon:
         Users,
-
       className:
         "ad-role-lecturer",
+      barClass:
+        "ad-role-bar-blue",
     },
 
     {
-      label:
-        "Administrators",
-
+      label: "Administrators",
       count:
         distribution.administrators,
-
       description:
         "System administrator accounts",
-
       icon:
         ShieldCheck,
-
       className:
         "ad-role-admin",
+      barClass:
+        "ad-role-bar-teal",
     },
 
   ];
@@ -630,21 +637,17 @@ function AdminDashboard() {
 
       <div className="admin-dashboard-page">
 
-        <div
-          style={{
-            padding: "40px",
-            textAlign: "center",
-          }}
-        >
+        <div className="ad-loading">
 
-          <h2>
-            Loading Dashboard...
-          </h2>
+          <div className="ad-loading-spinner" />
 
-          <p>
-            Getting real CampusLearn
-            data from PostgreSQL.
-          </p>
+          <strong>
+            Loading Admin Command Center
+          </strong>
+
+          <span>
+            Getting live CampusLearn data...
+          </span>
 
         </div>
 
@@ -661,37 +664,162 @@ function AdminDashboard() {
 
 
       {/* ====================================
-          HEADER
+          COMMAND HERO
       ==================================== */}
 
-      <section className="ad-header">
+      <section className="ad-command-hero">
 
-        <div>
+
+        <div className="ad-command-main">
+
+
+          <div className="ad-command-eyebrow">
+
+            <Sparkles size={12} />
+
+            CAMPUSLEARN ADMIN COMMAND CENTER
+
+          </div>
+
 
           <h1>
-            Welcome back, {admin.name} 👋
+
+            Welcome back,
+            <span> {admin.name}</span>
+
           </h1>
 
+
           <p>
-            Monitor users, courses and
-            system activity across CampusLearn.
+
+            Monitor accounts, academic
+            activity and platform operations
+            from one central workspace.
+
           </p>
 
+
+          <div className="ad-command-chips">
+
+
+            <div>
+
+              <CircleCheckBig
+                size={13}
+              />
+
+              {activeRate}% active accounts
+
+            </div>
+
+
+            <div>
+
+              <BookOpen
+                size={13}
+              />
+
+              {summary.active_courses} active courses
+
+            </div>
+
+
+            <div>
+
+              <TrendingUp
+                size={13}
+              />
+
+              {summary.average_score || 0}% avg score
+
+            </div>
+
+
+          </div>
+
+
         </div>
 
 
-        <div className="ad-date">
+        {/* RIGHT STATUS */}
 
-          <CalendarDays
-            size={15}
-          />
+        <div className="ad-command-status">
 
-          {currentDate}
+
+          <div className="ad-command-status-top">
+
+
+            <div className="ad-command-status-icon">
+
+              <Activity size={21} />
+
+            </div>
+
+
+            <div>
+
+              <span>
+                PLATFORM STATUS
+              </span>
+
+              <strong>
+                Operational
+              </strong>
+
+            </div>
+
+
+          </div>
+
+
+          <div className="ad-command-divider" />
+
+
+          <div className="ad-command-status-grid">
+
+
+            <div>
+
+              <span>
+                USERS
+              </span>
+
+              <strong>
+                {summary.total_users}
+              </strong>
+
+            </div>
+
+
+            <div>
+
+              <span>
+                ACTIVE
+              </span>
+
+              <strong>
+                {summary.active_accounts}
+              </strong>
+
+            </div>
+
+
+          </div>
+
+
+          <div className="ad-command-date">
+
+            <CalendarDays size={13} />
+
+            {currentDate}
+
+          </div>
+
 
         </div>
+
 
       </section>
-
 
 
       {/* ====================================
@@ -700,18 +828,7 @@ function AdminDashboard() {
 
       {error && (
 
-        <div
-          style={{
-            marginBottom: "22px",
-            padding: "14px 16px",
-            borderRadius: "10px",
-            background: "#fef2f2",
-            border:
-              "1px solid #fecaca",
-            color: "#dc2626",
-            fontWeight: 600,
-          }}
-        >
+        <div className="ad-error">
 
           {error}
 
@@ -720,12 +837,12 @@ function AdminDashboard() {
       )}
 
 
-
       {/* ====================================
-          STATS
+          STAT CARDS
       ==================================== */}
 
       <section className="ad-stats">
+
 
         {stats.map(
           (stat) => {
@@ -740,31 +857,42 @@ function AdminDashboard() {
                 className={
                   `ad-stat-card ${stat.className}`
                 }
-                key={
-                  stat.label
-                }
+                key={stat.label}
               >
 
-                <div className="ad-stat-icon">
 
-                  <Icon
-                    size={22}
-                  />
+                <div className="ad-stat-top">
+
+
+                  <div className="ad-stat-icon">
+
+                    <Icon size={21} />
+
+                  </div>
+
+
+                  <span className="ad-stat-label">
+
+                    {stat.label}
+
+                  </span>
+
 
                 </div>
 
 
-                <div>
+                <div className="ad-stat-content">
 
                   <strong>
                     {stat.value}
                   </strong>
 
                   <span>
-                    {stat.label}
+                    {stat.description}
                   </span>
 
                 </div>
+
 
               </div>
 
@@ -773,34 +901,38 @@ function AdminDashboard() {
           }
         )}
 
+
       </section>
 
 
-
       {/* ====================================
-          OVERVIEW
+          PLATFORM OVERVIEW
       ==================================== */}
 
       <section className="ad-main-grid">
 
 
-        {/* ==================================
-            USER DISTRIBUTION
-        ================================== */}
+        {/* USER DISTRIBUTION */}
 
-        <div className="ad-panel">
+        <div className="ad-panel ad-distribution-panel">
+
 
           <div className="ad-panel-header">
 
+
             <div>
+
+              <span className="ad-panel-eyebrow">
+                PEOPLE & ACCESS
+              </span>
 
               <h2>
                 User Distribution
               </h2>
 
               <p>
-                Overview of registered
-                CampusLearn users.
+                Account distribution across
+                the CampusLearn platform.
               </p>
 
             </div>
@@ -808,7 +940,7 @@ function AdminDashboard() {
 
             <button
               className="ad-panel-link"
-
+              type="button"
               onClick={() =>
                 navigate(
                   "/admin-users"
@@ -824,11 +956,12 @@ function AdminDashboard() {
 
             </button>
 
+
           </div>
 
 
-
           <div className="ad-user-distribution">
+
 
             {userDistribution.map(
               (role) => {
@@ -836,15 +969,19 @@ function AdminDashboard() {
                 const Icon =
                   role.icon;
 
+                const percentage =
+                  getPercentage(
+                    role.count
+                  );
+
 
                 return (
 
                   <div
                     className="ad-role-row"
-                    key={
-                      role.label
-                    }
+                    key={role.label}
                   >
+
 
                     <div
                       className={
@@ -852,31 +989,59 @@ function AdminDashboard() {
                       }
                     >
 
-                      <Icon
-                        size={18}
-                      />
+                      <Icon size={18} />
 
                     </div>
 
 
-                    <div className="ad-role-info">
+                    <div className="ad-role-body">
 
-                      <strong>
-                        {role.label}
-                      </strong>
 
-                      <span>
-                        {role.description}
-                      </span>
+                      <div className="ad-role-heading">
+
+                        <div>
+
+                          <strong>
+                            {role.label}
+                          </strong>
+
+                          <span>
+                            {role.description}
+                          </span>
+
+                        </div>
+
+
+                        <div className="ad-role-count">
+
+                          {role.count}
+
+                          <small>
+                            {percentage}%
+                          </small>
+
+                        </div>
+
+                      </div>
+
+
+                      <div className="ad-role-track">
+
+                        <div
+                          className={
+                            `ad-role-fill ${role.barClass}`
+                          }
+                          style={{
+                            width:
+                              `${percentage}%`,
+                          }}
+                        />
+
+                      </div>
+
 
                     </div>
 
-
-                    <div className="ad-role-count">
-
-                      {role.count}
-
-                    </div>
 
                   </div>
 
@@ -885,167 +1050,113 @@ function AdminDashboard() {
               }
             )}
 
+
           </div>
+
 
         </div>
 
 
+        {/* SYSTEM STATUS */}
 
-        {/* ==================================
-            SYSTEM STATUS
-        ================================== */}
+        <div className="ad-panel ad-system-panel">
 
-        <div className="ad-panel">
 
           <div className="ad-panel-header">
 
+
             <div>
+
+              <span className="ad-panel-eyebrow">
+                PLATFORM SERVICES
+              </span>
 
               <h2>
                 System Status
               </h2>
 
               <p>
-                Current CampusLearn
-                service availability.
+                Core CampusLearn services.
               </p>
 
             </div>
 
-          </div>
 
+            <div className="ad-health-pill">
+
+              <span />
+
+              Healthy
+
+            </div>
+
+
+          </div>
 
 
           <div className="ad-system-list">
 
 
-            {/* DATABASE */}
-
-            <div className="ad-system-item">
-
-              <div className="ad-system-left">
-
-                <div className="ad-system-icon">
-
-                  <Database
-                    size={17}
-                  />
-
-                </div>
+            <SystemItem
+              icon={
+                <Database size={17} />
+              }
+              title="PostgreSQL Database"
+              description="Primary application database"
+              status="Connected"
+            />
 
 
-                <div>
-
-                  <strong>
-                    PostgreSQL Database
-                  </strong>
-
-                  <span>
-                    Primary application
-                    database
-                  </span>
-
-                </div>
-
-              </div>
+            <SystemItem
+              icon={
+                <Server size={17} />
+              }
+              title="Backend API"
+              description="Node.js / Express service"
+              status="Online"
+            />
 
 
-              <span className="ad-status-online">
+            <SystemItem
+              icon={
+                <CircleCheckBig
+                  size={17}
+                />
+              }
+              title="Authentication"
+              description="JWT and role-based access"
+              status="Active"
+            />
 
-                Connected
-
-              </span>
-
-            </div>
-
-
-
-            {/* BACKEND */}
-
-            <div className="ad-system-item">
-
-              <div className="ad-system-left">
-
-                <div className="ad-system-icon">
-
-                  <Server
-                    size={17}
-                  />
-
-                </div>
-
-
-                <div>
-
-                  <strong>
-                    Backend API
-                  </strong>
-
-                  <span>
-                    Node.js / Express
-                    service
-                  </span>
-
-                </div>
-
-              </div>
-
-
-              <span className="ad-status-online">
-
-                Online
-
-              </span>
-
-            </div>
-
-
-
-            {/* AUTH */}
-
-            <div className="ad-system-item">
-
-              <div className="ad-system-left">
-
-                <div className="ad-system-icon">
-
-                  <CircleCheckBig
-                    size={17}
-                  />
-
-                </div>
-
-
-                <div>
-
-                  <strong>
-                    Authentication
-                  </strong>
-
-                  <span>
-                    JWT login and
-                    role-based access
-                  </span>
-
-                </div>
-
-              </div>
-
-
-              <span className="ad-status-online">
-
-                Active
-
-              </span>
-
-            </div>
 
           </div>
 
+
+          <div className="ad-system-summary">
+
+
+            <div>
+
+              <Activity size={17} />
+
+            </div>
+
+
+            <p>
+
+              Core platform services are
+              available for CampusLearn users.
+
+            </p>
+
+
+          </div>
+
+
         </div>
 
-      </section>
 
+      </section>
 
 
       {/* ====================================
@@ -1054,32 +1165,138 @@ function AdminDashboard() {
 
       <section className="ad-section">
 
-        <div className="ad-section-header">
 
-          <h2>
-            Quick Actions
-          </h2>
+        <div className="ad-section-heading-row">
 
-          <p>
-            Frequently used
-            administrator tools.
-          </p>
+
+          <div>
+
+            <span>
+              ADMIN SHORTCUTS
+            </span>
+
+            <h2>
+              Quick Actions
+            </h2>
+
+            <p>
+              Jump directly into common
+              administration tasks.
+            </p>
+
+          </div>
+
+
+          <div className="ad-section-heading-icon">
+
+            <Activity size={18} />
+
+          </div>
+
 
         </div>
-
 
 
         <div className="ad-quick-actions">
 
 
-          {/* ADD USER */}
+          <QuickAction
+            icon={
+              <UserPlus size={20} />
+            }
+            title="Add User"
+            description="Create student, lecturer or administrator accounts."
+            className="ad-action-teal"
+            onClick={() =>
+              navigate(
+                "/admin-users"
+              )
+            }
+          />
+
+
+          <QuickAction
+            icon={
+              <BookOpen size={20} />
+            }
+            title="Manage Courses"
+            description="Review academic courses and module information."
+            className="ad-action-blue"
+            onClick={() =>
+              navigate(
+                "/admin/courses"
+              )
+            }
+          />
+
+
+          <QuickAction
+            icon={
+              <BarChart3 size={20} />
+            }
+            title="View Reports"
+            description="Explore platform and academic statistics."
+            className="ad-action-purple"
+            onClick={() =>
+              navigate(
+                "/admin/reports"
+              )
+            }
+          />
+
+
+          <QuickAction
+            icon={
+              <Settings size={20} />
+            }
+            title="System Settings"
+            description="Manage CampusLearn administration preferences."
+            className="ad-action-orange"
+            onClick={() =>
+              navigate(
+                "/admin/settings"
+              )
+            }
+          />
+
+
+        </div>
+
+
+      </section>
+
+
+      {/* ====================================
+          LATEST USERS
+      ==================================== */}
+
+      <section className="ad-section">
+
+
+        <div className="ad-section-heading-row">
+
+
+          <div>
+
+            <span>
+              ACCOUNT ACTIVITY
+            </span>
+
+            <h2>
+              Latest User Accounts
+            </h2>
+
+            <p>
+              Recently added CampusLearn
+              account records.
+            </p>
+
+          </div>
+
 
           <button
-            className="
-              ad-action-card
-              ad-action-teal
-            "
-
+            className="ad-view-all"
+            type="button"
             onClick={() =>
               navigate(
                 "/admin-users"
@@ -1087,183 +1304,21 @@ function AdminDashboard() {
             }
           >
 
-            <div className="ad-action-icon">
+            View all users
 
-              <UserPlus
-                size={20}
-              />
-
-            </div>
-
-
-            <div>
-
-              <h3>
-                Add User
-              </h3>
-
-              <p>
-                Create a new student,
-                lecturer or administrator.
-              </p>
-
-            </div>
+            <ExternalLink size={13} />
 
           </button>
 
-
-
-          {/* COURSES */}
-
-          <button
-            className="
-              ad-action-card
-              ad-action-blue
-            "
-
-            onClick={() =>
-              navigate(
-                "/admin/courses"
-              )
-            }
-          >
-
-            <div className="ad-action-icon">
-
-              <BookOpen
-                size={20}
-              />
-
-            </div>
-
-
-            <div>
-
-              <h3>
-                Manage Courses
-              </h3>
-
-              <p>
-                Review courses and
-                academic modules.
-              </p>
-
-            </div>
-
-          </button>
-
-
-
-          {/* REPORTS */}
-
-          <button
-            className="
-              ad-action-card
-              ad-action-purple
-            "
-
-            onClick={() =>
-              navigate(
-                "/admin/reports"
-              )
-            }
-          >
-
-            <div className="ad-action-icon">
-
-              <BarChart3
-                size={20}
-              />
-
-            </div>
-
-
-            <div>
-
-              <h3>
-                View Reports
-              </h3>
-
-              <p>
-                Monitor platform and
-                academic statistics.
-              </p>
-
-            </div>
-
-          </button>
-
-
-
-          {/* SETTINGS */}
-
-          <button
-            className="
-              ad-action-card
-              ad-action-orange
-            "
-
-            onClick={() =>
-              navigate(
-                "/admin/settings"
-              )
-            }
-          >
-
-            <div className="ad-action-icon">
-
-              <Settings
-                size={20}
-              />
-
-            </div>
-
-
-            <div>
-
-              <h3>
-                System Settings
-              </h3>
-
-              <p>
-                Configure CampusLearn
-                system preferences.
-              </p>
-
-            </div>
-
-          </button>
 
         </div>
-
-      </section>
-
-
-
-      {/* ====================================
-          LATEST USER ACCOUNTS
-      ==================================== */}
-
-      <section className="ad-section">
-
-        <div className="ad-section-header">
-
-          <h2>
-            Latest User Accounts
-          </h2>
-
-          <p>
-            Most recently created
-            CampusLearn account records.
-          </p>
-
-        </div>
-
 
 
         <div className="ad-table-wrapper">
 
+
           <table className="ad-table">
+
 
             <thead>
 
@@ -1292,6 +1347,7 @@ function AdminDashboard() {
 
             <tbody>
 
+
               {recentUsers.length ===
                 0 && (
 
@@ -1299,17 +1355,9 @@ function AdminDashboard() {
 
                   <td
                     colSpan="4"
-
-                    style={{
-                      textAlign:
-                        "center",
-                      padding:
-                        "24px",
-                    }}
+                    className="ad-table-empty"
                   >
-
                     No users found.
-
                   </td>
 
                 </tr>
@@ -1321,20 +1369,18 @@ function AdminDashboard() {
                 (user) => (
 
                   <tr
-                    key={
-                      user.id
-                    }
+                    key={user.id}
                   >
+
 
                     <td>
 
                       <div className="ad-user-table-profile">
 
+
                         <div className="ad-table-avatar">
 
-                          {
-                            user.initials
-                          }
+                          {user.initials}
 
                         </div>
 
@@ -1342,18 +1388,15 @@ function AdminDashboard() {
                         <div>
 
                           <strong>
-                            {
-                              user.name
-                            }
+                            {user.name}
                           </strong>
 
                           <span>
-                            {
-                              user.email
-                            }
+                            {user.email}
                           </span>
 
                         </div>
+
 
                       </div>
 
@@ -1368,9 +1411,7 @@ function AdminDashboard() {
                         }
                       >
 
-                        {
-                          user.role
-                        }
+                        {user.role}
 
                       </span>
 
@@ -1379,9 +1420,15 @@ function AdminDashboard() {
 
                     <td>
 
-                      {
-                        user.lastLogin
-                      }
+                      <div className="ad-last-login">
+
+                        <Clock3
+                          size={13}
+                        />
+
+                        {user.lastLogin}
+
+                      </div>
 
                     </td>
 
@@ -1402,16 +1449,7 @@ function AdminDashboard() {
 
                       ) : (
 
-                        <span
-                          style={{
-                            color:
-                              "#dc2626",
-                            fontWeight:
-                              600,
-                            fontSize:
-                              "12px",
-                          }}
-                        >
+                        <span className="ad-disabled-badge">
 
                           Disabled
 
@@ -1421,20 +1459,145 @@ function AdminDashboard() {
 
                     </td>
 
+
                   </tr>
 
                 )
               )}
 
+
             </tbody>
+
 
           </table>
 
+
         </div>
+
 
       </section>
 
+
     </div>
+
+  );
+
+}
+
+
+/* ========================================
+   SYSTEM ITEM
+======================================== */
+
+function SystemItem({
+  icon,
+  title,
+  description,
+  status,
+}) {
+
+  return (
+
+    <div className="ad-system-item">
+
+
+      <div className="ad-system-left">
+
+
+        <div className="ad-system-icon">
+
+          {icon}
+
+        </div>
+
+
+        <div>
+
+          <strong>
+            {title}
+          </strong>
+
+          <span>
+            {description}
+          </span>
+
+        </div>
+
+
+      </div>
+
+
+      <span className="ad-status-online">
+
+        <i />
+
+        {status}
+
+      </span>
+
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   QUICK ACTION
+======================================== */
+
+function QuickAction({
+  icon,
+  title,
+  description,
+  className,
+  onClick,
+}) {
+
+  return (
+
+    <button
+      type="button"
+      className={
+        `ad-action-card ${className}`
+      }
+      onClick={onClick}
+    >
+
+
+      <div className="ad-action-top">
+
+
+        <div className="ad-action-icon">
+
+          {icon}
+
+        </div>
+
+
+        <ArrowRight
+          size={15}
+          className="ad-action-arrow"
+        />
+
+      </div>
+
+
+      <div>
+
+        <h3>
+          {title}
+        </h3>
+
+        <p>
+          {description}
+        </p>
+
+      </div>
+
+
+    </button>
 
   );
 

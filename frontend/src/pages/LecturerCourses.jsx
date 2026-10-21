@@ -1645,29 +1645,37 @@ function LecturerCourses() {
                     required
                   >
 
-                    <option value="">
-                      Select degree
-                    </option>
+                <option value="">
+                  Select degree
+                </option>
 
-                    <option value="BSc Software Engineering">
-                      BSc Software Engineering
-                    </option>
+                <option value="BSc (Hons) Software Engineering">
+                  BSc (Hons) Software Engineering
+                </option>
 
-                    <option value="BSc (Hons) Computer Science">
-                      BSc (Hons) Computer Science
-                    </option>
+                <option value="BSc (Hons) Computer Science">
+                  BSc (Hons) Computer Science
+                </option>
 
-                    <option value="BSc Data Science">
-                      BSc Data Science
-                    </option>
+                <option value="BSc (Hons) Data Science">
+                  BSc (Hons) Data Science
+                </option>
 
-                    <option value="BSc (Hons) Data Science">
-                      BSc (Hons) Data Science
-                    </option>
+                <option value="BSc (Hons) Computer Security">
+                  BSc (Hons) Computer Security
+                </option>
 
-                    <option value="BSc Information Technology">
-                      BSc Information Technology
-                    </option>
+                <option value="BSc (Hons) Computer Networks">
+                  BSc (Hons) Computer Networks
+                </option>
+
+                <option value="BSc (Hons) Artificial Intelligence">
+                  BSc (Hons) Artificial Intelligence
+                </option>
+
+                <option value="BSc (Hons) Technology Management">
+                  BSc (Hons) Technology Management
+                </option>
 
                   </select>
 
@@ -1932,29 +1940,37 @@ function LecturerCourses() {
                     required
                   >
 
-                    <option value="">
-                      Select degree
-                    </option>
+                  <option value="">
+                    Select degree
+                  </option>
 
-                    <option value="BSc Software Engineering">
-                      BSc Software Engineering
-                    </option>
+                  <option value="BSc (Hons) Software Engineering">
+                    BSc (Hons) Software Engineering
+                  </option>
 
-                    <option value="BSc (Hons) Computer Science">
-                      BSc (Hons) Computer Science
-                    </option>
+                  <option value="BSc (Hons) Computer Science">
+                    BSc (Hons) Computer Science
+                  </option>
 
-                    <option value="BSc Data Science">
-                      BSc Data Science
-                    </option>
+                  <option value="BSc (Hons) Data Science">
+                    BSc (Hons) Data Science
+                  </option>
 
-                    <option value="BSc (Hons) Data Science">
-                      BSc (Hons) Data Science
-                    </option>
+                  <option value="BSc (Hons) Computer Security">
+                    BSc (Hons) Computer Security
+                  </option>
 
-                    <option value="BSc Information Technology">
-                      BSc Information Technology
-                    </option>
+                  <option value="BSc (Hons) Computer Networks">
+                    BSc (Hons) Computer Networks
+                  </option>
+
+                  <option value="BSc (Hons) Artificial Intelligence">
+                    BSc (Hons) Artificial Intelligence
+                  </option>
+
+                  <option value="BSc (Hons) Technology Management">
+                    BSc (Hons) Technology Management
+                  </option>
 
                   </select>
 

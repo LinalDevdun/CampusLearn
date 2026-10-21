@@ -112,7 +112,7 @@
 .lecturer-search-dropdown-header span {
   color: #7586bd;
 
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 800;
 
   letter-spacing: 0.09em;
@@ -122,7 +122,7 @@
 .lecturer-search-dropdown-header strong {
   color: #8791a3;
 
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 700;
 }
 
@@ -241,7 +241,7 @@
 
   color: #172033;
 
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 780;
 
   white-space: nowrap;
@@ -257,7 +257,7 @@
 
   color: #929bac;
 
-  font-size: 7px;
+  font-size: 10px;
 
   white-space: nowrap;
 
@@ -281,7 +281,7 @@
 
   border-radius: 7px;
 
-  font-size: 6px;
+  font-size: 9px;
   font-weight: 750;
 }
 
@@ -325,7 +325,7 @@
 .lecturer-search-empty strong {
   color: #465064;
 
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 750;
 }
 
@@ -337,7 +337,7 @@
 
   color: #929bab;
 
-  font-size: 7px;
+  font-size: 10px;
   line-height: 1.5;
 }
 
@@ -362,7 +362,7 @@
   border-top:
     1px solid #edf0f5;
 
-  font-size: 6px;
+  font-size: 9px;
 }
 
 

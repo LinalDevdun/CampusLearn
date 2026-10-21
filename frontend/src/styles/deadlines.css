@@ -5,9 +5,7 @@
 .deadlines-page {
   width: 100%;
   max-width: 1440px;
-
   margin: 0 auto;
-
   padding: 34px 36px 55px;
 }
 
@@ -181,8 +179,7 @@
 
   color: #6656ed;
 
-  font-size: 8px;
-
+  font-size: 11px;
   font-weight: 800;
 
   letter-spacing: 0.11em;
@@ -211,7 +208,7 @@
 
   color: #7b8698;
 
-  font-size: 10px;
+  font-size: 13px;
 
   line-height: 1.65;
 }
@@ -274,7 +271,7 @@
 .week-day-card span {
   margin-bottom: 5px;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -368,7 +365,7 @@
 
   border-radius: 8px;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 700;
 }
@@ -418,7 +415,7 @@
 
   border:
     1px solid
-    rgba(255,255,255,.16);
+    rgba(255, 255, 255, 0.16);
 
   border-radius: 50%;
 }
@@ -436,7 +433,7 @@
   bottom: -65px;
 
   background:
-    rgba(255,255,255,.07);
+    rgba(255, 255, 255, 0.07);
 
   border-radius: 50%;
 }
@@ -467,11 +464,11 @@
   color: white;
 
   background:
-    rgba(255,255,255,.12);
+    rgba(255, 255, 255, 0.12);
 
   border:
     1px solid
-    rgba(255,255,255,.17);
+    rgba(255, 255, 255, 0.17);
 
   border-radius: 10px;
 }
@@ -479,9 +476,9 @@
 
 .priority-card-top > span {
   color:
-    rgba(255,255,255,.65);
+    rgba(255, 255, 255, 0.68);
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -519,9 +516,9 @@
   padding-bottom: 3px;
 
   color:
-    rgba(255,255,255,.68);
+    rgba(255, 255, 255, 0.72);
 
-  font-size: 10px;
+  font-size: 12px;
 
   font-weight: 750;
 
@@ -560,13 +557,14 @@
   overflow: hidden;
 
   color:
-    rgba(255,255,255,.66);
+    rgba(255, 255, 255, 0.72);
 
-  font-size: 8px;
+  font-size: 10px;
 
   line-height: 1.5;
 
   -webkit-line-clamp: 2;
+
   -webkit-box-orient: vertical;
 }
 
@@ -598,9 +596,9 @@
   gap: 5px;
 
   color:
-    rgba(255,255,255,.78);
+    rgba(255, 255, 255, 0.82);
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 700;
 }
@@ -628,14 +626,14 @@
 
   font-family: inherit;
 
-  font-size: 7px;
+  font-size: 11px;
 
   font-weight: 800;
 
   cursor: pointer;
 
   transition:
-    transform .2s ease;
+    transform 0.2s ease;
 }
 
 
@@ -677,7 +675,7 @@
   margin-bottom: 11px;
 
   background:
-    rgba(255,255,255,.12);
+    rgba(255, 255, 255, 0.12);
 
   border-radius: 14px;
 }
@@ -696,9 +694,9 @@
   margin: 5px 0 0;
 
   color:
-    rgba(255,255,255,.68);
+    rgba(255, 255, 255, 0.72);
 
-  font-size: 8px;
+  font-size: 10px;
 
   line-height: 1.5;
 }
@@ -749,11 +747,11 @@
 
   box-shadow:
     0 9px 23px
-    rgba(35,43,90,.045);
+    rgba(35, 43, 90, 0.045);
 
   transition:
-    transform .2s ease,
-    box-shadow .2s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 
@@ -763,7 +761,7 @@
 
   box-shadow:
     0 14px 30px
-    rgba(35,43,90,.075);
+    rgba(35, 43, 90, 0.075);
 }
 
 
@@ -869,7 +867,7 @@
 
   color: #475467;
 
-  font-size: 9px;
+  font-size: 12px;
 
   font-weight: 750;
 }
@@ -882,7 +880,7 @@
 
   color: #a0a8b5;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -915,7 +913,7 @@
 
   box-shadow:
     0 11px 27px
-    rgba(35,43,90,.045);
+    rgba(35, 43, 90, 0.045);
 }
 
 
@@ -954,7 +952,7 @@
 
   color: #9aa3b2;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -963,7 +961,7 @@
 
   color: #182230;
 
-  font-size: 9px;
+  font-size: 12px;
 }
 
 
@@ -993,6 +991,7 @@
 
 .deadlines-search input {
   width: 100%;
+
   height: 43px;
 
   padding:
@@ -1011,12 +1010,12 @@
 
   font-family: inherit;
 
-  font-size: 9px;
+  font-size: 12px;
 
   transition:
-    background .2s ease,
-    border-color .2s ease,
-    box-shadow .2s ease;
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 
@@ -1027,7 +1026,7 @@
 
   box-shadow:
     0 0 0 4px
-    rgba(103,87,237,.07);
+    rgba(103, 87, 237, 0.07);
 }
 
 
@@ -1038,6 +1037,7 @@
 
 .deadlines-filter {
   width: 100%;
+
   height: 43px;
 
   padding: 0 11px;
@@ -1055,7 +1055,7 @@
 
   font-family: inherit;
 
-  font-size: 9px;
+  font-size: 12px;
 
   font-weight: 650;
 }
@@ -1090,11 +1090,11 @@
 
   color: #6557ed;
 
-  font-size: 8px;
+  font-size: 10px;
 
   font-weight: 800;
 
-  letter-spacing: .09em;
+  letter-spacing: 0.09em;
 }
 
 
@@ -1119,7 +1119,7 @@
 
   border-radius: 8px;
 
-  font-size: 8px;
+  font-size: 10px;
 }
 
 
@@ -1169,14 +1169,14 @@
 
   box-shadow:
     0 9px 24px
-    rgba(35,43,90,.045);
+    rgba(35, 43, 90, 0.045);
 
   margin-bottom: 15px;
 
   transition:
-    transform .2s ease,
-    box-shadow .2s ease,
-    border-color .2s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 
@@ -1186,7 +1186,7 @@
 
   box-shadow:
     0 14px 31px
-    rgba(35,43,90,.075);
+    rgba(35, 43, 90, 0.075);
 }
 
 
@@ -1310,13 +1310,13 @@
 .deadline-date-box span {
   margin-top: 5px;
 
-  font-size: 8px;
+  font-size: 10px;
 
   font-weight: 800;
 
   text-transform: uppercase;
 
-  letter-spacing: .06em;
+  letter-spacing: 0.06em;
 }
 
 
@@ -1395,7 +1395,7 @@
 
   color: #7d8799;
 
-  font-size: 9px;
+  font-size: 12px;
 
   line-height: 1.65;
 }
@@ -1425,7 +1425,7 @@
 
   border-radius: 7px;
 
-  font-size: 8px;
+  font-size: 10px;
 
   font-weight: 650;
 }
@@ -1446,7 +1446,7 @@
 
   border-radius: 999px;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -1507,7 +1507,7 @@
 .deadline-days-left {
   color: #8993a4;
 
-  font-size: 8px;
+  font-size: 10px;
 
   font-weight: 700;
 }
@@ -1555,7 +1555,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 11px;
 
   font-weight: 800;
 
@@ -1563,11 +1563,11 @@
 
   box-shadow:
     0 6px 15px
-    rgba(94,75,234,.17);
+    rgba(94, 75, 234, 0.17);
 
   transition:
-    transform .2s ease,
-    box-shadow .2s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 
@@ -1577,7 +1577,7 @@
 
   box-shadow:
     0 9px 19px
-    rgba(94,75,234,.23);
+    rgba(94, 75, 234, 0.23);
 }
 
 
@@ -1650,7 +1650,7 @@
 
   color: #939dac;
 
-  font-size: 9px;
+  font-size: 12px;
 
   line-height: 1.55;
 }
@@ -1671,7 +1671,7 @@
 
   animation:
     deadlineLoading
-    .8s linear infinite;
+    0.8s linear infinite;
 }
 
 

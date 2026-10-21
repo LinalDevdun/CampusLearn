@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -18,6 +19,9 @@ import {
   ShieldCheck,
   Sparkles,
   BadgeCheck,
+  Camera,
+  UploadCloud,
+  X,
 } from "lucide-react";
 
 
@@ -27,6 +31,14 @@ function StudentProfile() {
     useNavigate();
 
 
+  const fileInputRef =
+    useRef(null);
+
+
+  /* ========================================
+     STUDENT DATA
+  ======================================== */
+
   const [student, setStudent] =
     useState(null);
 
@@ -34,6 +46,35 @@ function StudentProfile() {
     useState(true);
 
   const [error, setError] =
+    useState("");
+
+
+  /* ========================================
+     PROFILE IMAGE
+  ======================================== */
+
+  const [
+    selectedImage,
+    setSelectedImage,
+  ] =
+    useState(null);
+
+  const [
+    previewImage,
+    setPreviewImage,
+  ] =
+    useState("");
+
+  const [
+    uploadingImage,
+    setUploadingImage,
+  ] =
+    useState(false);
+
+  const [
+    imageError,
+    setImageError,
+  ] =
     useState("");
 
 
@@ -49,6 +90,7 @@ function StudentProfile() {
         try {
 
           setLoading(true);
+
           setError("");
 
 
@@ -136,25 +178,365 @@ function StudentProfile() {
      INITIALS
   ======================================== */
 
-  const getInitials = (name) => {
+  const getInitials =
+    (name) => {
 
-    if (!name) {
-      return "ST";
-    }
+      if (!name) {
+
+        return "ST";
+
+      }
 
 
-    return name
-      .split(" ")
-      .filter(Boolean)
-      .map(
-        (word) =>
-          word.charAt(0)
-      )
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
+      return name
+        .split(" ")
+        .filter(Boolean)
+        .map(
+          (word) =>
+            word.charAt(0)
+        )
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
 
-  };
+    };
+
+
+  /* ========================================
+     PROFILE IMAGE URL
+  ======================================== */
+
+  const getProfileImageUrl =
+    (profileImage) => {
+
+      if (!profileImage) {
+
+        return "";
+
+      }
+
+
+      const cleanPath =
+        String(profileImage)
+
+          .replace(
+            /\\/g,
+            "/"
+          )
+
+          .replace(
+            /^.*?uploads\//,
+            "uploads/"
+          );
+
+
+      return (
+        `http://localhost:5000/${cleanPath}`
+      );
+
+    };
+
+
+  const savedProfileImage =
+    getProfileImageUrl(
+      student?.profile_image
+    );
+
+
+  const displayedProfileImage =
+    previewImage ||
+    savedProfileImage;
+
+
+  /* ========================================
+     CHOOSE PROFILE IMAGE
+  ======================================== */
+
+  const handleImageChange =
+    (event) => {
+
+      setImageError("");
+
+
+      const file =
+        event.target.files?.[0];
+
+
+      if (!file) {
+
+        return;
+
+      }
+
+
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+      ];
+
+
+      if (
+        !allowedTypes.includes(
+          file.type
+        )
+      ) {
+
+        setImageError(
+          "Please select a JPG, JPEG, PNG or WEBP image."
+        );
+
+        event.target.value =
+          "";
+
+        return;
+
+      }
+
+
+      const maxFileSize =
+        5 * 1024 * 1024;
+
+
+      if (
+        file.size >
+        maxFileSize
+      ) {
+
+        setImageError(
+          "Profile picture must be smaller than 5 MB."
+        );
+
+        event.target.value =
+          "";
+
+        return;
+
+      }
+
+
+      setSelectedImage(
+        file
+      );
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        () => {
+
+          setPreviewImage(
+            reader.result
+          );
+
+        };
+
+
+      reader.readAsDataURL(
+        file
+      );
+
+    };
+
+
+  /* ========================================
+     CANCEL PROFILE IMAGE
+  ======================================== */
+
+  const cancelImageSelection =
+    () => {
+
+      setSelectedImage(
+        null
+      );
+
+      setPreviewImage("");
+
+      setImageError("");
+
+
+      if (
+        fileInputRef.current
+      ) {
+
+        fileInputRef.current.value =
+          "";
+
+      }
+
+    };
+
+
+  /* ========================================
+     UPLOAD PROFILE IMAGE
+  ======================================== */
+
+  const handleUploadProfileImage =
+    async () => {
+
+      if (!selectedImage) {
+
+        setImageError(
+          "Please choose a profile picture first."
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        setUploadingImage(
+          true
+        );
+
+        setImageError("");
+
+
+        const token =
+          localStorage.getItem(
+            "token"
+          );
+
+
+        if (!token) {
+
+          navigate("/login");
+
+          return;
+
+        }
+
+
+        const formData =
+          new FormData();
+
+
+        formData.append(
+          "profileImage",
+          selectedImage
+        );
+
+
+        const response =
+          await axios.put(
+            "http://localhost:5000/me/profile-image",
+            formData,
+            {
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
+
+
+        const updatedUser =
+          response.data?.user;
+
+
+        if (updatedUser) {
+
+          setStudent(
+            (previousStudent) => ({
+              ...previousStudent,
+              ...updatedUser,
+            })
+          );
+
+        }
+
+
+        setSelectedImage(
+          null
+        );
+
+        setPreviewImage("");
+
+
+        if (
+          fileInputRef.current
+        ) {
+
+          fileInputRef.current.value =
+            "";
+
+        }
+
+
+        /*
+          Later StudentTopbar and
+          StudentSidebar can listen to
+          this event and update immediately.
+        */
+
+        window.dispatchEvent(
+          new CustomEvent(
+            "student-profile-image-updated",
+            {
+              detail: {
+                profileImage:
+                  updatedUser
+                    ?.profile_image ||
+                  "",
+              },
+            }
+          )
+        );
+
+
+        alert(
+          response.data?.message ||
+          "Profile picture updated successfully!"
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Profile image upload error:",
+          error
+        );
+
+
+        if (
+          error.response?.status === 401 ||
+          error.response?.status === 403
+        ) {
+
+          localStorage.removeItem(
+            "token"
+          );
+
+          localStorage.removeItem(
+            "role"
+          );
+
+          navigate("/login");
+
+          return;
+
+        }
+
+
+        setImageError(
+          error.response?.data?.error ||
+          "Failed to upload profile picture."
+        );
+
+
+      } finally {
+
+        setUploadingImage(
+          false
+        );
+
+      }
+
+    };
 
 
   /* ========================================
@@ -215,13 +597,13 @@ function StudentProfile() {
         ===================================== */
 
         .student-profile-page {
-
           width: 100%;
-
           max-width: 1320px;
 
-          padding: 42px 48px 60px;
+          margin: 0 auto;
 
+          padding:
+            42px 48px 60px;
         }
 
 
@@ -230,22 +612,18 @@ function StudentProfile() {
         ===================================== */
 
         .student-profile-page-header {
-
           display: flex;
 
           align-items: flex-end;
-
           justify-content: space-between;
 
           gap: 24px;
 
           margin-bottom: 28px;
-
         }
 
 
         .student-profile-eyebrow {
-
           display: inline-flex;
 
           align-items: center;
@@ -256,49 +634,40 @@ function StudentProfile() {
 
           color: #6857ee;
 
-          font-size: 11px;
-
+          font-size: 12px;
           font-weight: 800;
 
           letter-spacing: .11em;
 
           text-transform: uppercase;
-
         }
 
 
         .student-profile-title {
-
           margin: 0;
 
           color: #101828;
 
           font-size: 32px;
-
           line-height: 1.15;
 
           font-weight: 800;
 
           letter-spacing: -.035em;
-
         }
 
 
         .student-profile-subtitle {
-
           margin: 8px 0 0;
 
           color: #7b879d;
 
           font-size: 14px;
-
           line-height: 1.6;
-
         }
 
 
         .profile-account-status {
-
           display: inline-flex;
 
           align-items: center;
@@ -311,25 +680,22 @@ function StudentProfile() {
 
           background: #ecfdf5;
 
-          border: 1px solid #d1fae5;
+          border:
+            1px solid #d1fae5;
 
           color: #047857;
 
           font-size: 12px;
-
           font-weight: 700;
 
           box-shadow:
             0 6px 18px
             rgba(16, 185, 129, .07);
-
         }
 
 
         .profile-status-dot {
-
           width: 7px;
-
           height: 7px;
 
           border-radius: 50%;
@@ -339,7 +705,6 @@ function StudentProfile() {
           box-shadow:
             0 0 0 4px
             rgba(16, 185, 129, .10);
-
         }
 
 
@@ -348,7 +713,6 @@ function StudentProfile() {
         ===================================== */
 
         .student-profile-card {
-
           overflow: hidden;
 
           border-radius: 25px;
@@ -363,7 +727,6 @@ function StudentProfile() {
           box-shadow:
             0 22px 60px
             rgba(44, 50, 100, .08);
-
         }
 
 
@@ -372,7 +735,6 @@ function StudentProfile() {
         ===================================== */
 
         .student-profile-hero {
-
           position: relative;
 
           min-height: 225px;
@@ -384,7 +746,6 @@ function StudentProfile() {
           display: flex;
 
           align-items: center;
-
           justify-content: space-between;
 
           gap: 30px;
@@ -409,12 +770,10 @@ function StudentProfile() {
               #5c56ee 48%,
               #527cec 100%
             );
-
         }
 
 
         .profile-hero-grid {
-
           position: absolute;
 
           inset: 0;
@@ -436,12 +795,10 @@ function StudentProfile() {
 
           background-size:
             55px 55px;
-
         }
 
 
         .profile-orb {
-
           position: absolute;
 
           border-radius: 50%;
@@ -455,38 +812,28 @@ function StudentProfile() {
 
           backdrop-filter:
             blur(8px);
-
         }
 
 
         .profile-orb-one {
-
           width: 170px;
-
           height: 170px;
 
           right: 70px;
-
           top: -85px;
-
         }
 
 
         .profile-orb-two {
-
           width: 105px;
-
           height: 105px;
 
           right: 220px;
-
           bottom: -55px;
-
         }
 
 
         .profile-hero-left {
-
           position: relative;
 
           z-index: 2;
@@ -496,29 +843,29 @@ function StudentProfile() {
           align-items: center;
 
           gap: 23px;
-
         }
 
 
-        .profile-avatar-wrap {
+        /* =====================================
+           PROFILE AVATAR
+        ===================================== */
 
+        .profile-avatar-wrap {
           position: relative;
 
           flex-shrink: 0;
-
         }
 
 
         .profile-avatar {
-
           width: 92px;
-
           height: 92px;
+
+          overflow: hidden;
 
           display: flex;
 
           align-items: center;
-
           justify-content: center;
 
           border-radius: 25px;
@@ -548,28 +895,99 @@ function StudentProfile() {
             blur(18px);
 
           font-size: 27px;
-
           font-weight: 800;
+        }
 
+
+        .profile-avatar-image {
+          width: 100%;
+          height: 100%;
+
+          display: block;
+
+          object-fit: cover;
+
+          border-radius: inherit;
+        }
+
+
+        /* =====================================
+           CAMERA BUTTON
+        ===================================== */
+
+        .profile-camera-button {
+          position: absolute;
+
+          right: -7px;
+          bottom: -7px;
+
+          z-index: 5;
+
+          width: 34px;
+          height: 34px;
+
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+
+          padding: 0;
+
+          color: #5b50e9;
+
+          background: #ffffff;
+
+          border:
+            3px solid #6259eb;
+
+          border-radius: 11px;
+
+          box-shadow:
+            0 7px 18px
+            rgba(34, 31, 110, .20);
+
+          cursor: pointer;
+
+          transition:
+            transform .18s ease,
+            box-shadow .18s ease;
+        }
+
+
+        .profile-camera-button:hover {
+          transform:
+            translateY(-2px);
+
+          box-shadow:
+            0 10px 22px
+            rgba(34, 31, 110, .27);
+        }
+
+
+        .profile-camera-button:disabled {
+          opacity: .6;
+
+          cursor: not-allowed;
+        }
+
+
+        .profile-image-input {
+          display: none;
         }
 
 
         .profile-avatar-badge {
-
           position: absolute;
 
-          right: -6px;
-
+          left: -6px;
           bottom: -5px;
 
           width: 30px;
-
           height: 30px;
 
           display: flex;
 
           align-items: center;
-
           justify-content: center;
 
           border-radius: 10px;
@@ -579,18 +997,15 @@ function StudentProfile() {
           background: white;
 
           border:
-            3px solid
-            #6259eb;
+            3px solid #6259eb;
 
           box-shadow:
             0 7px 18px
             rgba(34, 31, 110, .20);
-
         }
 
 
         .profile-name {
-
           margin: 0;
 
           color: white;
@@ -602,12 +1017,10 @@ function StudentProfile() {
           font-weight: 800;
 
           letter-spacing: -.025em;
-
         }
 
 
         .profile-meta-row {
-
           display: flex;
 
           flex-wrap: wrap;
@@ -617,13 +1030,11 @@ function StudentProfile() {
           gap: 9px;
 
           margin-top: 11px;
-
         }
 
 
         .profile-role-pill,
         .profile-number-pill {
-
           display: inline-flex;
 
           align-items: center;
@@ -647,15 +1058,12 @@ function StudentProfile() {
           backdrop-filter:
             blur(10px);
 
-          font-size: 11px;
-
+          font-size: 12px;
           font-weight: 700;
-
         }
 
 
         .profile-hero-right {
-
           position: relative;
 
           z-index: 2;
@@ -675,54 +1083,45 @@ function StudentProfile() {
 
           backdrop-filter:
             blur(14px);
-
         }
 
 
         .hero-mini-label {
-
           display: block;
 
           margin-bottom: 5px;
 
           color:
-            rgba(255,255,255,.60);
+            rgba(255,255,255,.64);
 
-          font-size: 10px;
-
+          font-size: 11px;
           font-weight: 700;
 
           text-transform: uppercase;
 
           letter-spacing: .09em;
-
         }
 
 
         .hero-mini-value {
-
           color: white;
 
-          font-size: 13px;
-
+          font-size: 14px;
           font-weight: 700;
 
           line-height: 1.5;
 
           word-break: break-word;
-
         }
 
 
         .hero-mini-divider {
-
           height: 1px;
 
           margin: 14px 0;
 
           background:
             rgba(255,255,255,.14);
-
         }
 
 
@@ -731,7 +1130,6 @@ function StudentProfile() {
         ===================================== */
 
         .profile-content {
-
           padding: 30px;
 
           background:
@@ -743,19 +1141,180 @@ function StudentProfile() {
             ),
 
             white;
+        }
 
+
+        /* =====================================
+           PROFILE PICTURE UPLOAD PANEL
+        ===================================== */
+
+        .profile-photo-panel {
+          display: flex;
+
+          align-items: center;
+          justify-content: space-between;
+
+          gap: 20px;
+
+          margin-bottom: 27px;
+
+          padding: 18px 20px;
+
+          background:
+            linear-gradient(
+              135deg,
+              #f8f8ff,
+              #f4f7ff
+            );
+
+          border:
+            1px solid #e4e5fb;
+
+          border-radius: 16px;
+        }
+
+
+        .profile-photo-panel-left {
+          display: flex;
+
+          align-items: center;
+
+          gap: 13px;
+        }
+
+
+        .profile-photo-panel-icon {
+          width: 43px;
+          height: 43px;
+
+          flex-shrink: 0;
+
+          display: flex;
+
+          align-items: center;
+          justify-content: center;
+
+          color: #5d54e9;
+
+          background: #ececff;
+
+          border-radius: 12px;
+        }
+
+
+        .profile-photo-panel-left strong {
+          display: block;
+
+          margin-bottom: 3px;
+
+          color: #29314b;
+
+          font-size: 13px;
+          font-weight: 800;
+        }
+
+
+        .profile-photo-panel-left span {
+          color: #8a94a8;
+
+          font-size: 11px;
+          line-height: 1.5;
+        }
+
+
+        .profile-photo-actions {
+          display: flex;
+
+          align-items: center;
+
+          gap: 9px;
+        }
+
+
+        .profile-photo-cancel-button,
+        .profile-photo-upload-button {
+          min-height: 38px;
+
+          display: inline-flex;
+
+          align-items: center;
+          justify-content: center;
+
+          gap: 7px;
+
+          padding: 0 14px;
+
+          border-radius: 10px;
+
+          font-size: 11px;
+          font-weight: 750;
+
+          cursor: pointer;
+        }
+
+
+        .profile-photo-cancel-button {
+          color: #667085;
+
+          background: white;
+
+          border:
+            1px solid #dfe3ec;
+        }
+
+
+        .profile-photo-upload-button {
+          color: white;
+
+          background:
+            linear-gradient(
+              135deg,
+              #5d50e8,
+              #6e64f2
+            );
+
+          border: none;
+
+          box-shadow:
+            0 6px 16px
+            rgba(93, 80, 232, .18);
+        }
+
+
+        .profile-photo-upload-button:disabled,
+        .profile-photo-cancel-button:disabled {
+          opacity: .55;
+
+          cursor: not-allowed;
+        }
+
+
+        .profile-image-error {
+          margin:
+            -14px 0 22px;
+
+          padding: 11px 13px;
+
+          color: #b42318;
+
+          background: #fff1f0;
+
+          border:
+            1px solid #ffd5d2;
+
+          border-radius: 10px;
+
+          font-size: 12px;
+          font-weight: 650;
         }
 
 
         .profile-section-heading {
-
           margin-bottom: 18px;
-
         }
 
 
         .profile-section-title {
-
           display: flex;
 
           align-items: center;
@@ -766,31 +1325,24 @@ function StudentProfile() {
 
           color: #182230;
 
-          font-size: 16px;
-
+          font-size: 17px;
           font-weight: 800;
-
         }
 
 
         .profile-section-title svg {
-
           color: #6255ea;
-
         }
 
 
         .profile-section-description {
-
-          margin:
-            5px 0 0;
+          margin: 5px 0 0;
 
           color: #98a2b3;
 
-          font-size: 11px;
+          font-size: 12px;
 
           line-height: 1.5;
-
         }
 
 
@@ -799,19 +1351,19 @@ function StudentProfile() {
         ===================================== */
 
         .profile-information-grid {
-
           display: grid;
 
           grid-template-columns:
-            repeat(2, minmax(0, 1fr));
+            repeat(
+              2,
+              minmax(0, 1fr)
+            );
 
           gap: 15px;
-
         }
 
 
         .profile-info-card {
-
           position: relative;
 
           min-height: 105px;
@@ -832,7 +1384,6 @@ function StudentProfile() {
             1px solid #eaedf5;
 
           background:
-
             linear-gradient(
               145deg,
               #fafbff,
@@ -843,12 +1394,10 @@ function StudentProfile() {
             transform .2s ease,
             border-color .2s ease,
             box-shadow .2s ease;
-
         }
 
 
         .profile-info-card:hover {
-
           transform:
             translateY(-2px);
 
@@ -858,36 +1407,29 @@ function StudentProfile() {
           box-shadow:
             0 12px 25px
             rgba(76, 65, 185, .07);
-
         }
 
 
         .profile-info-card::after {
-
           content: "";
 
           position: absolute;
 
           width: 75px;
-
           height: 75px;
 
           right: -35px;
-
           bottom: -40px;
 
           border-radius: 50%;
 
           background:
             rgba(104, 87, 238, .035);
-
         }
 
 
         .profile-info-icon {
-
           width: 47px;
-
           height: 47px;
 
           flex-shrink: 0;
@@ -895,7 +1437,6 @@ function StudentProfile() {
           display: flex;
 
           align-items: center;
-
           justify-content: center;
 
           border-radius: 13px;
@@ -903,7 +1444,6 @@ function StudentProfile() {
           color: #5b5ff0;
 
           background:
-
             linear-gradient(
               145deg,
               #efefff,
@@ -911,61 +1451,50 @@ function StudentProfile() {
             );
 
           border:
-            1px solid
-            #e8e8ff;
-
+            1px solid #e8e8ff;
         }
 
 
         .profile-info-content {
-
           min-width: 0;
-
         }
 
 
         .profile-info-label {
-
           display: block;
 
           margin-bottom: 5px;
 
           color: #98a2b3;
 
-          font-size: 10px;
-
-          font-weight: 600;
+          font-size: 11px;
+          font-weight: 700;
 
           text-transform: uppercase;
 
           letter-spacing: .055em;
-
         }
 
 
         .profile-info-value {
-
           display: block;
 
           color: #182230;
 
           font-size: 14px;
-
           font-weight: 750;
 
           line-height: 1.45;
 
           word-break: break-word;
-
         }
 
 
         /* =====================================
-           BOTTOM SECURITY NOTE
+           SECURITY NOTE
         ===================================== */
 
         .profile-security-note {
-
           margin-top: 22px;
 
           padding: 15px 17px;
@@ -990,17 +1519,14 @@ function StudentProfile() {
           border:
             1px solid #e9ebf5;
 
-          font-size: 11px;
+          font-size: 12px;
 
           line-height: 1.55;
-
         }
 
 
         .profile-security-icon {
-
           width: 35px;
-
           height: 35px;
 
           flex-shrink: 0;
@@ -1008,7 +1534,6 @@ function StudentProfile() {
           display: flex;
 
           align-items: center;
-
           justify-content: center;
 
           border-radius: 10px;
@@ -1016,7 +1541,6 @@ function StudentProfile() {
           color: #5f56e8;
 
           background: #ececff;
-
         }
 
 
@@ -1025,28 +1549,23 @@ function StudentProfile() {
         ===================================== */
 
         .student-profile-message {
-
           min-height: 350px;
 
           display: flex;
 
           align-items: center;
-
           justify-content: center;
 
           gap: 10px;
 
           color: #7c879e;
 
-          font-size: 13px;
-
+          font-size: 14px;
         }
 
 
         .profile-loader {
-
           width: 18px;
-
           height: 18px;
 
           border-radius: 50%;
@@ -1060,12 +1579,10 @@ function StudentProfile() {
           animation:
             studentProfileSpin
             .8s linear infinite;
-
         }
 
 
         .student-profile-error {
-
           margin: 45px;
 
           padding: 14px 16px;
@@ -1079,8 +1596,7 @@ function StudentProfile() {
           border:
             1px solid #fee2e2;
 
-          font-size: 13px;
-
+          font-size: 14px;
         }
 
 
@@ -1101,28 +1617,22 @@ function StudentProfile() {
         @media (max-width: 950px) {
 
           .student-profile-page {
-
             padding:
               32px 30px 50px;
-
           }
 
 
           .student-profile-hero {
-
             align-items:
               flex-start;
 
             flex-direction:
               column;
-
           }
 
 
           .profile-hero-right {
-
             width: 100%;
-
           }
 
         }
@@ -1131,84 +1641,80 @@ function StudentProfile() {
         @media (max-width: 700px) {
 
           .student-profile-page {
-
             padding:
               26px 20px 45px;
-
           }
 
 
           .student-profile-page-header {
-
             align-items:
               flex-start;
 
             flex-direction:
               column;
-
           }
 
 
           .student-profile-title {
-
-            font-size:
-              28px;
-
+            font-size: 28px;
           }
 
 
           .student-profile-hero {
-
             padding:
               30px 24px;
-
           }
 
 
           .profile-hero-left {
-
             align-items:
               flex-start;
-
           }
 
 
           .profile-avatar {
-
             width: 76px;
-
             height: 76px;
 
-            border-radius:
-              20px;
+            border-radius: 20px;
 
-            font-size:
-              22px;
-
+            font-size: 22px;
           }
 
 
           .profile-name {
-
-            font-size:
-              23px;
-
+            font-size: 23px;
           }
 
 
           .profile-information-grid {
-
             grid-template-columns:
               1fr;
-
           }
 
 
           .profile-content {
+            padding: 22px;
+          }
 
-            padding:
-              22px;
 
+          .profile-photo-panel {
+            align-items:
+              flex-start;
+
+            flex-direction:
+              column;
+          }
+
+
+          .profile-photo-actions {
+            width: 100%;
+          }
+
+
+          .profile-photo-cancel-button,
+          .profile-photo-upload-button {
+            flex: 1;
           }
 
         }
@@ -1217,18 +1723,25 @@ function StudentProfile() {
         @media (max-width: 480px) {
 
           .profile-hero-left {
-
             flex-direction:
               column;
-
           }
 
 
           .profile-meta-row {
+            margin-top: 9px;
+          }
 
-            margin-top:
-              9px;
 
+          .profile-photo-actions {
+            flex-direction:
+              column;
+          }
+
+
+          .profile-photo-cancel-button,
+          .profile-photo-upload-button {
+            width: 100%;
           }
 
         }
@@ -1245,7 +1758,9 @@ function StudentProfile() {
 
         <div className="student-profile-page-header">
 
+
           <div>
+
 
             <div className="student-profile-eyebrow">
 
@@ -1270,6 +1785,7 @@ function StudentProfile() {
 
             </p>
 
+
           </div>
 
 
@@ -1280,6 +1796,7 @@ function StudentProfile() {
             Active Student
 
           </div>
+
 
         </div>
 
@@ -1302,12 +1819,14 @@ function StudentProfile() {
 
             <div className="profile-hero-grid" />
 
+
             <div
               className="
                 profile-orb
                 profile-orb-one
               "
             />
+
 
             <div
               className="
@@ -1324,25 +1843,89 @@ function StudentProfile() {
 
               <div className="profile-avatar-wrap">
 
+
                 <div className="profile-avatar">
 
-                  {getInitials(
-                    student?.name
+
+                  {displayedProfileImage ? (
+
+                    <img
+                      src={
+                        displayedProfileImage
+                      }
+                      alt={
+                        `${student?.name || "Student"} profile`
+                      }
+                      className="profile-avatar-image"
+                    />
+
+                  ) : (
+
+                    getInitials(
+                      student?.name
+                    )
+
                   )}
+
 
                 </div>
 
+
+                {/* VERIFIED BADGE */}
 
                 <div className="profile-avatar-badge">
 
-                  <BadgeCheck size={16} />
+                  <BadgeCheck
+                    size={16}
+                  />
 
                 </div>
+
+
+                {/* CAMERA BUTTON */}
+
+                <button
+                  type="button"
+                  className="profile-camera-button"
+                  title="Change profile picture"
+                  disabled={
+                    uploadingImage
+                  }
+                  onClick={() =>
+                    fileInputRef.current
+                      ?.click()
+                  }
+                >
+
+                  <Camera size={15} />
+
+                </button>
+
+
+                {/* HIDDEN IMAGE INPUT */}
+
+                <input
+                  ref={
+                    fileInputRef
+                  }
+                  className="profile-image-input"
+                  type="file"
+                  accept="
+                    image/jpeg,
+                    image/png,
+                    image/webp
+                  "
+                  onChange={
+                    handleImageChange
+                  }
+                />
+
 
               </div>
 
 
               <div>
+
 
                 <h2 className="profile-name">
 
@@ -1378,9 +1961,12 @@ function StudentProfile() {
 
                   </span>
 
+
                 </div>
 
+
               </div>
+
 
             </div>
 
@@ -1388,6 +1974,7 @@ function StudentProfile() {
             {/* RIGHT */}
 
             <div className="profile-hero-right">
+
 
               <span className="hero-mini-label">
 
@@ -1421,7 +2008,9 @@ function StudentProfile() {
 
               </div>
 
+
             </div>
+
 
           </div>
 
@@ -1433,7 +2022,111 @@ function StudentProfile() {
           <div className="profile-content">
 
 
+            {/* ==================================
+                SELECTED PHOTO ACTIONS
+            ================================== */}
+
+            {selectedImage && (
+
+              <div className="profile-photo-panel">
+
+
+                <div className="profile-photo-panel-left">
+
+
+                  <div className="profile-photo-panel-icon">
+
+                    <Camera size={19} />
+
+                  </div>
+
+
+                  <div>
+
+                    <strong>
+                      New profile picture selected
+                    </strong>
+
+                    <span>
+                      {selectedImage.name}
+                    </span>
+
+                  </div>
+
+
+                </div>
+
+
+                <div className="profile-photo-actions">
+
+
+                  <button
+                    type="button"
+                    className="profile-photo-cancel-button"
+                    onClick={
+                      cancelImageSelection
+                    }
+                    disabled={
+                      uploadingImage
+                    }
+                  >
+
+                    <X size={14} />
+
+                    Cancel
+
+                  </button>
+
+
+                  <button
+                    type="button"
+                    className="profile-photo-upload-button"
+                    onClick={
+                      handleUploadProfileImage
+                    }
+                    disabled={
+                      uploadingImage
+                    }
+                  >
+
+                    <UploadCloud
+                      size={15}
+                    />
+
+                    {uploadingImage
+                      ? "Uploading..."
+                      : "Upload Photo"}
+
+                  </button>
+
+
+                </div>
+
+
+              </div>
+
+            )}
+
+
+            {/* IMAGE ERROR */}
+
+            {imageError && (
+
+              <div className="profile-image-error">
+
+                {imageError}
+
+              </div>
+
+            )}
+
+
+            {/* ==================================
+                ACCOUNT INFORMATION
+            ================================== */}
+
             <div className="profile-section-heading">
+
 
               <h3 className="profile-section-title">
 
@@ -1446,10 +2139,11 @@ function StudentProfile() {
 
               <p className="profile-section-description">
 
-                Your CampusLearn identity and
-                academic details.
+                Your CampusLearn identity
+                and academic details.
 
               </p>
+
 
             </div>
 
@@ -1508,7 +2202,8 @@ function StudentProfile() {
                 }
                 label="Degree Programme"
                 value={
-                  student?.degree || "—"
+                  student?.degree ||
+                  "—"
                 }
               />
 
@@ -1523,7 +2218,8 @@ function StudentProfile() {
                 }
                 label="Academic Batch"
                 value={
-                  student?.batch || "—"
+                  student?.batch ||
+                  "—"
                 }
               />
 
@@ -1531,13 +2227,18 @@ function StudentProfile() {
             </div>
 
 
-            {/* SECURITY */}
+            {/* ==================================
+                SECURITY
+            ================================== */}
 
             <div className="profile-security-note">
 
+
               <div className="profile-security-icon">
 
-                <ShieldCheck size={18} />
+                <ShieldCheck
+                  size={18}
+                />
 
               </div>
 
@@ -1552,13 +2253,18 @@ function StudentProfile() {
 
               </div>
 
+
             </div>
+
 
           </div>
 
+
         </div>
 
+
       </div>
+
 
     </>
 
@@ -1581,6 +2287,7 @@ function ProfileItem({
 
     <div className="profile-info-card">
 
+
       <div className="profile-info-icon">
 
         {icon}
@@ -1589,6 +2296,7 @@ function ProfileItem({
 
 
       <div className="profile-info-content">
+
 
         <span className="profile-info-label">
 
@@ -1603,7 +2311,9 @@ function ProfileItem({
 
         </strong>
 
+
       </div>
+
 
     </div>
 

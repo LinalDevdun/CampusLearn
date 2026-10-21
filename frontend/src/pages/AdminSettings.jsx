@@ -20,12 +20,19 @@ import {
   CalendarDays,
   LockKeyhole,
   KeyRound,
+  Sparkles,
+  Activity,
+  CheckCircle2,
+  TriangleAlert,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 import "../styles/adminSettings.css";
 
 
 function AdminSettings() {
+
   const navigate =
     useNavigate();
 
@@ -38,6 +45,7 @@ function AdminSettings() {
     settings,
     setSettings,
   ] = useState({
+
     systemName: "",
     contactEmail: "",
     semester: "Semester 1",
@@ -45,6 +53,7 @@ function AdminSettings() {
     emailNotifications: true,
     assignmentAlerts: true,
     maintenanceMode: false,
+
   });
 
 
@@ -56,10 +65,34 @@ function AdminSettings() {
     passwordForm,
     setPasswordForm,
   ] = useState({
+
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
+
   });
+
+
+  /* ========================================
+     PASSWORD VISIBILITY
+  ======================================== */
+
+  const [
+    showCurrentPassword,
+    setShowCurrentPassword,
+  ] = useState(false);
+
+
+  const [
+    showNewPassword,
+    setShowNewPassword,
+  ] = useState(false);
+
+
+  const [
+    showConfirmPassword,
+    setShowConfirmPassword,
+  ] = useState(false);
 
 
   /* ========================================
@@ -261,6 +294,7 @@ function AdminSettings() {
 
       setSettings(
         (previousSettings) => ({
+
           ...previousSettings,
 
           [name]:
@@ -268,6 +302,7 @@ function AdminSettings() {
             "checkbox"
               ? checked
               : value,
+
         })
       );
 
@@ -292,8 +327,12 @@ function AdminSettings() {
 
       setPasswordForm(
         (previousForm) => ({
+
           ...previousForm,
-          [name]: value,
+
+          [name]:
+            value,
+
         })
       );
 
@@ -405,6 +444,7 @@ function AdminSettings() {
             "http://localhost:5000/admin/settings",
 
             {
+
               systemName:
                 settings.systemName,
 
@@ -425,6 +465,7 @@ function AdminSettings() {
 
               maintenanceMode:
                 settings.maintenanceMode,
+
             },
 
             {
@@ -656,11 +697,13 @@ function AdminSettings() {
           "http://localhost:5000/admin/change-password",
 
           {
+
             currentPassword:
               passwordForm.currentPassword,
 
             newPassword:
               passwordForm.newPassword,
+
           },
 
           {
@@ -673,9 +716,11 @@ function AdminSettings() {
 
 
         setPasswordForm({
+
           currentPassword: "",
           newPassword: "",
           confirmPassword: "",
+
         });
 
 
@@ -688,11 +733,6 @@ function AdminSettings() {
           "Password changed successfully! Redirecting to login..."
         );
 
-
-        /*
-          Log the Admin out after
-          changing the password.
-        */
 
         setTimeout(() => {
 
@@ -767,6 +807,53 @@ function AdminSettings() {
 
 
   /* ========================================
+     PASSWORD STRENGTH
+  ======================================== */
+
+  const passwordChecks = {
+
+    length:
+      passwordForm
+        .newPassword
+        .length >= 6,
+
+    uppercase:
+      /[A-Z]/.test(
+        passwordForm
+          .newPassword
+      ),
+
+    number:
+      /[0-9]/.test(
+        passwordForm
+          .newPassword
+      ),
+
+    symbol:
+      /[^A-Za-z0-9]/.test(
+        passwordForm
+          .newPassword
+      ),
+
+  };
+
+
+  const strengthScore =
+    Object.values(
+      passwordChecks
+    ).filter(Boolean).length;
+
+
+  const strengthLabels = [
+    "Waiting",
+    "Weak",
+    "Fair",
+    "Good",
+    "Strong",
+  ];
+
+
+  /* ========================================
      LOADING
   ======================================== */
 
@@ -776,18 +863,20 @@ function AdminSettings() {
 
       <div className="admin-settings-page">
 
-        <section className="aset-card">
+        <div className="aset-page-state">
 
-          <h2>
-            Loading Settings...
-          </h2>
+          <div className="aset-spinner" />
+
+          <h3>
+            Loading system controls
+          </h3>
 
           <p>
-            Getting system settings
+            Getting CampusLearn settings
             from PostgreSQL.
           </p>
 
-        </section>
+        </div>
 
       </div>
 
@@ -805,23 +894,38 @@ function AdminSettings() {
           HEADER
       ==================================== */}
 
-      <section className="aset-header">
+      <section className="aset-page-header">
+
 
         <div>
+
+
+          <div className="aset-eyebrow">
+
+            <Sparkles size={12} />
+
+            ADMIN CONTROL CENTER
+
+          </div>
+
 
           <h1>
             System Settings
           </h1>
 
+
           <p>
-            Configure CampusLearn system,
-            academic and security preferences.
+            Configure the CampusLearn
+            environment, academic cycle,
+            alerts and security.
           </p>
+
 
         </div>
 
 
         <button
+          type="button"
           className="aset-save-top"
           onClick={
             handleSave
@@ -831,7 +935,7 @@ function AdminSettings() {
           }
         >
 
-          <Save size={16} />
+          <Save size={15} />
 
           {saving
             ? "Saving..."
@@ -839,93 +943,230 @@ function AdminSettings() {
 
         </button>
 
+
       </section>
 
 
-
       {/* ====================================
-          SETTINGS MESSAGE
+          MESSAGE
       ==================================== */}
 
       {message && (
 
         <div
-          style={{
-            marginBottom:
-              "22px",
-
-            padding:
-              "13px 16px",
-
-            borderRadius:
-              "10px",
-
-            fontSize:
-              "14px",
-
-            fontWeight:
-              600,
-
-            backgroundColor:
-              messageType ===
-              "success"
-                ? "#ecfdf5"
-                : "#fef2f2",
-
-            color:
-              messageType ===
-              "success"
-                ? "#047857"
-                : "#dc2626",
-
-            border:
-              messageType ===
-              "success"
-                ? "1px solid #a7f3d0"
-                : "1px solid #fecaca",
-          }}
+          className={
+            messageType ===
+            "success"
+              ? "aset-message aset-message-success"
+              : "aset-message aset-message-error"
+          }
         >
 
-          {message}
+          {messageType ===
+          "success" ? (
+
+            <CheckCircle2
+              size={16}
+            />
+
+          ) : (
+
+            <TriangleAlert
+              size={16}
+            />
+
+          )}
+
+          <span>
+            {message}
+          </span>
 
         </div>
 
       )}
 
 
+      {/* ====================================
+          CONTROL HERO
+      ==================================== */}
 
-      <div className="aset-grid">
+      <section className="aset-control-hero">
 
 
-        {/* ==================================
-            GENERAL SETTINGS
-        ================================== */}
+        <div className="aset-control-main">
 
-        <section className="aset-card">
 
-          <div className="aset-card-header">
+          <div className="aset-control-kicker">
+
+            <Settings size={13} />
+
+            LIVE SYSTEM CONFIGURATION
+
+          </div>
+
+
+          <h2>
+
+            {settings.systemName ||
+              "CampusLearn"}
+
+          </h2>
+
+
+          <p>
+
+            Central administration
+            workspace for your university
+            learning environment.
+
+          </p>
+
+
+          <div className="aset-control-tags">
+
+
+            <span>
+
+              <CalendarDays
+                size={12}
+              />
+
+              {settings.semester}
+
+            </span>
+
+
+            <span>
+
+              <GraduationCapIcon />
+
+              Academic Year{" "}
+              {settings.academicYear}
+
+            </span>
+
+
+            <span>
+
+              <Mail size={12} />
+
+              {
+                settings.contactEmail ||
+                "No contact email"
+              }
+
+            </span>
+
+
+          </div>
+
+
+        </div>
+
+
+        {/* ENVIRONMENT STATUS */}
+
+        <div className="aset-environment">
+
+
+          <div className="aset-environment-top">
+
+            <div>
+
+              <span>
+                ENVIRONMENT STATUS
+              </span>
+
+              <strong>
+                Operational
+              </strong>
+
+            </div>
+
+
+            <div className="aset-environment-icon">
+
+              <Activity size={19} />
+
+            </div>
+
+          </div>
+
+
+          <EnvironmentRow
+            label="Authentication"
+            value="Active"
+            active
+          />
+
+
+          <EnvironmentRow
+            label="PostgreSQL"
+            value="Connected"
+            active
+          />
+
+
+          <EnvironmentRow
+            label="Maintenance"
+            value={
+              settings
+                .maintenanceMode
+                ? "Enabled"
+                : "Off"
+            }
+            warning={
+              settings
+                .maintenanceMode
+            }
+          />
+
+
+        </div>
+
+
+      </section>
+
+
+      {/* ====================================
+          CONFIGURATION CANVAS
+      ==================================== */}
+
+      <section className="aset-config-grid">
+
+
+        {/* GENERAL */}
+
+        <div className="aset-workspace-card">
+
+
+          <div className="aset-workspace-header">
+
 
             <div className="aset-icon aset-teal">
 
-              <Settings
-                size={20}
-              />
+              <Settings size={20} />
 
             </div>
 
 
             <div>
 
+              <span>
+                PLATFORM IDENTITY
+              </span>
+
               <h2>
-                General Settings
+                General Configuration
               </h2>
 
               <p>
-                Basic CampusLearn
-                system information.
+                Core system identity and
+                administration contact.
               </p>
 
             </div>
+
 
           </div>
 
@@ -939,27 +1180,21 @@ function AdminSettings() {
 
             <div className="aset-input">
 
-              <School
-                size={16}
-              />
-
+              <School size={16} />
 
               <input
                 type="text"
-
                 name="systemName"
-
                 value={
                   settings.systemName
                 }
-
                 onChange={
                   handleChange
                 }
-
                 disabled={
                   saving
                 }
+                placeholder="CampusLearn"
               />
 
             </div>
@@ -976,44 +1211,51 @@ function AdminSettings() {
 
             <div className="aset-input">
 
-              <Mail
-                size={16}
-              />
-
+              <Mail size={16} />
 
               <input
                 type="email"
-
                 name="contactEmail"
-
                 value={
                   settings.contactEmail
                 }
-
                 onChange={
                   handleChange
                 }
-
                 disabled={
                   saving
                 }
+                placeholder="admin@campuslearn.lk"
               />
 
             </div>
 
           </div>
 
-        </section>
+
+          <div className="aset-workspace-footer">
+
+            <span>
+              Public system identity
+            </span>
+
+            <CheckCircle2
+              size={14}
+            />
+
+          </div>
 
 
+        </div>
 
-        {/* ==================================
-            ACADEMIC SETTINGS
-        ================================== */}
 
-        <section className="aset-card">
+        {/* ACADEMIC */}
 
-          <div className="aset-card-header">
+        <div className="aset-workspace-card">
+
+
+          <div className="aset-workspace-header">
+
 
             <div className="aset-icon aset-purple">
 
@@ -1026,114 +1268,163 @@ function AdminSettings() {
 
             <div>
 
+              <span>
+                ACADEMIC CYCLE
+              </span>
+
               <h2>
-                Academic Settings
+                Academic Period
               </h2>
 
               <p>
-                Configure the active
-                academic period.
+                Define the semester and
+                academic year currently in
+                operation.
               </p>
 
             </div>
 
-          </div>
-
-
-          <div className="aset-form-group">
-
-            <label>
-              Current Semester
-            </label>
-
-
-            <select
-              name="semester"
-
-              value={
-                settings.semester
-              }
-
-              onChange={
-                handleChange
-              }
-
-              disabled={
-                saving
-              }
-            >
-
-              <option value="Semester 1">
-                Semester 1
-              </option>
-
-              <option value="Semester 2">
-                Semester 2
-              </option>
-
-            </select>
 
           </div>
 
 
-          <div className="aset-form-group">
-
-            <label>
-              Academic Year
-            </label>
+          <div className="aset-academic-display">
 
 
-            <select
-              name="academicYear"
+            <div>
 
-              value={
-                settings.academicYear
-              }
+              <span>
+                CURRENT PERIOD
+              </span>
 
-              onChange={
-                handleChange
-              }
+              <strong>
+                {settings.semester}
+              </strong>
 
-              disabled={
-                saving
-              }
-            >
+            </div>
 
-              <option value="2026">
-                2026
-              </option>
 
-              <option value="2027">
-                2027
-              </option>
+            <div className="aset-period-divider" />
 
-              <option value="2028">
-                2028
-              </option>
 
-              <option value="2029">
-                2029
-              </option>
+            <div>
 
-              <option value="2030">
-                2030
-              </option>
+              <span>
+                ACADEMIC YEAR
+              </span>
 
-            </select>
+              <strong>
+                {settings.academicYear}
+              </strong>
+
+            </div>
+
 
           </div>
 
-        </section>
+
+          <div className="aset-form-row">
 
 
+            <div className="aset-form-group">
 
-        {/* ==================================
-            NOTIFICATIONS
-        ================================== */}
+              <label>
+                Current Semester
+              </label>
 
-        <section className="aset-card">
+              <select
+                name="semester"
+                value={
+                  settings.semester
+                }
+                onChange={
+                  handleChange
+                }
+                disabled={
+                  saving
+                }
+              >
 
-          <div className="aset-card-header">
+                <option value="Semester 1">
+                  Semester 1
+                </option>
+
+                <option value="Semester 2">
+                  Semester 2
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <div className="aset-form-group">
+
+              <label>
+                Academic Year
+              </label>
+
+              <select
+                name="academicYear"
+                value={
+                  settings.academicYear
+                }
+                onChange={
+                  handleChange
+                }
+                disabled={
+                  saving
+                }
+              >
+
+                <option value="2026">
+                  2026
+                </option>
+
+                <option value="2027">
+                  2027
+                </option>
+
+                <option value="2028">
+                  2028
+                </option>
+
+                <option value="2029">
+                  2029
+                </option>
+
+                <option value="2030">
+                  2030
+                </option>
+
+              </select>
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+
+      </section>
+
+
+      {/* ====================================
+          OPERATIONS
+      ==================================== */}
+
+      <section className="aset-operations-grid">
+
+
+        {/* NOTIFICATIONS */}
+
+        <div className="aset-operation-card">
+
+
+          <div className="aset-operation-heading">
+
 
             <div className="aset-icon aset-blue">
 
@@ -1144,118 +1435,69 @@ function AdminSettings() {
 
             <div>
 
+              <span>
+                COMMUNICATION CONTROL
+              </span>
+
               <h2>
-                Notifications
+                Notification Routing
               </h2>
 
               <p>
-                Control system
-                notification preferences.
+                Decide which platform
+                events produce alerts.
               </p>
 
             </div>
 
-          </div>
-
-
-          <div className="aset-toggle-row">
-
-            <div>
-
-              <strong>
-                Email Notifications
-              </strong>
-
-              <span>
-                Send important system
-                updates by email.
-              </span>
-
-            </div>
-
-
-            <label className="aset-switch">
-
-              <input
-                type="checkbox"
-
-                name="emailNotifications"
-
-                checked={
-                  settings
-                    .emailNotifications
-                }
-
-                onChange={
-                  handleChange
-                }
-
-                disabled={
-                  saving
-                }
-              />
-
-              <span />
-
-            </label>
 
           </div>
 
 
-          <div className="aset-toggle-row">
-
-            <div>
-
-              <strong>
-                Assignment Alerts
-              </strong>
-
-              <span>
-                Notify users about
-                assignment activity.
-              </span>
-
-            </div>
-
-
-            <label className="aset-switch">
-
-              <input
-                type="checkbox"
-
-                name="assignmentAlerts"
-
-                checked={
-                  settings
-                    .assignmentAlerts
-                }
-
-                onChange={
-                  handleChange
-                }
-
-                disabled={
-                  saving
-                }
-              />
-
-              <span />
-
-            </label>
-
-          </div>
-
-        </section>
+          <ToggleSetting
+            title="Email Notifications"
+            description="Send important CampusLearn system updates by email."
+            name="emailNotifications"
+            checked={
+              settings
+                .emailNotifications
+            }
+            onChange={
+              handleChange
+            }
+            disabled={
+              saving
+            }
+          />
 
 
+          <ToggleSetting
+            title="Assignment Alerts"
+            description="Notify users about assignment and coursework activity."
+            name="assignmentAlerts"
+            checked={
+              settings
+                .assignmentAlerts
+            }
+            onChange={
+              handleChange
+            }
+            disabled={
+              saving
+            }
+          />
 
-        {/* ==================================
-            SECURITY
-        ================================== */}
 
-        <section className="aset-card">
+        </div>
 
-          <div className="aset-card-header">
+
+        {/* SECURITY */}
+
+        <div className="aset-operation-card">
+
+
+          <div className="aset-operation-heading">
+
 
             <div className="aset-icon aset-orange">
 
@@ -1268,36 +1510,46 @@ function AdminSettings() {
 
             <div>
 
+              <span>
+                PLATFORM SECURITY
+              </span>
+
               <h2>
-                Security
+                Security & Availability
               </h2>
 
               <p>
-                Manage system security
-                and access settings.
+                Review infrastructure and
+                control platform access.
               </p>
 
             </div>
 
+
           </div>
 
 
-          <div className="aset-security-item">
+          <div className="aset-security-row">
 
-            <LockKeyhole
-              size={18}
-            />
+
+            <div className="aset-security-symbol">
+
+              <LockKeyhole
+                size={17}
+              />
+
+            </div>
 
 
             <div>
 
               <strong>
-                Authentication
+                JWT Authentication
               </strong>
 
               <span>
-                JWT authentication
-                currently enabled.
+                Role-based authentication
+                is enabled.
               </span>
 
             </div>
@@ -1309,25 +1561,31 @@ function AdminSettings() {
 
             </span>
 
+
           </div>
 
 
-          <div className="aset-security-item">
+          <div className="aset-security-row">
 
-            <Database
-              size={18}
-            />
+
+            <div className="aset-security-symbol">
+
+              <Database
+                size={17}
+              />
+
+            </div>
 
 
             <div>
 
               <strong>
-                Database
+                PostgreSQL Database
               </strong>
 
               <span>
-                PostgreSQL connection
-                available.
+                Primary application database
+                is available.
               </span>
 
             </div>
@@ -1339,317 +1597,679 @@ function AdminSettings() {
 
             </span>
 
-          </div>
-
-        </section>
-
-      </div>
-
-
-
-      {/* ====================================
-          CHANGE PASSWORD
-      ==================================== */}
-
-      <section
-        className="aset-card"
-        style={{
-          marginTop: "24px",
-        }}
-      >
-
-        <div className="aset-card-header">
-
-          <div className="aset-icon aset-orange">
-
-            <KeyRound
-              size={20}
-            />
 
           </div>
 
 
-          <div>
+          <div
+            className={
+              settings
+                .maintenanceMode
+                ? "aset-maintenance-control aset-maintenance-active"
+                : "aset-maintenance-control"
+            }
+          >
 
-            <h2>
-              Change Password
-            </h2>
 
-            <p>
-              Update the password for
-              your administrator account.
-            </p>
+            <div>
+
+
+              <div className="aset-maintenance-label">
+
+                <TriangleAlert
+                  size={16}
+                />
+
+                <strong>
+                  Maintenance Mode
+                </strong>
+
+              </div>
+
+
+              <p>
+                Temporarily restrict normal
+                users from accessing
+                CampusLearn.
+              </p>
+
+
+            </div>
+
+
+            <label className="aset-switch">
+
+              <input
+                type="checkbox"
+                name="maintenanceMode"
+                checked={
+                  settings
+                    .maintenanceMode
+                }
+                onChange={
+                  handleChange
+                }
+                disabled={
+                  saving
+                }
+              />
+
+              <span />
+
+            </label>
+
 
           </div>
+
 
         </div>
 
 
-        {passwordMessage && (
+      </section>
 
-          <div
-            style={{
-              marginBottom:
-                "18px",
 
-              padding:
-                "12px 14px",
+      {/* ====================================
+          ADMIN PASSWORD VAULT
+      ==================================== */}
 
-              borderRadius:
-                "10px",
+      <section className="aset-password-vault">
 
-              fontSize:
-                "13px",
 
-              fontWeight:
-                600,
+        <div className="aset-vault-left">
 
-              background:
-                passwordMessageType ===
-                "success"
-                  ? "#ecfdf5"
-                  : "#fef2f2",
 
-              color:
-                passwordMessageType ===
-                "success"
-                  ? "#047857"
-                  : "#dc2626",
+          <div className="aset-vault-heading">
 
-              border:
-                passwordMessageType ===
-                "success"
-                  ? "1px solid #a7f3d0"
-                  : "1px solid #fecaca",
-            }}
-          >
 
-            {passwordMessage}
+            <div className="aset-vault-icon">
+
+              <KeyRound size={21} />
+
+            </div>
+
+
+            <div>
+
+              <span>
+                ADMIN CREDENTIAL VAULT
+              </span>
+
+              <h2>
+                Change Administrator Password
+              </h2>
+
+              <p>
+                Update the password used to
+                access this administrator
+                account.
+              </p>
+
+            </div>
+
 
           </div>
 
-        )}
+
+          {passwordMessage && (
+
+            <div
+              className={
+                passwordMessageType ===
+                "success"
+                  ? "aset-message aset-message-success"
+                  : "aset-message aset-message-error"
+              }
+            >
+
+              {passwordMessageType ===
+              "success" ? (
+
+                <CheckCircle2
+                  size={15}
+                />
+
+              ) : (
+
+                <TriangleAlert
+                  size={15}
+                />
+
+              )}
+
+              <span>
+                {passwordMessage}
+              </span>
+
+            </div>
+
+          )}
 
 
-        <form
-          onSubmit={
-            handleChangePassword
-          }
-        >
-
-          <div className="aset-form-group">
-
-            <label>
-              Current Password
-            </label>
+          <form
+            className="aset-password-form"
+            onSubmit={
+              handleChangePassword
+            }
+          >
 
 
-            <div className="aset-input">
+            {/* CURRENT */}
 
-              <LockKeyhole
-                size={16}
-              />
+            <div className="aset-form-group">
+
+              <label>
+                Current Password
+              </label>
 
 
-              <input
-                type="password"
-
+              <PasswordField
+                icon={
+                  <LockKeyhole
+                    size={16}
+                  />
+                }
+                type={
+                  showCurrentPassword
+                    ? "text"
+                    : "password"
+                }
                 name="currentPassword"
-
                 value={
                   passwordForm
                     .currentPassword
                 }
-
                 onChange={
                   handlePasswordChange
                 }
-
                 placeholder="Enter current password"
-
                 autoComplete="current-password"
-
                 disabled={
                   changingPassword
+                }
+                visible={
+                  showCurrentPassword
+                }
+                onToggle={() =>
+                  setShowCurrentPassword(
+                    !showCurrentPassword
+                  )
                 }
               />
 
             </div>
 
-          </div>
+
+            {/* NEW */}
+
+            <div className="aset-form-group">
+
+              <label>
+                New Password
+              </label>
 
 
-
-          <div className="aset-form-group">
-
-            <label>
-              New Password
-            </label>
-
-
-            <div className="aset-input">
-
-              <KeyRound
-                size={16}
-              />
-
-
-              <input
-                type="password"
-
+              <PasswordField
+                icon={
+                  <KeyRound
+                    size={16}
+                  />
+                }
+                type={
+                  showNewPassword
+                    ? "text"
+                    : "password"
+                }
                 name="newPassword"
-
                 value={
                   passwordForm
                     .newPassword
                 }
-
                 onChange={
                   handlePasswordChange
                 }
-
                 placeholder="Enter new password"
-
                 autoComplete="new-password"
-
                 disabled={
                   changingPassword
+                }
+                visible={
+                  showNewPassword
+                }
+                onToggle={() =>
+                  setShowNewPassword(
+                    !showNewPassword
+                  )
                 }
               />
 
             </div>
 
-          </div>
+
+            {/* CONFIRM */}
+
+            <div className="aset-form-group">
+
+              <label>
+                Confirm New Password
+              </label>
 
 
-
-          <div className="aset-form-group">
-
-            <label>
-              Confirm New Password
-            </label>
-
-
-            <div className="aset-input">
-
-              <KeyRound
-                size={16}
-              />
-
-
-              <input
-                type="password"
-
+              <PasswordField
+                icon={
+                  <ShieldCheck
+                    size={16}
+                  />
+                }
+                type={
+                  showConfirmPassword
+                    ? "text"
+                    : "password"
+                }
                 name="confirmPassword"
-
                 value={
                   passwordForm
                     .confirmPassword
                 }
-
                 onChange={
                   handlePasswordChange
                 }
-
                 placeholder="Re-enter new password"
-
                 autoComplete="new-password"
-
                 disabled={
                   changingPassword
+                }
+                visible={
+                  showConfirmPassword
+                }
+                onToggle={() =>
+                  setShowConfirmPassword(
+                    !showConfirmPassword
+                  )
                 }
               />
 
             </div>
 
-          </div>
+
+            <div className="aset-password-action">
+
+              <button
+                type="submit"
+                className="aset-change-password"
+                disabled={
+                  changingPassword
+                }
+              >
+
+                <KeyRound size={15} />
+
+                {changingPassword
+                  ? "Changing..."
+                  : "Change Password"}
+
+              </button>
+
+            </div>
 
 
+          </form>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent:
-                "flex-end",
-              marginTop: "18px",
-            }}
-          >
-
-            <button
-              type="submit"
-
-              className="aset-save-top"
-
-              disabled={
-                changingPassword
-              }
-            >
-
-              <KeyRound
-                size={16}
-              />
-
-
-              {changingPassword
-                ? "Changing..."
-                : "Change Password"}
-
-            </button>
-
-          </div>
-
-        </form>
-
-      </section>
-
-
-
-      {/* ====================================
-          MAINTENANCE MODE
-      ==================================== */}
-
-      <section className="aset-maintenance">
-
-        <div>
-
-          <h2>
-            Maintenance Mode
-          </h2>
-
-          <p>
-            Temporarily restrict normal
-            users from accessing CampusLearn.
-          </p>
 
         </div>
 
 
-        <label className="aset-switch">
+        {/* PASSWORD HEALTH */}
 
-          <input
-            type="checkbox"
+        <aside className="aset-password-health">
 
-            name="maintenanceMode"
 
-            checked={
-              settings
-                .maintenanceMode
+          <div className="aset-health-shield">
+
+            <ShieldCheck size={24} />
+
+          </div>
+
+
+          <span>
+            PASSWORD HEALTH
+          </span>
+
+
+          <h3>
+            Build a secure password
+          </h3>
+
+
+          <p>
+            Use a stronger password to
+            protect administrative access
+            and CampusLearn system data.
+          </p>
+
+
+          <div className="aset-strength-box">
+
+
+            <div className="aset-strength-heading">
+
+              <span>
+                Password strength
+              </span>
+
+              <strong>
+
+                {
+                  strengthLabels[
+                    strengthScore
+                  ]
+                }
+
+              </strong>
+
+            </div>
+
+
+            <div className="aset-strength-bars">
+
+
+              {[1, 2, 3, 4].map(
+                (level) => (
+
+                  <i
+                    key={level}
+                    className={
+                      strengthScore >=
+                      level
+                        ? "aset-strength-active"
+                        : ""
+                    }
+                  />
+
+                )
+              )}
+
+
+            </div>
+
+
+          </div>
+
+
+          <PasswordRule
+            active={
+              passwordChecks.length
             }
-
-            onChange={
-              handleChange
-            }
-
-            disabled={
-              saving
-            }
+            text="At least 6 characters"
           />
 
-          <span />
 
-        </label>
+          <PasswordRule
+            active={
+              passwordChecks.uppercase
+            }
+            text="Contains an uppercase letter"
+          />
+
+
+          <PasswordRule
+            active={
+              passwordChecks.number
+            }
+            text="Contains a number"
+          />
+
+
+          <PasswordRule
+            active={
+              passwordChecks.symbol
+            }
+            text="Contains a symbol"
+          />
+
+
+          <div className="aset-logout-note">
+
+            <LockKeyhole
+              size={15}
+            />
+
+            <span>
+              After changing the password,
+              you will be signed out and
+              asked to log in again.
+            </span>
+
+          </div>
+
+
+        </aside>
+
 
       </section>
+
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   SMALL GRADUATION ICON
+======================================== */
+
+function GraduationCapIcon() {
+
+  return (
+
+    <School size={12} />
+
+  );
+
+}
+
+
+/* ========================================
+   ENVIRONMENT ROW
+======================================== */
+
+function EnvironmentRow({
+  label,
+  value,
+  active = false,
+  warning = false,
+}) {
+
+  return (
+
+    <div className="aset-environment-row">
+
+
+      <div
+        className={
+          warning
+            ? "aset-status-dot aset-status-dot-warning"
+            : active
+              ? "aset-status-dot aset-status-dot-active"
+              : "aset-status-dot"
+        }
+      />
+
+
+      <span>
+        {label}
+      </span>
+
+
+      <strong
+        className={
+          warning
+            ? "aset-environment-warning"
+            : ""
+        }
+      >
+
+        {value}
+
+      </strong>
+
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   TOGGLE SETTING
+======================================== */
+
+function ToggleSetting({
+  title,
+  description,
+  name,
+  checked,
+  onChange,
+  disabled,
+}) {
+
+  return (
+
+    <div className="aset-toggle-card">
+
+
+      <div>
+
+        <strong>
+          {title}
+        </strong>
+
+        <span>
+          {description}
+        </span>
+
+      </div>
+
+
+      <label className="aset-switch">
+
+        <input
+          type="checkbox"
+          name={name}
+          checked={checked}
+          onChange={onChange}
+          disabled={disabled}
+        />
+
+        <span />
+
+      </label>
+
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   PASSWORD FIELD
+======================================== */
+
+function PasswordField({
+  icon,
+  type,
+  name,
+  value,
+  onChange,
+  placeholder,
+  autoComplete,
+  disabled,
+  visible,
+  onToggle,
+}) {
+
+  return (
+
+    <div className="aset-password-input">
+
+
+      <span className="aset-password-field-icon">
+
+        {icon}
+
+      </span>
+
+
+      <input
+        type={type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        autoComplete={autoComplete}
+        disabled={disabled}
+      />
+
+
+      <button
+        type="button"
+        className="aset-eye-button"
+        onClick={onToggle}
+        tabIndex={-1}
+      >
+
+        {visible ? (
+          <EyeOff size={16} />
+        ) : (
+          <Eye size={16} />
+        )}
+
+      </button>
+
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   PASSWORD RULE
+======================================== */
+
+function PasswordRule({
+  active,
+  text,
+}) {
+
+  return (
+
+    <div
+      className={
+        active
+          ? "aset-password-rule aset-password-rule-active"
+          : "aset-password-rule"
+      }
+    >
+
+      <span>
+
+        {active && (
+          <CheckCircle2
+            size={13}
+          />
+        )}
+
+      </span>
+
+      <p>
+        {text}
+      </p>
 
     </div>
 

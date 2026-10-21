@@ -1,0 +1,765 @@
+/* =========================================
+   ADMIN NOTIFICATIONS PAGE
+========================================= */
+
+.admin-notifications-page {
+  padding: 40px 44px 60px;
+  min-height: calc(100vh - 92px);
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(20, 184, 166, 0.05),
+      transparent 30%
+    ),
+    #f6f8fc;
+  color: #0f172a;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.admin-notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 30px;
+  margin-bottom: 28px;
+}
+
+
+.admin-notifications-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-bottom: 10px;
+
+  color: #0f9f94;
+
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+}
+
+
+.admin-notifications-header h1 {
+  margin: 0;
+
+  font-size: 32px;
+  line-height: 1.15;
+  font-weight: 800;
+
+  letter-spacing: -0.035em;
+
+  color: #0f172a;
+}
+
+
+.admin-notifications-header p {
+  margin: 9px 0 0;
+
+  max-width: 620px;
+
+  color: #64748b;
+
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+
+.admin-notifications-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+/* =========================================
+   UNREAD BADGE
+========================================= */
+
+.admin-unread-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  height: 40px;
+
+  padding: 0 14px;
+
+  border-radius: 11px;
+
+  background: #e9f8f6;
+
+  color: #0f8f86;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   MARK ALL
+========================================= */
+
+.admin-mark-all-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  height: 40px;
+
+  padding: 0 15px;
+
+  border: none;
+  border-radius: 11px;
+
+  background: #0f9f94;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 18px
+    rgba(15, 159, 148, 0.18);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.admin-mark-all-button:hover {
+  background: #0d8c83;
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 10px 22px
+    rgba(15, 159, 148, 0.24);
+}
+
+
+/* =========================================
+   SUMMARY
+========================================= */
+
+.admin-notification-summary {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 16px;
+
+  margin-bottom: 22px;
+}
+
+
+.admin-notification-summary-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 18px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5eaf1;
+  border-radius: 16px;
+
+  box-shadow:
+    0 10px 28px
+    rgba(15, 23, 42, 0.035);
+}
+
+
+.admin-summary-icon {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 13px;
+}
+
+
+.admin-summary-teal {
+  color: #0f9f94;
+
+  background: #e7f8f6;
+}
+
+
+.admin-summary-orange {
+  color: #e28a13;
+
+  background: #fff4df;
+}
+
+
+.admin-summary-green {
+  color: #16a36a;
+
+  background: #e9f8f0;
+}
+
+
+.admin-notification-summary-card div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+
+.admin-notification-summary-card span {
+  color: #78869a;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+.admin-notification-summary-card strong {
+  color: #0f172a;
+
+  font-size: 23px;
+  font-weight: 800;
+}
+
+
+/* =========================================
+   MAIN PANEL
+========================================= */
+
+.admin-notification-panel {
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+
+  box-shadow:
+    0 14px 35px
+    rgba(15, 23, 42, 0.04);
+}
+
+
+/* =========================================
+   PANEL TOP
+========================================= */
+
+.admin-notification-panel-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 25px;
+
+  padding: 22px 24px;
+
+  border-bottom:
+    1px solid #edf0f5;
+}
+
+
+.admin-notification-panel-top h2 {
+  margin: 0;
+
+  color: #0f172a;
+
+  font-size: 18px;
+  font-weight: 800;
+
+  letter-spacing: -0.02em;
+}
+
+
+.admin-notification-panel-top p {
+  margin: 5px 0 0;
+
+  color: #8a97aa;
+
+  font-size: 12px;
+}
+
+
+.admin-notification-controls {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+}
+
+
+/* =========================================
+   SEARCH
+========================================= */
+
+.admin-notification-search {
+  width: 245px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 13px;
+
+  border: 1px solid #e3e8ef;
+  border-radius: 11px;
+
+  background: #f8fafc;
+
+  color: #94a3b8;
+
+  transition:
+    border 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.admin-notification-search:focus-within {
+  border-color:
+    rgba(15, 159, 148, 0.55);
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 3px
+    rgba(15, 159, 148, 0.08);
+}
+
+
+.admin-notification-search input {
+  width: 100%;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: #334155;
+
+  font-size: 13px;
+}
+
+
+.admin-notification-search input::placeholder {
+  color: #9aa7b8;
+}
+
+
+/* =========================================
+   FILTER
+========================================= */
+
+.admin-notification-filters {
+  display: flex;
+
+  padding: 3px;
+
+  background: #f1f5f9;
+
+  border-radius: 10px;
+}
+
+
+.admin-notification-filters button {
+  height: 34px;
+
+  padding: 0 13px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #64748b;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.admin-notification-filters button.active {
+  background: #ffffff;
+
+  color: #0f9f94;
+
+  box-shadow:
+    0 2px 8px
+    rgba(15, 23, 42, 0.08);
+}
+
+
+/* =========================================
+   LIST
+========================================= */
+
+.admin-notification-list {
+  padding: 8px 12px 12px;
+}
+
+
+.admin-notification-item {
+  position: relative;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 14px;
+
+  padding: 17px 18px;
+
+  margin-top: 4px;
+
+  border-radius: 14px;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+.admin-notification-item:hover {
+  background: #f8fafc;
+}
+
+
+.admin-notification-unread {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(15, 159, 148, 0.055),
+      rgba(255, 255, 255, 0)
+    );
+}
+
+
+.admin-notification-unread:hover {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(15, 159, 148, 0.085),
+      #f8fafc
+    );
+}
+
+
+/* =========================================
+   TYPE ICON
+========================================= */
+
+.admin-notification-type-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 12px;
+}
+
+
+.admin-notification-type-icon.user {
+  color: #7c5ce7;
+  background: #f0eaff;
+}
+
+
+.admin-notification-type-icon.course {
+  color: #0f9f94;
+  background: #e6f8f5;
+}
+
+
+.admin-notification-type-icon.assignment {
+  color: #3f6be8;
+  background: #edf2ff;
+}
+
+
+.admin-notification-type-icon.system {
+  color: #16a36a;
+  background: #e8f8f0;
+}
+
+
+.admin-notification-type-icon.warning {
+  color: #e28a13;
+  background: #fff4df;
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.admin-notification-content {
+  flex: 1;
+
+  min-width: 0;
+}
+
+
+.admin-notification-title-row {
+  display: flex;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+
+.admin-notification-title-row h3 {
+  display: inline;
+
+  margin: 0 8px 0 0;
+
+  color: #172033;
+
+  font-size: 14px;
+  font-weight: 750;
+}
+
+
+.admin-notification-category {
+  display: inline-flex;
+
+  padding: 4px 7px;
+
+  border-radius: 6px;
+
+  background: #f1f5f9;
+
+  color: #77849a;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+
+.admin-notification-time {
+  flex-shrink: 0;
+
+  color: #9aa6b7;
+
+  font-size: 11px;
+}
+
+
+.admin-notification-content > p {
+  margin: 8px 0 0;
+
+  max-width: 850px;
+
+  color: #66758a;
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+/* =========================================
+   READ BUTTON
+========================================= */
+
+.admin-notification-read-button {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  margin-top: 10px;
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
+
+  color: #0f9f94;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+.admin-notification-read-button:hover {
+  color: #087b74;
+}
+
+
+/* =========================================
+   UNREAD DOT
+========================================= */
+
+.admin-unread-dot {
+  width: 7px;
+  height: 7px;
+
+  flex-shrink: 0;
+
+  margin-top: 7px;
+
+  border-radius: 50%;
+
+  background: #0f9f94;
+
+  box-shadow:
+    0 0 0 4px
+    rgba(15, 159, 148, 0.1);
+}
+
+
+/* =========================================
+   EMPTY STATE
+========================================= */
+
+.admin-notifications-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 70px 20px;
+
+  text-align: center;
+}
+
+
+.admin-notifications-empty > div {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 15px;
+
+  border-radius: 17px;
+
+  background: #e8f8f6;
+
+  color: #0f9f94;
+}
+
+
+.admin-notifications-empty h3 {
+  margin: 0 0 6px;
+
+  color: #172033;
+
+  font-size: 15px;
+}
+
+
+.admin-notifications-empty p {
+  max-width: 340px;
+
+  margin: 0;
+
+  color: #94a3b8;
+
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 1100px) {
+
+  .admin-notifications-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+
+  .admin-notification-panel-top {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+
+  .admin-notification-controls {
+    width: 100%;
+  }
+
+
+  .admin-notification-search {
+    flex: 1;
+    width: auto;
+  }
+
+}
+
+
+@media (max-width: 760px) {
+
+  .admin-notifications-page {
+    padding:
+      26px 20px 40px;
+  }
+
+
+  .admin-notification-summary {
+    grid-template-columns: 1fr;
+  }
+
+
+  .admin-notifications-header-actions {
+    width: 100%;
+
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+
+  .admin-notification-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+
+  .admin-notification-search {
+    width: 100%;
+  }
+
+
+  .admin-notification-title-row {
+    flex-direction: column;
+
+    gap: 7px;
+  }
+
+}

@@ -401,7 +401,7 @@ function StudentChangePassword() {
 
           color: #6958ee;
 
-          font-size: 11px;
+          font-size: 12px;
 
           font-weight: 800;
 
@@ -666,7 +666,7 @@ function StudentChangePassword() {
           color:
             rgba(255,255,255,.78);
 
-          font-size: 12px;
+          font-size: 13px;
 
           line-height: 1.65;
 
@@ -707,7 +707,7 @@ function StudentChangePassword() {
           color:
             rgba(255,255,255,.62);
 
-          font-size: 9px;
+          font-size: 11px;
 
           font-weight: 800;
 
@@ -728,7 +728,7 @@ function StudentChangePassword() {
 
           color: white;
 
-          font-size: 13px;
+          font-size: 14px;
 
           font-weight: 700;
 
@@ -834,7 +834,7 @@ function StudentChangePassword() {
 
           color: #98a2b3;
 
-          font-size: 11px;
+          font-size: 12px;
 
           line-height: 1.5;
 
@@ -859,7 +859,7 @@ function StudentChangePassword() {
 
           border-radius: 12px;
 
-          font-size: 11px;
+          font-size: 12px;
 
           font-weight: 600;
 
@@ -911,7 +911,7 @@ function StudentChangePassword() {
 
           color: #344054;
 
-          font-size: 12px;
+          font-size: 13px;
 
           font-weight: 700;
 
@@ -1068,7 +1068,7 @@ function StudentChangePassword() {
 
           color: #667085;
 
-          font-size: 10px;
+          font-size: 11px;
 
           font-weight: 700;
 
@@ -1079,7 +1079,7 @@ function StudentChangePassword() {
 
           color: #6255ed;
 
-          font-size: 10px;
+          font-size: 11px;
 
           font-weight: 800;
 
@@ -1139,7 +1139,7 @@ function StudentChangePassword() {
           margin:
             -8px 0 19px;
 
-          font-size: 10px;
+          font-size: 11px;
 
           font-weight: 600;
 
@@ -1189,7 +1189,7 @@ function StudentChangePassword() {
 
           color: #98a2b3;
 
-          font-size: 10px;
+          font-size: 11px;
 
           line-height: 1.5;
 
@@ -1354,7 +1354,7 @@ function StudentChangePassword() {
 
           color: #8490a4;
 
-          font-size: 11px;
+          font-size: 12px;
 
           line-height: 1.6;
 
@@ -1392,7 +1392,7 @@ function StudentChangePassword() {
           border:
             1px solid #e9ecf4;
 
-          font-size: 10px;
+          font-size: 11px;
 
           line-height: 1.4;
 
@@ -1442,7 +1442,7 @@ function StudentChangePassword() {
           border:
             1px solid #e7eaf1;
 
-          font-size: 10px;
+          font-size: 11px;
 
           line-height: 1.55;
 
@@ -1452,8 +1452,10 @@ function StudentChangePassword() {
         @keyframes passwordSpin {
 
           to {
+
             transform:
               rotate(360deg);
+
           }
 
         }
@@ -1633,12 +1635,14 @@ function StudentChangePassword() {
 
           <div className="password-hero-grid" />
 
+
           <div
             className="
               password-orb
               password-orb-one
             "
           />
+
 
           <div
             className="
@@ -1757,7 +1761,9 @@ function StudentChangePassword() {
                 <AlertCircle size={16} />
 
                 <span>
+
                   {error}
+
                 </span>
 
               </div>
@@ -1774,7 +1780,9 @@ function StudentChangePassword() {
                 <CheckCircle2 size={16} />
 
                 <span>
+
                   {success}
+
                 </span>
 
               </div>
@@ -1912,21 +1920,25 @@ function StudentChangePassword() {
                 {passwordsMatch ? (
 
                   <>
+
                     <CheckCircle2
                       size={13}
                     />
 
                     Passwords match
+
                   </>
 
                 ) : (
 
                   <>
+
                     <AlertCircle
                       size={13}
                     />
 
                     Passwords do not match yet
+
                   </>
 
                 )}
@@ -2202,8 +2214,11 @@ function SecurityCheck({
         className="security-check-icon"
       />
 
+
       <span>
+
         {text}
+
       </span>
 
     </div>

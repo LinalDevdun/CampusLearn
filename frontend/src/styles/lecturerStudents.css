@@ -6,9 +6,7 @@
 .lecturer-students-page {
   width: 100%;
   max-width: 1440px;
-
   margin: 0 auto;
-
   padding: 34px 36px 55px;
 }
 
@@ -19,7 +17,6 @@
 
 .lst-roster-header {
   position: relative;
-
   overflow: hidden;
 
   display: flex;
@@ -121,7 +118,7 @@
 
   color: #4058df;
 
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 850;
 
   letter-spacing: 0.1em;
@@ -147,7 +144,7 @@
 
   color: #667085;
 
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.65;
 }
 
@@ -184,7 +181,7 @@
 
   color: #98a2b3;
 
-  font-size: 5px;
+  font-size: 10px;
   font-weight: 850;
 
   letter-spacing: 0.08em;
@@ -206,7 +203,7 @@
 .lst-roster-total small {
   color: #667085;
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
@@ -275,7 +272,7 @@
 
   color: #101828;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -287,7 +284,7 @@
 
   color: #98a2b3;
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
@@ -301,7 +298,7 @@
 
   color: #98a2b3;
 
-  font-size: 5px;
+  font-size: 10px;
   font-weight: 800;
 
   letter-spacing: 0.06em;
@@ -323,7 +320,7 @@
 .lst-overview-stat small {
   color: #98a2b3;
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
@@ -401,7 +398,7 @@
 
   color: #344054;
 
-  font-size: 8px;
+  font-size: 12px;
 }
 
 
@@ -412,7 +409,7 @@
 
   color: #98a2b3;
 
-  font-size: 5px;
+  font-size: 10px;
 }
 
 
@@ -462,7 +459,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 12px;
 
   transition:
     background 0.18s ease,
@@ -505,7 +502,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 650;
 }
 
@@ -530,7 +527,7 @@
 
   color: #4058df;
 
-  font-size: 5px;
+  font-size: 10px;
   font-weight: 850;
 
   letter-spacing: 0.09em;
@@ -556,7 +553,7 @@
 
   border-radius: 7px;
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
@@ -674,7 +671,7 @@
     0 7px 15px
     rgba(64, 88, 223, 0.16);
 
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 850;
 }
 
@@ -693,7 +690,7 @@
 
   border-radius: 7px;
 
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 750;
 }
 
@@ -756,7 +753,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -799,7 +796,7 @@
 .lst-academic-info span {
   overflow: hidden;
 
-  font-size: 7px;
+  font-size: 10px;
 
   white-space: nowrap;
 
@@ -828,14 +825,14 @@
 .lst-progress-info span {
   color: #98a2b3;
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
 .lst-progress-info strong {
   color: #344054;
 
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 800;
 }
 
@@ -904,7 +901,7 @@
 
   color: #101828;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -916,7 +913,7 @@
 
   color: #98a2b3;
 
-  font-size: 5px;
+  font-size: 10px;
 }
 
 
@@ -944,7 +941,7 @@
 
   font-family: inherit;
 
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 750;
 
   cursor: pointer;
@@ -1005,7 +1002,7 @@
 .lst-empty p {
   margin: 0;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -1082,7 +1079,7 @@
 
   color: #4058df;
 
-  font-size: 5px;
+  font-size: 10px;
   font-weight: 850;
 
   letter-spacing: 0.09em;
@@ -1104,7 +1101,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 11px;
 }
 
 
@@ -1170,7 +1167,7 @@
 
   border-radius: 13px;
 
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 850;
 }
 
@@ -1184,7 +1181,7 @@
   color:
     rgba(255, 255, 255, 0.67);
 
-  font-size: 5px;
+  font-size: 10px;
   font-weight: 800;
 
   letter-spacing: 0.08em;
@@ -1207,7 +1204,7 @@
   color:
     rgba(255, 255, 255, 0.73);
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1228,7 +1225,7 @@
 
   border-radius: 8px;
 
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 750;
 }
 
@@ -1294,7 +1291,7 @@
 
   color: #98a2b3;
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
@@ -1305,7 +1302,7 @@
 
   color: #344054;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 750;
 
   white-space: nowrap;
@@ -1383,7 +1380,7 @@
 
   color: #4058df;
 
-  font-size: 5px;
+  font-size: 10px;
   font-weight: 850;
 
   letter-spacing: 0.07em;
@@ -1395,7 +1392,7 @@
 
   color: #344054;
 
-  font-size: 9px;
+  font-size: 11px;
 }
 
 
@@ -1474,7 +1471,7 @@
 
   color: #98a2b3;
 
-  font-size: 5px;
+  font-size: 10px;
   font-weight: 750;
 }
 
@@ -1519,7 +1516,7 @@
 
   color: #98a2b3;
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
@@ -1544,7 +1541,7 @@
 
   font-family: inherit;
 
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 750;
 
   cursor: pointer;

@@ -5,9 +5,7 @@
 .dashboard-page {
   width: 100%;
   max-width: 1440px;
-
   margin: 0 auto;
-
   padding: 34px 36px 55px;
 }
 
@@ -24,9 +22,7 @@
   overflow: hidden;
 
   display: flex;
-
   align-items: stretch;
-
   justify-content: space-between;
 
   gap: 32px;
@@ -126,9 +122,7 @@
   max-width: 710px;
 
   display: flex;
-
   flex-direction: column;
-
   justify-content: center;
 }
 
@@ -137,7 +131,6 @@
   width: fit-content;
 
   display: inline-flex;
-
   align-items: center;
 
   gap: 7px;
@@ -161,8 +154,7 @@
   backdrop-filter:
     blur(10px);
 
-  font-size: 10px;
-
+  font-size: 12px;
   font-weight: 800;
 
   letter-spacing: 0.08em;
@@ -177,7 +169,6 @@
   color: #ffffff;
 
   font-size: 34px;
-
   line-height: 1.17;
 
   font-weight: 800;
@@ -206,15 +197,13 @@
   color:
     rgba(255, 255, 255, 0.75);
 
-  font-size: 12px;
-
+  font-size: 13px;
   line-height: 1.7;
 }
 
 
 .dashboard-hero-chips {
   display: flex;
-
   flex-wrap: wrap;
 
   gap: 8px;
@@ -225,7 +214,6 @@
 
 .dashboard-hero-chips span {
   display: inline-flex;
-
   align-items: center;
 
   gap: 6px;
@@ -246,8 +234,7 @@
     1px solid
     rgba(255, 255, 255, 0.14);
 
-  font-size: 10px;
-
+  font-size: 12px;
   font-weight: 650;
 }
 
@@ -264,11 +251,8 @@
   min-width: 330px;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: flex-end;
-
   justify-content: space-between;
 
   gap: 15px;
@@ -277,7 +261,6 @@
 
 .dashboard-date {
   display: inline-flex;
-
   align-items: center;
 
   gap: 7px;
@@ -301,8 +284,7 @@
   backdrop-filter:
     blur(10px);
 
-  font-size: 10px;
-
+  font-size: 12px;
   font-weight: 650;
 }
 
@@ -311,7 +293,6 @@
   width: 100%;
 
   display: flex;
-
   align-items: center;
 
   gap: 17px;
@@ -334,15 +315,12 @@
 
 .hero-progress-ring {
   width: 78px;
-
   height: 78px;
 
   flex-shrink: 0;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   border-radius: 50%;
@@ -351,15 +329,11 @@
 
 .hero-progress-inner {
   width: 61px;
-
   height: 61px;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
 
   border-radius: 50%;
@@ -373,7 +347,6 @@
   color: white;
 
   font-size: 16px;
-
   font-weight: 800;
 }
 
@@ -384,8 +357,7 @@
   color:
     rgba(255, 255, 255, 0.58);
 
-  font-size: 6px;
-
+  font-size: 10px;
   font-weight: 700;
 
   letter-spacing: 0.08em;
@@ -400,8 +372,7 @@
   color:
     rgba(255, 255, 255, 0.58);
 
-  font-size: 9px;
-
+  font-size: 11px;
   font-weight: 700;
 
   text-transform: uppercase;
@@ -416,7 +387,6 @@
   color: white;
 
   font-size: 13px;
-
   font-weight: 800;
 }
 
@@ -429,7 +399,7 @@
   color:
     rgba(255, 255, 255, 0.65);
 
-  font-size: 9px;
+  font-size: 11px;
 }
 
 
@@ -516,7 +486,6 @@
 
 .stat-top-line {
   display: flex;
-
   align-items: center;
 
   justify-content:
@@ -526,13 +495,10 @@
 
 .stat-icon {
   width: 47px;
-
   height: 47px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   border-radius: 14px;
@@ -541,13 +507,10 @@
 
 .stat-mini-badge {
   width: 25px;
-
   height: 25px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   border-radius: 8px;
@@ -611,7 +574,6 @@
   color: #101828;
 
   font-size: 24px;
-
   line-height: 1.1;
 
   font-weight: 800;
@@ -625,8 +587,7 @@
 
   color: #475467;
 
-  font-size: 11px;
-
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -638,7 +599,7 @@
 
   color: #98a2b3;
 
-  font-size: 9px;
+  font-size: 11px;
 }
 
 
@@ -668,7 +629,6 @@
 .section-kicker,
 .panel-kicker {
   display: inline-flex;
-
   align-items: center;
 
   gap: 6px;
@@ -677,8 +637,7 @@
 
   color: #6857ed;
 
-  font-size: 9px;
-
+  font-size: 11px;
   font-weight: 800;
 
   text-transform: uppercase;
@@ -694,7 +653,6 @@
   color: #101828;
 
   font-size: 19px;
-
   font-weight: 800;
 
   letter-spacing: -0.35px;
@@ -706,13 +664,12 @@
 
   color: #98a2b3;
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 
 .dashboard-text-button {
   display: inline-flex;
-
   align-items: center;
 
   gap: 6px;
@@ -730,8 +687,7 @@
 
   border-radius: 9px;
 
-  font-size: 10px;
-
+  font-size: 12px;
   font-weight: 750;
 
   cursor: pointer;
@@ -806,9 +762,7 @@
   overflow: hidden;
 
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
 
   padding: 19px;
@@ -938,7 +892,6 @@
 
 .course-cover-icon {
   width: 50px;
-
   height: 50px;
 
   position: relative;
@@ -946,9 +899,7 @@
   z-index: 2;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   color: white;
@@ -978,7 +929,6 @@
     rgba(255, 255, 255, 0.37);
 
   font-size: 27px;
-
   font-weight: 800;
 
   letter-spacing: -1px;
@@ -997,8 +947,7 @@
 
   color: #6456eb;
 
-  font-size: 9px;
-
+  font-size: 11px;
   font-weight: 800;
 
   letter-spacing: 0.7px;
@@ -1015,7 +964,6 @@
   color: #101828;
 
   font-size: 15px;
-
   font-weight: 800;
 
   line-height: 1.4;
@@ -1024,7 +972,6 @@
 
 .course-instructor-row {
   display: flex;
-
   align-items: center;
 
   gap: 8px;
@@ -1033,19 +980,16 @@
 
   color: #98a2b3;
 
-  font-size: 10px;
+  font-size: 12px;
 }
 
 
 .course-lecturer-avatar {
   width: 25px;
-
   height: 25px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   border-radius: 8px;
@@ -1054,8 +998,7 @@
 
   background: #f0efff;
 
-  font-size: 9px;
-
+  font-size: 11px;
   font-weight: 800;
 }
 
@@ -1072,20 +1015,19 @@
 
   color: #667085;
 
-  font-size: 9px;
+  font-size: 11px;
 }
 
 
 .course-progress-info strong {
   color: #101828;
 
-  font-size: 10px;
+  font-size: 12px;
 }
 
 
 .course-progress-track {
   width: 100%;
-
   height: 6px;
 
   overflow: hidden;
@@ -1131,7 +1073,6 @@
   min-height: 36px;
 
   display: inline-flex;
-
   align-items: center;
 
   gap: 7px;
@@ -1146,8 +1087,7 @@
 
   border-radius: 9px;
 
-  font-size: 10px;
-
+  font-size: 12px;
   font-weight: 750;
 
   cursor: pointer;
@@ -1169,8 +1109,7 @@
 .course-percentage {
   color: #98a2b3;
 
-  font-size: 9px;
-
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -1233,7 +1172,6 @@
 
 .assignment-list {
   display: flex;
-
   flex-direction: column;
 
   gap: 7px;
@@ -1242,7 +1180,6 @@
 
 .assignment-item {
   display: flex;
-
   align-items: center;
 
   gap: 11px;
@@ -1278,23 +1215,19 @@
 
   color: #c2c7d2;
 
-  font-size: 9px;
-
+  font-size: 11px;
   font-weight: 800;
 }
 
 
 .assignment-icon {
   width: 39px;
-
   height: 39px;
 
   flex-shrink: 0;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   color: #6457ec;
@@ -1319,8 +1252,7 @@
 
   color: #182230;
 
-  font-size: 11px;
-
+  font-size: 12px;
   font-weight: 750;
 
   white-space: nowrap;
@@ -1334,13 +1266,12 @@
 
   color: #98a2b3;
 
-  font-size: 9px;
+  font-size: 11px;
 }
 
 
 .assignment-due {
   display: inline-flex;
-
   align-items: center;
 
   gap: 5px;
@@ -1353,8 +1284,7 @@
 
   border-radius: 7px;
 
-  font-size: 8px;
-
+  font-size: 11px;
   font-weight: 750;
 
   white-space: nowrap;
@@ -1365,11 +1295,8 @@
   min-height: 150px;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
 
   gap: 6px;
@@ -1388,12 +1315,12 @@
 .assignment-empty strong {
   color: #182230;
 
-  font-size: 12px;
+  font-size: 13px;
 }
 
 
 .assignment-empty span {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 
@@ -1405,7 +1332,6 @@
   height: 100%;
 
   display: flex;
-
   flex-direction: column;
 }
 
@@ -1414,11 +1340,8 @@
   flex: 1;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
 
   padding: 7px 0 4px;
@@ -1427,13 +1350,10 @@
 
 .progress-ring {
   width: 125px;
-
   height: 125px;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   border-radius: 50%;
@@ -1446,15 +1366,11 @@
 
 .progress-ring-inner {
   width: 96px;
-
   height: 96px;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
 
   background: white;
@@ -1467,7 +1383,6 @@
   color: #101828;
 
   font-size: 22px;
-
   font-weight: 800;
 }
 
@@ -1477,8 +1392,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
-
+  font-size: 10px;
   font-weight: 700;
 
   letter-spacing: 0.07em;
@@ -1492,8 +1406,7 @@
 
   color: #7f8a9c;
 
-  font-size: 10px;
-
+  font-size: 12px;
   line-height: 1.55;
 
   text-align: center;
@@ -1502,7 +1415,6 @@
 
 .progress-button {
   display: inline-flex;
-
   align-items: center;
 
   gap: 6px;
@@ -1517,8 +1429,7 @@
 
   border-radius: 8px;
 
-  font-size: 9px;
-
+  font-size: 11px;
   font-weight: 750;
 
   cursor: pointer;
@@ -1533,11 +1444,8 @@
   min-height: 190px;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
 
   padding: 30px;
@@ -1572,7 +1480,7 @@
 .dashboard-empty p {
   margin: 0;
 
-  font-size: 10px;
+  font-size: 12px;
 }
 
 
@@ -1588,7 +1496,6 @@
   min-height: 135px;
 
   display: flex;
-
   align-items: center;
 
   justify-content:
@@ -1658,22 +1565,18 @@
 
 .ai-glow-one {
   width: 190px;
-
   height: 190px;
 
   right: 180px;
-
   top: -125px;
 }
 
 
 .ai-glow-two {
   width: 100px;
-
   height: 100px;
 
   left: 40%;
-
   bottom: -72px;
 }
 
@@ -1684,7 +1587,6 @@
   z-index: 2;
 
   display: flex;
-
   align-items: center;
 
   gap: 17px;
@@ -1693,15 +1595,12 @@
 
 .ai-dashboard-icon {
   width: 54px;
-
   height: 54px;
 
   flex-shrink: 0;
 
   display: flex;
-
   align-items: center;
-
   justify-content: center;
 
   background:
@@ -1720,7 +1619,6 @@
 
 .ai-banner-label {
   display: flex;
-
   align-items: center;
 
   gap: 5px;
@@ -1730,8 +1628,7 @@
   color:
     rgba(255, 255, 255, 0.61);
 
-  font-size: 8px;
-
+  font-size: 11px;
   font-weight: 800;
 
   text-transform: uppercase;
@@ -1746,7 +1643,6 @@
   color: white;
 
   font-size: 17px;
-
   font-weight: 800;
 }
 
@@ -1759,8 +1655,7 @@
   color:
     rgba(255, 255, 255, 0.75);
 
-  font-size: 10px;
-
+  font-size: 12px;
   line-height: 1.6;
 }
 
@@ -1773,7 +1668,6 @@
   min-height: 41px;
 
   display: inline-flex;
-
   align-items: center;
 
   gap: 7px;
@@ -1788,8 +1682,7 @@
 
   border-radius: 10px;
 
-  font-size: 10px;
-
+  font-size: 12px;
   font-weight: 800;
 
   white-space: nowrap;
@@ -1824,24 +1717,20 @@
   min-height: 420px;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
 
   gap: 12px;
 
   color: #8490a4;
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 
 .dashboard-loader {
   width: 30px;
-
   height: 30px;
 
   border-radius: 50%;
@@ -1872,15 +1761,17 @@
 
   border-radius: 12px;
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 
 @keyframes dashboardSpin {
+
   to {
     transform:
       rotate(360deg);
   }
+
 }
 
 

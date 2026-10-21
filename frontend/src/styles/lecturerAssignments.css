@@ -5,9 +5,7 @@
 .lecturer-assignments-page {
   width: 100%;
   max-width: 1440px;
-
   margin: 0 auto;
-
   padding: 34px 36px 58px;
 }
 
@@ -151,7 +149,8 @@
 
   color: #4058df;
 
-  font-size: 7px;
+  font-size: 10px;
+
   font-weight: 800;
 
   letter-spacing: 0.09em;
@@ -179,7 +178,7 @@
 
   color: #7e899e;
 
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.7;
 }
 
@@ -218,7 +217,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 750;
 
   cursor: pointer;
@@ -332,7 +331,7 @@
 
   color: #98a2b3;
 
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 650;
 }
 
@@ -466,7 +465,8 @@
   color:
     rgba(255, 255, 255, 0.73);
 
-  font-size: 6px;
+  font-size: 10px;
+
   font-weight: 800;
 
   letter-spacing: 0.09em;
@@ -524,7 +524,7 @@
   color:
     rgba(255, 255, 255, 0.68);
 
-  font-size: 5px;
+  font-size: 10px;
   font-weight: 800;
 }
 
@@ -544,7 +544,7 @@
 .la-pulse-copy strong {
   display: block;
 
-  font-size: 10px;
+  font-size: 12px;
 }
 
 
@@ -556,7 +556,7 @@
   color:
     rgba(255, 255, 255, 0.68);
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
@@ -591,7 +591,7 @@
   color:
     rgba(255, 255, 255, 0.58);
 
-  font-size: 5px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -619,7 +619,7 @@
   color:
     rgba(255, 255, 255, 0.74);
 
-  font-size: 6px;
+  font-size: 10px;
 
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -643,7 +643,7 @@
 
   border-radius: 10px;
 
-  font-size: 9px;
+  font-size: 12px;
 }
 
 
@@ -720,7 +720,7 @@
 
   color: #98a2b3;
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
@@ -729,7 +729,7 @@
 
   color: #344054;
 
-  font-size: 8px;
+  font-size: 12px;
 }
 
 
@@ -777,7 +777,7 @@
 
   font-family: inherit;
 
-  font-size: 9px;
+  font-size: 12px;
 
   transition:
     background 0.18s ease,
@@ -823,7 +823,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -855,7 +855,7 @@
 
   color: #4058df;
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 800;
 
   letter-spacing: 0.08em;
@@ -879,7 +879,7 @@
 
   color: #98a2b3;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -898,7 +898,7 @@
 
   border-radius: 8px;
 
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -906,7 +906,7 @@
 .la-result-count span {
   color: #8490a7;
 
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 650;
 }
 
@@ -1009,7 +1009,7 @@
 
   color: #8591c9;
 
-  font-size: 5px;
+  font-size: 10px;
   font-weight: 850;
 
   letter-spacing: 0.1em;
@@ -1027,7 +1027,7 @@
 .la-date-column small {
   margin-top: 6px;
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 800;
 
   text-transform: uppercase;
@@ -1072,7 +1072,7 @@
 
   color: #4058df;
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 700;
 }
 
@@ -1100,7 +1100,7 @@
 
   color: #7d8799;
 
-  font-size: 8px;
+  font-size: 11px;
   line-height: 1.65;
 
   -webkit-line-clamp: 2;
@@ -1117,7 +1117,7 @@
 
   border-radius: 7px;
 
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 800;
 }
 
@@ -1169,7 +1169,7 @@
 
   border-radius: 7px;
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 650;
 }
 
@@ -1187,7 +1187,6 @@
   display: flex;
 
   justify-content: space-between;
-
   align-items: center;
 
   gap: 10px;
@@ -1196,7 +1195,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1209,14 +1208,14 @@
 
   color: #667085;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
 .la-progress-info b {
   color: #4058df;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -1301,7 +1300,7 @@
 
   color: #9aa3b4;
 
-  font-size: 5px;
+  font-size: 10px;
   font-weight: 800;
 
   letter-spacing: 0.07em;
@@ -1351,7 +1350,7 @@
 
   font-family: inherit;
 
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 750;
 
   cursor: pointer;
@@ -1455,7 +1454,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 650;
 
   cursor: pointer;
@@ -1510,7 +1509,7 @@
 
   color: #344054;
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 
@@ -1521,7 +1520,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1640,7 +1639,7 @@
 
   color: #4058df;
 
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 800;
 
   letter-spacing: 0.08em;
@@ -1662,7 +1661,7 @@
 
   color: #98a2b3;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -1723,7 +1722,7 @@
 .lecturer-form-group label {
   color: #344054;
 
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 750;
 }
 
@@ -1750,7 +1749,7 @@
 
   font-family: inherit;
 
-  font-size: 9px;
+  font-size: 12px;
 
   transition:
     background 0.18s ease,
@@ -1831,7 +1830,7 @@
 
   color: #344054;
 
-  font-size: 9px;
+  font-size: 11px;
 }
 
 
@@ -1840,7 +1839,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1853,7 +1852,7 @@
 
   color: #697386;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -1898,7 +1897,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 750;
 
   cursor: pointer;
@@ -1946,7 +1945,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 700;
 
   cursor: pointer;
@@ -2008,7 +2007,7 @@
 .la-view-title span {
   color: #98a2b3;
 
-  font-size: 8px;
+  font-size: 10px;
 }
 
 
@@ -2044,7 +2043,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 650;
 }
 
@@ -2052,7 +2051,7 @@
 .la-view-grid strong {
   color: #344054;
 
-  font-size: 10px;
+  font-size: 11px;
 }
 
 
@@ -2066,7 +2065,7 @@
 
   color: #697386;
 
-  font-size: 9px;
+  font-size: 11px;
   line-height: 1.7;
 }
 
@@ -2092,7 +2091,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 700;
 
   cursor: pointer;

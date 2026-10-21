@@ -24,7 +24,9 @@ import {
 
 
 function StudentSidebar() {
-  const navigate = useNavigate();
+
+  const navigate =
+    useNavigate();
 
 
   /* ========================================
@@ -36,6 +38,7 @@ function StudentSidebar() {
       name: "Student User",
       email: "",
       role: "STUDENT",
+      profile_image: "",
     });
 
 
@@ -45,65 +48,66 @@ function StudentSidebar() {
 
   useEffect(() => {
 
-    const fetchStudent = async () => {
+    const fetchStudent =
+      async () => {
 
-      try {
+        try {
 
-        const token =
-          localStorage.getItem("token");
+          const token =
+            localStorage.getItem(
+              "token"
+            );
 
 
-        if (!token) {
+          if (!token) {
 
-          navigate("/login");
+            navigate("/login");
 
-          return;
+            return;
+          }
 
+
+          const response =
+            await axios.get(
+              "http://localhost:5000/me",
+              {
+                headers: {
+                  Authorization:
+                    `Bearer ${token}`,
+                },
+              }
+            );
+
+
+          setStudent(
+            response.data
+          );
+
+        } catch (error) {
+
+          console.error(
+            "Failed to load student:",
+            error
+          );
+
+
+          if (
+            error.response?.status === 401 ||
+            error.response?.status === 403
+          ) {
+
+            localStorage.removeItem(
+              "token"
+            );
+
+            localStorage.removeItem(
+              "role"
+            );
+
+            navigate("/login");
+          }
         }
-
-
-        const response =
-          await axios.get(
-            "http://localhost:5000/me",
-            {
-              headers: {
-                Authorization:
-                  `Bearer ${token}`,
-              },
-            }
-          );
-
-
-        setStudent(response.data);
-
-      } catch (error) {
-
-        console.error(
-          "Failed to load student:",
-          error
-        );
-
-
-        if (
-          error.response?.status === 401 ||
-          error.response?.status === 403
-        ) {
-
-          localStorage.removeItem(
-            "token"
-          );
-
-          localStorage.removeItem(
-            "role"
-          );
-
-          navigate("/login");
-
-        }
-
-      }
-
-    };
+      };
 
 
     fetchStudent();
@@ -112,47 +116,141 @@ function StudentSidebar() {
 
 
   /* ========================================
+     LIVE PROFILE IMAGE UPDATE
+  ======================================== */
+
+  useEffect(() => {
+
+    const handleProfileImageUpdated =
+      (event) => {
+
+        setStudent(
+          (previousStudent) => ({
+            ...previousStudent,
+
+            profile_image:
+              event.detail?.profileImage ??
+              previousStudent.profile_image,
+          })
+        );
+      };
+
+
+    window.addEventListener(
+      "student-profile-image-updated",
+      handleProfileImageUpdated
+    );
+
+
+    return () => {
+
+      window.removeEventListener(
+        "student-profile-image-updated",
+        handleProfileImageUpdated
+      );
+    };
+
+  }, []);
+
+
+  /* ========================================
      INITIALS
   ======================================== */
 
-  const getInitials = (name) => {
+  const getInitials =
+    (name) => {
 
-    if (!name) {
-      return "ST";
-    }
+      if (!name) {
+
+        return "ST";
+      }
 
 
-    return name
-      .split(" ")
-      .filter(Boolean)
-      .map(
-        (word) =>
-          word.charAt(0)
-      )
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-
-  };
+      return name
+        .split(" ")
+        .filter(Boolean)
+        .map(
+          (word) =>
+            word.charAt(0)
+        )
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
+    };
 
 
   const initials =
-    getInitials(student.name);
+    getInitials(
+      student.name
+    );
+
+
+  /* ========================================
+     PROFILE IMAGE URL
+  ======================================== */
+
+  const getProfileImageUrl =
+    (profileImage) => {
+
+      if (!profileImage) {
+
+        return "";
+      }
+
+
+      if (
+        /^https?:\/\//i.test(
+          String(profileImage)
+        )
+      ) {
+
+        return String(
+          profileImage
+        );
+      }
+
+
+      const cleanPath =
+        String(profileImage)
+          .replace(
+            /\\/g,
+            "/"
+          )
+          .replace(
+            /^.*?uploads\//,
+            "uploads/"
+          );
+
+
+      return (
+        `http://localhost:5000/${cleanPath}`
+      );
+    };
+
+
+  const profileImageUrl =
+    getProfileImageUrl(
+      student.profile_image
+    );
 
 
   /* ========================================
      LOGOUT
   ======================================== */
 
-  const handleLogout = () => {
+  const handleLogout =
+    () => {
 
-    localStorage.removeItem("token");
+      localStorage.removeItem(
+        "token"
+      );
 
-    localStorage.removeItem("role");
+      localStorage.removeItem(
+        "role"
+      );
 
-    navigate("/login");
-
-  };
+      navigate("/login");
+    };
 
 
   /* ========================================
@@ -168,7 +266,7 @@ function StudentSidebar() {
 
     {
       name: "My Courses",
-      path: "/courses",
+      path: "/my-courses",
       icon: BookOpen,
     },
 
@@ -221,40 +319,50 @@ function StudentSidebar() {
      MENU ITEM
   ======================================== */
 
-  const renderMenuItem = (item) => {
+  const renderMenuItem =
+    (item) => {
 
-    const Icon = item.icon;
+      const Icon =
+        item.icon;
 
 
-    return (
-      <NavLink
-        key={item.path}
-        to={item.path}
-        className={({ isActive }) =>
-          `sidebar-link ${
-            isActive
-              ? "sidebar-link-active"
-              : ""
-          }`
-        }
-      >
+      return (
 
-        <Icon
-          size={19}
-          strokeWidth={2}
-        />
+        <NavLink
+          key={
+            item.path
+          }
+          to={
+            item.path
+          }
+          className={({
+            isActive,
+          }) =>
+            `sidebar-link ${
+              isActive
+                ? "sidebar-link-active"
+                : ""
+            }`
+          }
+        >
 
-        <span>
-          {item.name}
-        </span>
+          <Icon
+            size={19}
+            strokeWidth={2}
+          />
 
-      </NavLink>
-    );
+          <span>
+            {item.name}
+          </span>
 
-  };
+        </NavLink>
+
+      );
+    };
 
 
   return (
+
     <aside className="student-sidebar">
 
 
@@ -263,6 +371,7 @@ function StudentSidebar() {
       ==================================== */}
 
       <div className="sidebar-logo">
+
 
         <div className="sidebar-logo-icon">
 
@@ -276,9 +385,13 @@ function StudentSidebar() {
 
         <div>
 
+
           <div className="sidebar-logo-title">
 
-            Campus<span>Learn</span>
+            Campus
+            <span>
+              Learn
+            </span>
 
           </div>
 
@@ -289,10 +402,11 @@ function StudentSidebar() {
 
           </div>
 
+
         </div>
 
-      </div>
 
+      </div>
 
 
       {/* ====================================
@@ -318,7 +432,6 @@ function StudentSidebar() {
         </nav>
 
 
-
         <p className="sidebar-section-title sidebar-second-section">
 
           LEARNING
@@ -334,8 +447,8 @@ function StudentSidebar() {
 
         </nav>
 
-      </div>
 
+      </div>
 
 
       {/* ====================================
@@ -348,11 +461,16 @@ function StudentSidebar() {
         {/* LOGOUT */}
 
         <button
+          type="button"
           className="sidebar-logout"
-          onClick={handleLogout}
+          onClick={
+            handleLogout
+          }
         >
 
-          <LogOut size={19} />
+          <LogOut
+            size={19}
+          />
 
           <span>
             Log out
@@ -361,15 +479,56 @@ function StudentSidebar() {
         </button>
 
 
-
-        {/* STUDENT PROFILE */}
+        {/* ==================================
+            STUDENT PROFILE
+        ================================== */}
 
         <div className="sidebar-user">
 
 
-          <div className="sidebar-avatar">
+          <div
+            className="sidebar-avatar"
+            style={{
+              overflow:
+                "hidden",
+            }}
+          >
 
-            {initials}
+            {profileImageUrl ? (
+
+              <img
+                src={
+                  profileImageUrl
+                }
+                alt={
+                  `${
+                    student.name ||
+                    "Student"
+                  } profile`
+                }
+                style={{
+                  width:
+                    "100%",
+
+                  height:
+                    "100%",
+
+                  display:
+                    "block",
+
+                  objectFit:
+                    "cover",
+
+                  borderRadius:
+                    "inherit",
+                }}
+              />
+
+            ) : (
+
+              initials
+
+            )}
 
           </div>
 
@@ -386,11 +545,15 @@ function StudentSidebar() {
 
           </div>
 
+
         </div>
+
 
       </div>
 
+
     </aside>
+
   );
 }
 

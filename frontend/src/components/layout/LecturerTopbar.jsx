@@ -414,41 +414,32 @@ function LecturerTopbar() {
              PENDING SUBMISSIONS
           ================================= */
 
-          const submissionsResponse =
-            await axios.get(
-              "http://localhost:5000/lecturer/submissions",
-              {
-                headers,
-              }
-            );
+          const notificationsResponse =
+              await axios.get(
+                  "http://localhost:5000/lecturer/notifications",
+                  {
+                      headers,
+                  }
+              );
 
 
-          const submissions =
-            Array.isArray(
-              submissionsResponse
-                .data?.submissions
-            )
-              ? submissionsResponse
-                  .data.submissions
-              : [];
+          const lecturerNotifications =
+              Array.isArray(
+                  notificationsResponse.data
+              )
+                  ? notificationsResponse.data
+                  : [];
 
 
-          const pendingCount =
-            submissions.filter(
-              (submission) =>
-                submission.grade === null ||
-                submission.grade ===
-                  undefined ||
-                submission.grade === ""
-            ).length;
+          const unreadCount =
+              lecturerNotifications.filter(
+                  (notification) =>
+                      notification.is_read === false
+              ).length;
 
 
           setNotificationCount(
-
-            submissionAlertsEnabled
-              ? pendingCount
-              : 0
-
+              unreadCount
           );
 
 

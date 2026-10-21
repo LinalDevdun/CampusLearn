@@ -178,7 +178,7 @@
 
   color: #6757ed;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 800;
 
   letter-spacing: 0.11em;
@@ -208,7 +208,7 @@
 
   color: #7c8798;
 
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.65;
 }
 
@@ -261,7 +261,7 @@
 
   color: #9ca5b5;
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 800;
 
   letter-spacing: 0.09em;
@@ -271,7 +271,7 @@
 .planner-progress-heading strong {
   color: #344054;
 
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 750;
 }
 
@@ -338,7 +338,7 @@
 
   border-radius: 8px;
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 750;
 }
 
@@ -480,9 +480,9 @@
 
 .planner-deadline-top span {
   color:
-    rgba(255, 255, 255, 0.62);
+    rgba(255, 255, 255, 0.68);
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 800;
 
   letter-spacing: 0.09em;
@@ -521,9 +521,9 @@
   overflow: hidden;
 
   color:
-    rgba(255, 255, 255, 0.72);
+    rgba(255, 255, 255, 0.76);
 
-  font-size: 8px;
+  font-size: 11px;
   line-height: 1.5;
 
   -webkit-line-clamp: 2;
@@ -547,14 +547,14 @@
   padding: 6px 8px;
 
   color:
-    rgba(255, 255, 255, 0.86);
+    rgba(255, 255, 255, 0.9);
 
   background:
     rgba(255, 255, 255, 0.11);
 
   border-radius: 7px;
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 700;
 }
 
@@ -617,7 +617,7 @@
 .planner-focus-card span {
   color: #9ca5b5;
 
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 800;
 
   letter-spacing: 0.09em;
@@ -629,7 +629,7 @@
 
   color: #182230;
 
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -639,7 +639,7 @@
 
   color: #929cac;
 
-  font-size: 7px;
+  font-size: 11px;
   line-height: 1.45;
 }
 
@@ -808,7 +808,7 @@
 
   color: #475467;
 
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 750;
 }
 
@@ -820,7 +820,7 @@
 
   color: #a0a8b5;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -892,7 +892,7 @@
 
   color: #9aa3b2;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -901,7 +901,7 @@
 
   color: #182230;
 
-  font-size: 9px;
+  font-size: 12px;
 }
 
 
@@ -950,7 +950,7 @@
 
   font-family: inherit;
 
-  font-size: 9px;
+  font-size: 12px;
 
   transition:
     background 0.2s ease,
@@ -995,7 +995,7 @@
 
   font-family: inherit;
 
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 650;
 }
 
@@ -1029,7 +1029,7 @@
 
   color: #6557ed;
 
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
 
   letter-spacing: 0.09em;
@@ -1055,7 +1055,7 @@
 
   border-radius: 8px;
 
-  font-size: 8px;
+  font-size: 10px;
 }
 
 
@@ -1181,7 +1181,7 @@
 .assignment-ticket-number span {
   color: #b2b8c3;
 
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 800;
 
   letter-spacing: 0.10em;
@@ -1280,7 +1280,7 @@
 
   color: #7c8799;
 
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.65;
 }
 
@@ -1302,7 +1302,7 @@
 
   border-radius: 999px;
 
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
 
   white-space: nowrap;
@@ -1360,7 +1360,7 @@
 
   border-radius: 7px;
 
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 650;
 }
 
@@ -1451,7 +1451,7 @@
 .assignment-action-heading span {
   color: #a5adbb;
 
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 800;
 
   letter-spacing: 0.10em;
@@ -1463,7 +1463,7 @@
 
   color: #344054;
 
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 750;
 }
 
@@ -1495,7 +1495,7 @@
 
   text-decoration: none;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 750;
 
   transition:
@@ -1581,7 +1581,7 @@
 .assignment-file-label strong {
   color: #475467;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 750;
 }
 
@@ -1591,7 +1591,7 @@
 
   color: #a1a9b8;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1618,7 +1618,7 @@
 
   border-radius: 7px;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1661,7 +1661,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 800;
 
   cursor: pointer;
@@ -1758,7 +1758,7 @@
 
 
 .assignment-graded-box strong {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -1768,7 +1768,7 @@
 
   color: #668375;
 
-  font-size: 7px;
+  font-size: 10px;
   line-height: 1.45;
 }
 
@@ -1841,7 +1841,7 @@
 
   color: #939dac;
 
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.55;
 }
 

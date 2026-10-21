@@ -60,6 +60,9 @@ import AdminStudents from "./pages/AdminStudents";
 import AdminCourses from "./pages/AdminCourses";
 import AdminReports from "./pages/AdminReports";
 import AdminSettings from "./pages/AdminSettings";
+import AdminProfile from "./pages/AdminProfile";
+import AdminNotifications from "./pages/AdminNotifications";
+
 
 /* =========================================
    PROTECTION + LAYOUTS
@@ -72,12 +75,58 @@ import LecturerLayout from "./components/layout/LecturerLayout";
 import AdminLayout from "./components/layout/AdminLayout";
 
 
-function App() {
-  const role = localStorage.getItem("role");
+/* =========================================
+   SHARED COURSE PAGE
 
+   Read the role when this route renders
+   instead of storing the role once at the
+   top of App.
+========================================= */
+
+function SharedCoursePage() {
+
+  const role =
+    localStorage.getItem(
+      "role"
+    );
+
+
+  if (
+    role === "STUDENT"
+  ) {
+
+    return (
+
+      <StudentLayout>
+
+        <Course />
+
+      </StudentLayout>
+
+    );
+
+  }
+
+
+  /*
+    Preserve the current behavior for
+    Lecturer and Admin accounts.
+
+    They can access the shared Course page
+    without the Student layout.
+  */
+
+  return <Course />;
+
+}
+
+
+function App() {
 
   return (
+
     <Router>
+
 
       <Routes>
 
@@ -88,21 +137,26 @@ function App() {
 
         <Route
           path="/"
-          element={<Splash />}
+          element={
+            <Splash />
+          }
         />
+
 
         <Route
           path="/login"
-          element={<Login />}
+          element={
+            <Login />
+          }
         />
+
 
         <Route
           path="/set-new-password"
-          element={<SetNewPassword />}
+          element={
+            <SetNewPassword />
+          }
         />
-
-
-
 
 
         {/* ========================================
@@ -112,27 +166,43 @@ function App() {
         <Route
           path="/dashboard"
           element={
+
             <ProtectedRoute
-              allowedRoles={["STUDENT"]}
+              allowedRoles={[
+                "STUDENT",
+              ]}
             >
+
               <StudentLayout>
+
                 <Dashboard />
+
               </StudentLayout>
+
             </ProtectedRoute>
+
           }
         />
 
 
         <Route
-          path="/courses"
+          path="/my-courses"
           element={
+
             <ProtectedRoute
-              allowedRoles={["STUDENT"]}
+              allowedRoles={[
+                "STUDENT",
+              ]}
             >
+
               <StudentLayout>
+
                 <MyCourses />
+
               </StudentLayout>
+
             </ProtectedRoute>
+
           }
         />
 
@@ -140,13 +210,21 @@ function App() {
         <Route
           path="/progress"
           element={
+
             <ProtectedRoute
-              allowedRoles={["STUDENT"]}
+              allowedRoles={[
+                "STUDENT",
+              ]}
             >
+
               <StudentLayout>
+
                 <Progress />
+
               </StudentLayout>
+
             </ProtectedRoute>
+
           }
         />
 
@@ -154,13 +232,21 @@ function App() {
         <Route
           path="/assignments"
           element={
+
             <ProtectedRoute
-              allowedRoles={["STUDENT"]}
+              allowedRoles={[
+                "STUDENT",
+              ]}
             >
+
               <StudentLayout>
+
                 <Assignments />
+
               </StudentLayout>
+
             </ProtectedRoute>
+
           }
         />
 
@@ -168,13 +254,21 @@ function App() {
         <Route
           path="/deadlines"
           element={
+
             <ProtectedRoute
-              allowedRoles={["STUDENT"]}
+              allowedRoles={[
+                "STUDENT",
+              ]}
             >
+
               <StudentLayout>
+
                 <Deadlines />
+
               </StudentLayout>
+
             </ProtectedRoute>
+
           }
         />
 
@@ -182,90 +276,155 @@ function App() {
         <Route
           path="/notifications"
           element={
+
             <ProtectedRoute
-              allowedRoles={["STUDENT"]}
+              allowedRoles={[
+                "STUDENT",
+              ]}
             >
+
               <StudentLayout>
+
                 <Notifications />
+
               </StudentLayout>
+
             </ProtectedRoute>
+
           }
         />
 
+
+        {/* ========================================
+            STUDENT GRADES
+
+            Duplicate /grades route removed.
+        ======================================== */}
 
         <Route
           path="/grades"
           element={
+
             <ProtectedRoute
-              allowedRoles={["STUDENT"]}
+              allowedRoles={[
+                "STUDENT",
+              ]}
             >
+
               <StudentLayout>
+
                 <Grades />
+
               </StudentLayout>
+
             </ProtectedRoute>
+
           }
         />
 
-        <Route
-          path="/grades"
-          element={
-            <ProtectedRoute
-              allowedRoles={["STUDENT"]}
-            >
-              <StudentLayout>
-                <Grades />
-              </StudentLayout>
-            </ProtectedRoute>
-          }
-        />
 
-        {/* STUDENT PROFILE */}
+        {/* ========================================
+            STUDENT PROFILE
+        ======================================== */}
 
         <Route
           path="/student/profile"
           element={
+
             <ProtectedRoute
-              allowedRoles={["STUDENT"]}
+              allowedRoles={[
+                "STUDENT",
+              ]}
             >
+
               <StudentLayout>
+
                 <StudentProfile />
+
               </StudentLayout>
+
             </ProtectedRoute>
+
           }
         />
 
 
-        {/* STUDENT SETTINGS */}
+        {/* ========================================
+            STUDENT SETTINGS
+        ======================================== */}
 
         <Route
           path="/student/settings"
           element={
+
             <ProtectedRoute
-              allowedRoles={["STUDENT"]}
+              allowedRoles={[
+                "STUDENT",
+              ]}
             >
+
               <StudentLayout>
+
                 <StudentSettings />
+
               </StudentLayout>
+
             </ProtectedRoute>
+
           }
         />
 
 
-        {/* STUDENT CHANGE PASSWORD */}
+        {/* ========================================
+            STUDENT CHANGE PASSWORD
+        ======================================== */}
 
         <Route
           path="/student/change-password"
           element={
+
             <ProtectedRoute
-              allowedRoles={["STUDENT"]}
+              allowedRoles={[
+                "STUDENT",
+              ]}
             >
+
               <StudentLayout>
+
                 <StudentChangePassword />
+
               </StudentLayout>
+
             </ProtectedRoute>
+
           }
         />
 
+
+        {/* ========================================
+            STUDENT AI STUDY TUTOR
+        ======================================== */}
+
+        <Route
+          path="/tutor"
+          element={
+
+            <ProtectedRoute
+              allowedRoles={[
+                "STUDENT",
+              ]}
+            >
+
+              <StudentLayout>
+
+                <Tutor />
+
+              </StudentLayout>
+
+            </ProtectedRoute>
+
+          }
+        />
 
 
         {/* ========================================
@@ -275,13 +434,21 @@ function App() {
         <Route
           path="/lecturer-dashboard"
           element={
+
             <ProtectedRoute
-              allowedRoles={["LECTURER"]}
+              allowedRoles={[
+                "LECTURER",
+              ]}
             >
+
               <LecturerLayout>
+
                 <LecturerDashboard />
+
               </LecturerLayout>
+
             </ProtectedRoute>
+
           }
         />
 
@@ -289,26 +456,43 @@ function App() {
         <Route
           path="/lecturer/courses"
           element={
+
             <ProtectedRoute
-              allowedRoles={["LECTURER"]}
+              allowedRoles={[
+                "LECTURER",
+              ]}
             >
+
               <LecturerLayout>
+
                 <LecturerCourses />
+
               </LecturerLayout>
+
             </ProtectedRoute>
+
           }
         />
+
 
         <Route
           path="/lecturer/course/:id"
           element={
+
             <ProtectedRoute
-              allowedRoles={["LECTURER"]}
+              allowedRoles={[
+                "LECTURER",
+              ]}
             >
+
               <LecturerLayout>
+
                 <LecturerCourse />
+
               </LecturerLayout>
+
             </ProtectedRoute>
+
           }
         />
 
@@ -316,13 +500,21 @@ function App() {
         <Route
           path="/lecturer/assignments"
           element={
+
             <ProtectedRoute
-              allowedRoles={["LECTURER"]}
+              allowedRoles={[
+                "LECTURER",
+              ]}
             >
+
               <LecturerLayout>
+
                 <LecturerAssignments />
+
               </LecturerLayout>
+
             </ProtectedRoute>
+
           }
         />
 
@@ -330,26 +522,43 @@ function App() {
         <Route
           path="/lecturer/submissions"
           element={
+
             <ProtectedRoute
-              allowedRoles={["LECTURER"]}
+              allowedRoles={[
+                "LECTURER",
+              ]}
             >
+
               <LecturerLayout>
+
                 <LecturerSubmissions />
+
               </LecturerLayout>
+
             </ProtectedRoute>
+
           }
         />
+
 
         <Route
           path="/lecturer/notifications"
           element={
+
             <ProtectedRoute
-              allowedRoles={["LECTURER"]}
+              allowedRoles={[
+                "LECTURER",
+              ]}
             >
+
               <LecturerLayout>
+
                 <LecturerNotifications />
+
               </LecturerLayout>
+
             </ProtectedRoute>
+
           }
         />
 
@@ -357,13 +566,21 @@ function App() {
         <Route
           path="/lecturer/grading"
           element={
+
             <ProtectedRoute
-              allowedRoles={["LECTURER"]}
+              allowedRoles={[
+                "LECTURER",
+              ]}
             >
+
               <LecturerLayout>
+
                 <LecturerGrading />
+
               </LecturerLayout>
+
             </ProtectedRoute>
+
           }
         />
 
@@ -371,71 +588,109 @@ function App() {
         <Route
           path="/lecturer/students"
           element={
+
             <ProtectedRoute
-              allowedRoles={["LECTURER"]}
+              allowedRoles={[
+                "LECTURER",
+              ]}
             >
+
               <LecturerLayout>
+
                 <LecturerStudents />
+
               </LecturerLayout>
+
             </ProtectedRoute>
+
           }
         />
-        
+
+
         <Route
           path="/lecturer/profile"
           element={
+
             <ProtectedRoute
-              allowedRoles={["LECTURER"]}
+              allowedRoles={[
+                "LECTURER",
+              ]}
             >
+
               <LecturerLayout>
 
                 <LecturerProfile />
 
               </LecturerLayout>
+
             </ProtectedRoute>
+
           }
         />
+
 
         <Route
           path="/lecturer/change-password"
           element={
+
             <ProtectedRoute
-              allowedRoles={["LECTURER"]}
+              allowedRoles={[
+                "LECTURER",
+              ]}
             >
+
               <LecturerLayout>
 
                 <LecturerChangePassword />
 
               </LecturerLayout>
+
             </ProtectedRoute>
+
           }
         />
+
 
         <Route
           path="/lecturer/settings"
           element={
+
             <ProtectedRoute
-              allowedRoles={["LECTURER"]}
+              allowedRoles={[
+                "LECTURER",
+              ]}
             >
+
               <LecturerLayout>
 
                 <LecturerSettings />
 
               </LecturerLayout>
+
             </ProtectedRoute>
+
           }
         />
+
 
         <Route
           path="/lecturer/tutor"
           element={
+
             <ProtectedRoute
-              allowedRoles={["LECTURER"]}
+              allowedRoles={[
+                "LECTURER",
+              ]}
             >
+
               <LecturerLayout>
+
                 <LecturerTutor />
+
               </LecturerLayout>
+
             </ProtectedRoute>
+
           }
         />
 
@@ -444,100 +699,190 @@ function App() {
             ADMIN ROUTES
         ======================================== */}
 
-        {/* ADMIN DASHBOARD */}
-
         <Route
           path="/admin-dashboard"
           element={
+
             <ProtectedRoute
-              allowedRoles={["ADMIN"]}
+              allowedRoles={[
+                "ADMIN",
+              ]}
             >
+
               <AdminLayout>
+
                 <AdminDashboard />
+
               </AdminLayout>
+
             </ProtectedRoute>
+
           }
         />
 
-
-        {/* ADMIN USERS */}
 
         <Route
           path="/admin-users"
           element={
+
             <ProtectedRoute
-              allowedRoles={["ADMIN"]}
+              allowedRoles={[
+                "ADMIN",
+              ]}
             >
+
               <AdminLayout>
+
                 <AdminUsers />
+
               </AdminLayout>
+
             </ProtectedRoute>
+
           }
         />
+
 
         <Route
           path="/admin/students"
           element={
+
             <ProtectedRoute
-              allowedRoles={["ADMIN"]}
+              allowedRoles={[
+                "ADMIN",
+              ]}
             >
+
               <AdminLayout>
+
                 <AdminStudents />
+
               </AdminLayout>
+
             </ProtectedRoute>
+
           }
         />
+
 
         <Route
           path="/admin/courses"
           element={
+
             <ProtectedRoute
-              allowedRoles={["ADMIN"]}
+              allowedRoles={[
+                "ADMIN",
+              ]}
             >
+
               <AdminLayout>
+
                 <AdminCourses />
+
               </AdminLayout>
+
             </ProtectedRoute>
+
           }
         />
+
 
         <Route
           path="/admin/reports"
           element={
+
             <ProtectedRoute
-              allowedRoles={["ADMIN"]}
+              allowedRoles={[
+                "ADMIN",
+              ]}
             >
+
               <AdminLayout>
 
                 <AdminReports />
 
               </AdminLayout>
+
             </ProtectedRoute>
+
           }
         />
+
 
         <Route
           path="/admin/settings"
           element={
+
             <ProtectedRoute
-              allowedRoles={["ADMIN"]}
+              allowedRoles={[
+                "ADMIN",
+              ]}
             >
+
               <AdminLayout>
+
                 <AdminSettings />
+
               </AdminLayout>
+
             </ProtectedRoute>
+
           }
         />
 
 
+        <Route
+          path="/admin/profile"
+          element={
+
+            <ProtectedRoute
+              allowedRoles={[
+                "ADMIN",
+              ]}
+            >
+
+              <AdminLayout>
+
+                <AdminProfile />
+
+              </AdminLayout>
+
+            </ProtectedRoute>
+
+          }
+        />
+
+
+        <Route
+          path="/admin/notifications"
+          element={
+
+            <ProtectedRoute
+              allowedRoles={[
+                "ADMIN",
+              ]}
+            >
+
+              <AdminLayout>
+
+                <AdminNotifications />
+
+              </AdminLayout>
+
+            </ProtectedRoute>
+
+          }
+        />
+
 
         {/* ========================================
-            SHARED ROUTES
+            SHARED COURSE ROUTE
         ======================================== */}
 
         <Route
           path="/course/:id"
           element={
+
             <ProtectedRoute
               allowedRoles={[
                 "STUDENT",
@@ -546,46 +891,21 @@ function App() {
               ]}
             >
 
-              {role === "STUDENT" ? (
-
-                <StudentLayout>
-                  <Course />
-                </StudentLayout>
-
-              ) : (
-
-                <Course />
-
-              )}
+              <SharedCoursePage />
 
             </ProtectedRoute>
-          }
-        />
 
-
-
-        {/* ========================================
-            AI STUDY TUTOR
-        ======================================== */}
-
-        <Route
-          path="/tutor"
-          element={
-            <ProtectedRoute
-              allowedRoles={["STUDENT"]}
-            >
-              <StudentLayout>
-                <Tutor />
-              </StudentLayout>
-            </ProtectedRoute>
           }
         />
 
 
       </Routes>
 
+
     </Router>
+
   );
+
 }
 
 

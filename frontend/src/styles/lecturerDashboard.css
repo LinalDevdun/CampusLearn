@@ -6,9 +6,7 @@
 .lecturer-dashboard-page {
   width: 100%;
   max-width: 1440px;
-
   margin: 0 auto;
-
   padding: 34px 36px 58px;
 }
 
@@ -19,13 +17,10 @@
 
 .lecturer-command-center {
   display: grid;
-
   grid-template-columns:
     minmax(0, 1fr)
     340px;
-
   gap: 18px;
-
   margin-bottom: 22px;
 }
 
@@ -34,13 +29,9 @@
 
 .lecturer-command-main {
   position: relative;
-
   overflow: hidden;
-
   min-height: 280px;
-
   padding: 35px 38px;
-
   color: white;
 
   background:
@@ -61,34 +52,27 @@
 
 .lecturer-command-main::before {
   content: "";
-
   position: absolute;
-
   inset: 0;
 
   background-image:
     linear-gradient(
-      rgba(255, 255, 255, 0.045)
-      1px,
+      rgba(255, 255, 255, 0.045) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0.045)
-      1px,
+      rgba(255, 255, 255, 0.045) 1px,
       transparent 1px
     );
 
-  background-size:
-    70px 70px;
-
+  background-size: 70px 70px;
   pointer-events: none;
 }
 
 
 .lecturer-command-main::after {
   content: "";
-
   position: absolute;
 
   width: 240px;
@@ -130,7 +114,7 @@
 
   border-radius: 99px;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 800;
 
   letter-spacing: 0.08em;
@@ -170,7 +154,7 @@
   color:
     rgba(255, 255, 255, 0.76);
 
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.7;
 }
 
@@ -210,14 +194,13 @@
 
   border-radius: 10px;
 
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 650;
 }
 
 
 .lecturer-command-chips strong {
   color: white;
-
   font-weight: 850;
 }
 
@@ -249,7 +232,7 @@
 
   border-radius: 10px;
 
-  font-size: 8px;
+  font-size: 11px;
 
   font-weight: 750;
 }
@@ -328,7 +311,7 @@
 
   color: #7f8aa3;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -446,7 +429,7 @@
 
   color: #8b95a7;
 
-  font-size: 5px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -490,7 +473,7 @@
 .snapshot-details span {
   color: #8a94a6;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -533,7 +516,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 11px;
 
   font-weight: 750;
 
@@ -577,7 +560,7 @@
 
   border-radius: 12px;
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 
@@ -677,7 +660,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -705,7 +688,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 11px;
 
   line-height: 1.45;
 }
@@ -717,6 +700,7 @@
 .lecturer-stat-accent {
   background: #4058df;
 }
+
 
 .lecturer-stat-blue
 .lecturer-stat-icon {
@@ -730,6 +714,7 @@
   background: #8254df;
 }
 
+
 .lecturer-stat-purple
 .lecturer-stat-icon {
   color: #8254df;
@@ -742,6 +727,7 @@
   background: #18a668;
 }
 
+
 .lecturer-stat-green
 .lecturer-stat-icon {
   color: #18a668;
@@ -753,6 +739,7 @@
 .lecturer-stat-accent {
   background: #e28d08;
 }
+
 
 .lecturer-stat-orange
 .lecturer-stat-icon {
@@ -796,7 +783,7 @@
 
   color: #4058df;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -822,7 +809,7 @@
 
   color: #8e98aa;
 
-  font-size: 9px;
+  font-size: 12px;
 }
 
 
@@ -865,7 +852,7 @@
     0 7px 16px
     rgba(64, 88, 223, 0.17);
 
-  font-size: 8px;
+  font-size: 11px;
 
   font-weight: 750;
 }
@@ -882,7 +869,7 @@
 
   border-radius: 8px;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 750;
 }
@@ -959,7 +946,7 @@
 .lecturer-reminder-content > span {
   color: #c1852d;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -972,7 +959,7 @@
 
   color: #182230;
 
-  font-size: 11px;
+  font-size: 12px;
 
   font-weight: 750;
 }
@@ -983,7 +970,7 @@
 
   color: #929bad;
 
-  font-size: 7px;
+  font-size: 11px;
 }
 
 
@@ -996,7 +983,7 @@
 
   border-radius: 8px;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 750;
 
@@ -1065,7 +1052,7 @@
 
   color: #98a2b3;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -1124,7 +1111,7 @@
 .lecturer-course-number {
   color: #a3abba;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 800;
 }
@@ -1157,7 +1144,7 @@
 
   color: #182230;
 
-  font-size: 10px;
+  font-size: 12px;
 
   font-weight: 750;
 }
@@ -1168,7 +1155,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1181,7 +1168,7 @@
 
   color: #8590a4;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1221,7 +1208,7 @@
 .activity-total-pill span {
   color: #8993a6;
 
-  font-size: 5px;
+  font-size: 10px;
 
   font-weight: 700;
 }
@@ -1255,7 +1242,7 @@
 .lecturer-chart-column strong {
   color: #344054;
 
-  font-size: 8px;
+  font-size: 11px;
 
   font-weight: 750;
 }
@@ -1305,7 +1292,7 @@
 .lecturer-chart-column span {
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1325,7 +1312,7 @@
   border-top:
     1px solid #edf0f4;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1420,7 +1407,7 @@
 
   color: #98a2b3;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -1433,7 +1420,7 @@
 
   color: #182230;
 
-  font-size: 11px;
+  font-size: 12px;
 
   font-weight: 800;
 }
@@ -1444,7 +1431,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 11px;
 
   line-height: 1.55;
 }
@@ -1512,7 +1499,7 @@
 
   background: #fafbfe;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -1532,7 +1519,7 @@
   border-top:
     1px solid #eef0f4;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -1570,7 +1557,7 @@
 
   border-radius: 7px;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 750;
 }
@@ -1616,7 +1603,7 @@
 
   font-family: inherit;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 750;
 
@@ -1664,6 +1651,7 @@
 
 .grading-overview-card > svg {
   width: 42px;
+
   height: 42px;
 
   flex-shrink: 0;
@@ -1681,7 +1669,7 @@
 
   color: #98a2b3;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -1705,30 +1693,34 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
 .grading-orange > svg {
   color: #d98300;
+
   background: #fff7e6;
 }
 
 
 .grading-green > svg {
   color: #16a368;
+
   background: #ecfdf3;
 }
 
 
 .grading-blue > svg {
   color: #4058df;
+
   background: #eef2ff;
 }
 
 
 .grading-purple > svg {
   color: #8254df;
+
   background: #f3edff;
 }
 
@@ -1792,9 +1784,11 @@
   position: absolute;
 
   width: 95px;
+
   height: 95px;
 
   right: -48px;
+
   top: -52px;
 
   background:
@@ -1816,6 +1810,7 @@
 
 .lecturer-student-avatar {
   width: 43px;
+
   height: 43px;
 
   display: flex;
@@ -1838,7 +1833,7 @@
     0 7px 16px
     rgba(64, 88, 223, 0.18);
 
-  font-size: 9px;
+  font-size: 11px;
 
   font-weight: 800;
 }
@@ -1853,7 +1848,7 @@
 
   border-radius: 7px;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 750;
 }
@@ -1864,7 +1859,7 @@
 
   color: #182230;
 
-  font-size: 11px;
+  font-size: 12px;
 
   font-weight: 750;
 }
@@ -1877,7 +1872,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 
   line-height: 1.5;
 }
@@ -1899,7 +1894,7 @@
 
   color: #8c96a7;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1956,7 +1951,7 @@
 
   text-align: center;
 
-  font-size: 8px;
+  font-size: 11px;
 
   line-height: 1.6;
 }
@@ -2038,6 +2033,7 @@
 
   .lecturer-command-date {
     left: 22px;
+
     right: auto;
   }
 

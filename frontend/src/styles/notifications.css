@@ -5,9 +5,7 @@
 .notifications-page {
   width: 100%;
   max-width: 1440px;
-
   margin: 0 auto;
-
   padding: 34px 36px 52px;
 }
 
@@ -94,7 +92,8 @@
   right: -100px;
   bottom: -145px;
 
-  border: 26px solid
+  border:
+    26px solid
     rgba(101, 87, 237, 0.035);
 
   border-radius: 50%;
@@ -153,7 +152,7 @@
 
   color: #6657ed;
 
-  font-size: 7px;
+  font-size: 11px;
 
   font-weight: 800;
 
@@ -187,7 +186,7 @@
 
   color: #778195;
 
-  font-size: 10px;
+  font-size: 13px;
 
   line-height: 1.7;
 }
@@ -253,7 +252,7 @@
 .pulse-status-item span {
   color: #929bad;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 700;
 }
@@ -352,7 +351,7 @@
   color:
     rgba(255, 255, 255, 0.58);
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -464,7 +463,7 @@
   color:
     rgba(255, 255, 255, 0.58);
 
-  font-size: 5px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -482,7 +481,7 @@
   color:
     rgba(255, 255, 255, 0.7);
 
-  font-size: 7px;
+  font-size: 11px;
 
   line-height: 1.5;
 }
@@ -515,7 +514,7 @@
 
   font-family: inherit;
 
-  font-size: 7px;
+  font-size: 11px;
 
   font-weight: 750;
 
@@ -550,7 +549,7 @@
 
   border-radius: 12px;
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 
@@ -619,7 +618,7 @@
 
   color: #98a2b3;
 
-  font-size: 6px;
+  font-size: 10px;
 
   line-height: 1.4;
 }
@@ -628,7 +627,7 @@
 .activity-navigator-label strong {
   color: #344054;
 
-  font-size: 8px;
+  font-size: 12px;
 
   font-weight: 800;
 }
@@ -658,6 +657,7 @@
 
 .notification-search input {
   width: 100%;
+
   height: 43px;
 
   padding:
@@ -676,7 +676,7 @@
 
   font-family: inherit;
 
-  font-size: 9px;
+  font-size: 12px;
 
   transition:
     border 0.18s ease,
@@ -705,6 +705,7 @@
 
 .notification-filter {
   width: 100%;
+
   height: 43px;
 
   padding: 0 12px;
@@ -722,7 +723,7 @@
 
   font-family: inherit;
 
-  font-size: 8px;
+  font-size: 12px;
 
   font-weight: 700;
 }
@@ -756,7 +757,7 @@
 
   color: #6657ed;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -780,7 +781,7 @@
 
   color: #98a2b3;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -793,7 +794,7 @@
 
   border-radius: 8px;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 750;
 }
@@ -1019,7 +1020,7 @@
 
   border-radius: 7px;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -1073,7 +1074,7 @@
 
   border-radius: 6px;
 
-  font-size: 5px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -1090,7 +1091,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1141,7 +1142,7 @@
 
   color: #697386;
 
-  font-size: 9px;
+  font-size: 12px;
 
   line-height: 1.65;
 }
@@ -1173,7 +1174,7 @@
 
   border-radius: 7px;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 650;
 }
@@ -1213,7 +1214,7 @@
 
   font-family: inherit;
 
-  font-size: 7px;
+  font-size: 11px;
 
   font-weight: 750;
 
@@ -1248,7 +1249,7 @@
 
   border-radius: 8px;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 750;
 }
@@ -1378,7 +1379,7 @@
 
   color: #6657ed;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -1404,7 +1405,7 @@
 
   color: #98a2b3;
 
-  font-size: 8px;
+  font-size: 11px;
 
   line-height: 1.6;
 }
@@ -1534,7 +1535,7 @@
 
 
   .notification-message {
-    font-size: 8px;
+    font-size: 12px;
   }
 
 }

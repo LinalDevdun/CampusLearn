@@ -5,9 +5,7 @@
 .progress-page {
   width: 100%;
   max-width: 1440px;
-
   margin: 0 auto;
-
   padding: 34px 36px 55px;
 }
 
@@ -147,7 +145,7 @@
 
   color: #6656ed;
 
-  font-size: 8px;
+  font-size: 11px;
 
   font-weight: 800;
 
@@ -177,7 +175,7 @@
 
   color: #7d8798;
 
-  font-size: 10px;
+  font-size: 13px;
 
   line-height: 1.65;
 }
@@ -280,7 +278,7 @@
 
   border-radius: 50%;
 
-  font-size: 8px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -291,7 +289,7 @@
 
 
 .journey-stage > span {
-  font-size: 8px;
+  font-size: 10px;
 
   font-weight: 700;
 }
@@ -392,7 +390,7 @@
 
   border:
     1px solid
-    rgba(255,255,255,.16);
+    rgba(255, 255, 255, 0.16);
 
   border-radius: 50%;
 }
@@ -410,7 +408,7 @@
   bottom: -60px;
 
   background:
-    rgba(255,255,255,.06);
+    rgba(255, 255, 255, 0.06);
 
   border-radius: 50%;
 }
@@ -430,9 +428,9 @@
   margin-bottom: 17px;
 
   color:
-    rgba(255,255,255,.68);
+    rgba(255, 255, 255, 0.68);
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -490,13 +488,13 @@
   margin-top: 4px;
 
   color:
-    rgba(255,255,255,.60);
+    rgba(255, 255, 255, 0.60);
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
-  letter-spacing: .07em;
+  letter-spacing: 0.07em;
 }
 
 
@@ -526,9 +524,9 @@
     6px 0 0;
 
   color:
-    rgba(255,255,255,.69);
+    rgba(255, 255, 255, 0.69);
 
-  font-size: 8px;
+  font-size: 11px;
 
   line-height: 1.5;
 }
@@ -552,7 +550,7 @@
 
   border-radius: 12px;
 
-  font-size: 11px;
+  font-size: 12px;
 }
 
 
@@ -601,11 +599,11 @@
 
   box-shadow:
     0 9px 23px
-    rgba(35,43,90,.045);
+    rgba(35, 43, 90, 0.045);
 
   transition:
-    transform .2s ease,
-    box-shadow .2s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 
@@ -615,7 +613,7 @@
 
   box-shadow:
     0 14px 30px
-    rgba(35,43,90,.075);
+    rgba(35, 43, 90, 0.075);
 }
 
 
@@ -708,11 +706,11 @@
 
   color: #a0a8b5;
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
 }
 
 
@@ -736,7 +734,7 @@
 
   color: #697386;
 
-  font-size: 8px;
+  font-size: 11px;
 
   font-weight: 650;
 }
@@ -751,7 +749,7 @@
 
   grid-template-columns:
     minmax(0, 1.35fr)
-    minmax(280px, .65fr);
+    minmax(280px, 0.65fr);
 
   gap: 18px;
 
@@ -773,7 +771,7 @@
 
   box-shadow:
     0 12px 29px
-    rgba(35,43,90,.05);
+    rgba(35, 43, 90, 0.05);
 }
 
 
@@ -800,7 +798,7 @@
   bottom: -100px;
 
   background:
-    rgba(101,87,237,.035);
+    rgba(101, 87, 237, 0.035);
 
   border-radius: 50%;
 }
@@ -825,11 +823,11 @@
 
   color: #6757ed;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 800;
 
-  letter-spacing: .09em;
+  letter-spacing: 0.09em;
 }
 
 
@@ -891,7 +889,7 @@
 .pulse-number span {
   color: #8c96a7;
 
-  font-size: 9px;
+  font-size: 11px;
 
   font-weight: 650;
 }
@@ -899,6 +897,7 @@
 
 .pulse-progress-track {
   width: 100%;
+
   height: 8px;
 
   margin-top: 17px;
@@ -925,7 +924,7 @@
   border-radius: 999px;
 
   transition:
-    width .4s ease;
+    width 0.4s ease;
 }
 
 
@@ -957,7 +956,7 @@
 
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1012,11 +1011,11 @@
 .tracking-label {
   color: #98a2b3;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 800;
 
-  letter-spacing: .09em;
+  letter-spacing: 0.09em;
 }
 
 
@@ -1039,7 +1038,7 @@
 
   color: #8993a5;
 
-  font-size: 8px;
+  font-size: 11px;
 
   line-height: 1.6;
 }
@@ -1067,7 +1066,7 @@
 
   border-radius: 8px;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 700;
 }
@@ -1116,11 +1115,11 @@
 
   color: #6557ed;
 
-  font-size: 8px;
+  font-size: 10px;
 
   font-weight: 800;
 
-  letter-spacing: .09em;
+  letter-spacing: 0.09em;
 }
 
 
@@ -1140,7 +1139,7 @@
 
   color: #98a2b3;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -1153,7 +1152,7 @@
 
   border-radius: 8px;
 
-  font-size: 8px;
+  font-size: 10px;
 
   font-weight: 750;
 }
@@ -1197,11 +1196,11 @@
 
   box-shadow:
     0 9px 23px
-    rgba(35,43,90,.045);
+    rgba(35, 43, 90, 0.045);
 
   transition:
-    transform .2s ease,
-    box-shadow .2s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 
@@ -1211,7 +1210,7 @@
 
   box-shadow:
     0 14px 30px
-    rgba(35,43,90,.075);
+    rgba(35, 43, 90, 0.075);
 }
 
 
@@ -1300,11 +1299,11 @@
   color:
     var(--course-accent);
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
 }
 
 
@@ -1324,7 +1323,7 @@
 
   color: #98a2b3;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -1339,7 +1338,7 @@
 
   border-radius: 7px;
 
-  font-size: 7px;
+  font-size: 10px;
 
   font-weight: 700;
 }
@@ -1347,6 +1346,7 @@
 
 .course-progress-track-large {
   width: 100%;
+
   height: 6px;
 
   overflow: hidden;
@@ -1379,7 +1379,7 @@
 
   color: #939cad;
 
-  font-size: 7px;
+  font-size: 10px;
 }
 
 
@@ -1403,7 +1403,7 @@
 
   text-align: center;
 
-  font-size: 9px;
+  font-size: 12px;
 }
 
 
@@ -1451,7 +1451,7 @@
   border-radius: 50%;
 
   background:
-    rgba(255,255,255,.07);
+    rgba(255, 255, 255, 0.07);
 }
 
 
@@ -1498,11 +1498,11 @@
   justify-content: center;
 
   background:
-    rgba(255,255,255,.14);
+    rgba(255, 255, 255, 0.14);
 
   border:
     1px solid
-    rgba(255,255,255,.19);
+    rgba(255, 255, 255, 0.19);
 
   border-radius: 13px;
 }
@@ -1514,13 +1514,13 @@
   margin-bottom: 4px;
 
   color:
-    rgba(255,255,255,.58);
+    rgba(255, 255, 255, 0.58);
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
-  letter-spacing: .09em;
+  letter-spacing: 0.09em;
 }
 
 
@@ -1537,9 +1537,9 @@
   margin: 0;
 
   color:
-    rgba(255,255,255,.75);
+    rgba(255, 255, 255, 0.75);
 
-  font-size: 8px;
+  font-size: 11px;
 
   line-height: 1.55;
 }
@@ -1573,13 +1573,13 @@
   margin-top: 5px;
 
   color:
-    rgba(255,255,255,.56);
+    rgba(255, 255, 255, 0.56);
 
-  font-size: 6px;
+  font-size: 10px;
 
   font-weight: 800;
 
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
 }
 
 
@@ -1681,7 +1681,7 @@
 
 
   .journey-stage > span {
-    font-size: 6px;
+    font-size: 9px;
   }
 
 

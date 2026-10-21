@@ -1,7 +1,10 @@
 import {
+  useEffect,
   useMemo,
   useState,
 } from "react";
+
+import axios from "axios";
 
 import {
   Bell,
@@ -22,18 +25,19 @@ function LecturerNotifications() {
   const [activeFilter, setActiveFilter] =
     useState("all");
 
-
-  /*
-    Real lecturer notifications will later
-    come from the backend.
-
-    For now we keep this empty instead of
-    displaying fake notification data.
-  */
-
-  const [notifications] =
+  const [notifications, setNotifications] =
     useState([]);
 
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState("");
+
+
+  /* ========================================
+     FILTERS
+  ======================================== */
 
   const filters = [
     {
@@ -59,12 +63,206 @@ function LecturerNotifications() {
   ];
 
 
+  /* ========================================
+     LOAD LECTURER NOTIFICATIONS
+  ======================================== */
+
+  const fetchNotifications =
+    async () => {
+
+      try {
+
+        setLoading(true);
+        setError("");
+
+
+        const token =
+          localStorage.getItem(
+            "token"
+          );
+
+
+        if (!token) {
+
+          setError(
+            "Please log in again."
+          );
+
+          return;
+
+        }
+
+
+        const response =
+          await axios.get(
+            "http://localhost:5000/lecturer/notifications",
+            {
+              headers: {
+                Authorization:
+                  `Bearer ${token}`,
+              },
+            }
+          );
+
+
+        setNotifications(
+          Array.isArray(
+            response.data
+          )
+            ? response.data
+            : []
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Failed to load lecturer notifications:",
+          error
+        );
+
+
+        setError(
+          error.response?.data?.error ||
+          "Failed to load notifications."
+        );
+
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    };
+
+
+  useEffect(() => {
+
+    fetchNotifications();
+
+  }, []);
+
+
+  /* ========================================
+     MARK ONE AS READ
+  ======================================== */
+
+  const markAsRead =
+    async (notificationId) => {
+
+      try {
+
+        const token =
+          localStorage.getItem(
+            "token"
+          );
+
+
+        await axios.put(
+          `http://localhost:5000/lecturer/notifications/${notificationId}/read`,
+          {},
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
+
+
+        setNotifications(
+          (currentNotifications) =>
+            currentNotifications.map(
+              (notification) =>
+                notification.id ===
+                notificationId
+                  ? {
+                      ...notification,
+                      is_read: true,
+                    }
+                  : notification
+            )
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Failed to mark notification as read:",
+          error
+        );
+
+      }
+
+    };
+
+
+  /* ========================================
+     MARK ALL AS READ
+  ======================================== */
+
+  const markAllAsRead =
+    async () => {
+
+      try {
+
+        const token =
+          localStorage.getItem(
+            "token"
+          );
+
+
+        await axios.put(
+          "http://localhost:5000/lecturer/notifications/read-all",
+          {},
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
+
+
+        setNotifications(
+          (currentNotifications) =>
+            currentNotifications.map(
+              (notification) => ({
+                ...notification,
+                is_read: true,
+              })
+            )
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Failed to mark all notifications as read:",
+          error
+        );
+
+      }
+
+    };
+
+
+  /* ========================================
+     FILTERED NOTIFICATIONS
+  ======================================== */
+
   const filteredNotifications =
     useMemo(() => {
 
-      if (activeFilter === "all") {
+      if (
+        activeFilter === "all"
+      ) {
+
         return notifications;
+
       }
+
 
       return notifications.filter(
         (notification) =>
@@ -72,17 +270,58 @@ function LecturerNotifications() {
           activeFilter
       );
 
+
     }, [
       activeFilter,
       notifications,
     ]);
 
 
+  /* ========================================
+     COUNTS
+  ======================================== */
+
   const unreadCount =
     notifications.filter(
       (notification) =>
-        !notification.read
+        notification.is_read ===
+        false
     ).length;
+
+
+  const submissionCount =
+    notifications.filter(
+      (notification) =>
+        notification.type ===
+        "submission"
+    ).length;
+
+
+  const gradingCount =
+    notifications.filter(
+      (notification) =>
+        notification.type ===
+        "grading"
+    ).length;
+
+
+  /* ========================================
+     FORMAT DATE
+  ======================================== */
+
+  const formatDate =
+    (dateValue) => {
+
+      if (!dateValue) {
+        return "";
+      }
+
+
+      return new Date(
+        dateValue
+      ).toLocaleString();
+
+    };
 
 
   return (
@@ -128,7 +367,6 @@ function LecturerNotifications() {
               grading activity and important
               academic updates from one place.
             </p>
-
 
           </div>
 
@@ -226,13 +464,7 @@ function LecturerNotifications() {
             </span>
 
             <strong>
-              {
-                notifications.filter(
-                  (item) =>
-                    item.type ===
-                    "submission"
-                ).length
-              }
+              {submissionCount}
             </strong>
 
             <small>
@@ -265,13 +497,7 @@ function LecturerNotifications() {
             </span>
 
             <strong>
-              {
-                notifications.filter(
-                  (item) =>
-                    item.type ===
-                    "grading"
-                ).length
-              }
+              {gradingCount}
             </strong>
 
             <small>
@@ -293,8 +519,6 @@ function LecturerNotifications() {
 
       <section className="ln-workspace">
 
-
-        {/* HEADER */}
 
         <div className="ln-workspace-header">
 
@@ -387,6 +611,27 @@ function LecturerNotifications() {
             )}
 
 
+            {unreadCount > 0 && (
+
+              <button
+                type="button"
+                className="ln-filter-button"
+                onClick={
+                  markAllAsRead
+                }
+              >
+
+                <CheckCheck
+                  size={14}
+                />
+
+                Mark all read
+
+              </button>
+
+            )}
+
+
           </div>
 
 
@@ -394,13 +639,37 @@ function LecturerNotifications() {
 
 
         {/* ==================================
-            NOTIFICATIONS
+            CONTENT
         ================================== */}
 
         <div className="ln-content">
 
 
-          {filteredNotifications.length ===
+          {loading ? (
+
+            <div className="ln-empty">
+
+              <h2>
+                Loading notifications...
+              </h2>
+
+            </div>
+
+          ) : error ? (
+
+            <div className="ln-empty">
+
+              <h2>
+                Unable to load notifications
+              </h2>
+
+              <p>
+                {error}
+              </p>
+
+            </div>
+
+          ) : filteredNotifications.length ===
           0 ? (
 
             <div className="ln-empty">
@@ -447,53 +716,12 @@ function LecturerNotifications() {
 
 
               <p>
-
                 New student submissions,
                 grading reminders and
                 academic updates will appear
                 here when they become
                 available.
-
               </p>
-
-
-              <div className="ln-empty-types">
-
-
-                <div>
-
-                  <ClipboardCheck
-                    size={14}
-                  />
-
-                  Submission activity
-
-                </div>
-
-
-                <div>
-
-                  <GraduationCap
-                    size={14}
-                  />
-
-                  Grading updates
-
-                </div>
-
-
-                <div>
-
-                  <CalendarClock
-                    size={14}
-                  />
-
-                  Academic reminders
-
-                </div>
-
-
-              </div>
 
 
             </div>
@@ -502,12 +730,116 @@ function LecturerNotifications() {
 
             <div className="ln-notification-list">
 
-              {/*
-                Real notification cards will
-                be rendered here once the
-                lecturer notification backend
-                is connected.
-              */}
+
+              {filteredNotifications.map(
+                (notification) => (
+
+                  <div
+                    key={
+                      notification.id
+                    }
+                    className={
+                      notification.is_read
+                        ? "ln-notification-card"
+                        : "ln-notification-card ln-notification-unread"
+                    }
+                  >
+
+
+                    <div className="ln-notification-card-icon">
+
+                      {notification.type ===
+                      "submission" ? (
+
+                        <ClipboardCheck
+                          size={19}
+                        />
+
+                      ) : notification.type ===
+                        "grading" ? (
+
+                        <GraduationCap
+                          size={19}
+                        />
+
+                      ) : (
+
+                        <CalendarClock
+                          size={19}
+                        />
+
+                      )}
+
+                    </div>
+
+
+                    <div className="ln-notification-card-content">
+
+                      <div>
+
+                        <strong>
+                          {
+                            notification.title
+                          }
+                        </strong>
+
+
+                        {!notification.is_read && (
+
+                          <span>
+                            NEW
+                          </span>
+
+                        )}
+
+                      </div>
+
+
+                      <p>
+                        {
+                          notification.message
+                        }
+                      </p>
+
+
+                      <small>
+                        {
+                          formatDate(
+                            notification.created_at
+                          )
+                        }
+                      </small>
+
+                    </div>
+
+
+                    {!notification.is_read && (
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          markAsRead(
+                            notification.id
+                          )
+                        }
+                      >
+
+                        <CheckCheck
+                          size={14}
+                        />
+
+                        Mark read
+
+                      </button>
+
+                    )}
+
+
+                  </div>
+
+                )
+              )}
+
 
             </div>
 

@@ -35,11 +35,9 @@ import {
 ======================================== */
 
 const studentSearchItems = [
-
   {
     title: "Dashboard",
-    description:
-      "Student learning overview",
+    description: "Student learning overview",
     path: "/dashboard",
     icon: LayoutDashboard,
     keywords: [
@@ -52,8 +50,7 @@ const studentSearchItems = [
 
   {
     title: "My Courses",
-    description:
-      "View your enrolled courses",
+    description: "View your enrolled courses",
     path: "/my-courses",
     icon: BookOpen,
     keywords: [
@@ -67,8 +64,7 @@ const studentSearchItems = [
 
   {
     title: "Assignments",
-    description:
-      "View and submit coursework",
+    description: "View and submit coursework",
     path: "/assignments",
     icon: ClipboardList,
     keywords: [
@@ -83,8 +79,7 @@ const studentSearchItems = [
 
   {
     title: "Deadlines",
-    description:
-      "Check upcoming submission dates",
+    description: "Check upcoming submission dates",
     path: "/deadlines",
     icon: CalendarDays,
     keywords: [
@@ -99,8 +94,7 @@ const studentSearchItems = [
 
   {
     title: "Learning Progress",
-    description:
-      "Track coursework progress",
+    description: "Track coursework progress",
     path: "/progress",
     icon: ChartNoAxesCombined,
     keywords: [
@@ -113,8 +107,7 @@ const studentSearchItems = [
 
   {
     title: "Grades",
-    description:
-      "View marks and lecturer feedback",
+    description: "View marks and lecturer feedback",
     path: "/grades",
     icon: GraduationCap,
     keywords: [
@@ -129,8 +122,7 @@ const studentSearchItems = [
 
   {
     title: "AI Study Tutor",
-    description:
-      "Get AI-powered study support",
+    description: "Get AI-powered study support",
     path: "/tutor",
     icon: BrainCircuit,
     keywords: [
@@ -146,8 +138,7 @@ const studentSearchItems = [
 
   {
     title: "Notifications",
-    description:
-      "View academic updates",
+    description: "View academic updates",
     path: "/notifications",
     icon: Bell,
     keywords: [
@@ -161,8 +152,7 @@ const studentSearchItems = [
 
   {
     title: "My Profile",
-    description:
-      "View your student information",
+    description: "View your student information",
     path: "/student/profile",
     icon: User,
     keywords: [
@@ -175,8 +165,7 @@ const studentSearchItems = [
 
   {
     title: "Settings",
-    description:
-      "Manage account preferences",
+    description: "Manage account preferences",
     path: "/student/settings",
     icon: Settings,
     keywords: [
@@ -189,8 +178,7 @@ const studentSearchItems = [
 
   {
     title: "Change Password",
-    description:
-      "Update your account password",
+    description: "Update your account password",
     path: "/student/change-password",
     icon: LockKeyhole,
     keywords: [
@@ -200,7 +188,6 @@ const studentSearchItems = [
       "account security",
     ],
   },
-
 ];
 
 
@@ -242,10 +229,8 @@ function StudentTopbar() {
   const [profileOpen, setProfileOpen] =
     useState(false);
 
-
   const [unreadCount, setUnreadCount] =
     useState(0);
-
 
   const [student, setStudent] =
     useState({
@@ -254,6 +239,7 @@ function StudentTopbar() {
       role: "STUDENT",
       degree: "",
       batch: "",
+      profile_image: "",
     });
 
 
@@ -272,7 +258,6 @@ function StudentTopbar() {
     );
 
     navigate("/login");
-
   };
 
 
@@ -298,7 +283,6 @@ function StudentTopbar() {
             handleInvalidToken();
 
             return;
-
           }
 
 
@@ -318,7 +302,6 @@ function StudentTopbar() {
             response.data
           );
 
-
         } catch (error) {
 
           console.error(
@@ -333,17 +316,52 @@ function StudentTopbar() {
           ) {
 
             handleInvalidToken();
-
           }
-
         }
-
       };
 
 
     fetchStudent();
 
   }, [navigate]);
+
+
+  /* ========================================
+     LIVE PROFILE IMAGE UPDATE
+  ======================================== */
+
+  useEffect(() => {
+
+    const handleProfileImageUpdated =
+      (event) => {
+
+        setStudent(
+          (previousStudent) => ({
+            ...previousStudent,
+
+            profile_image:
+              event.detail?.profileImage ??
+              previousStudent.profile_image,
+          })
+        );
+      };
+
+
+    window.addEventListener(
+      "student-profile-image-updated",
+      handleProfileImageUpdated
+    );
+
+
+    return () => {
+
+      window.removeEventListener(
+        "student-profile-image-updated",
+        handleProfileImageUpdated
+      );
+    };
+
+  }, []);
 
 
   /* ========================================
@@ -368,7 +386,6 @@ function StudentTopbar() {
             handleInvalidToken();
 
             return;
-
           }
 
 
@@ -403,7 +420,6 @@ function StudentTopbar() {
             unread
           );
 
-
         } catch (error) {
 
           console.error(
@@ -418,22 +434,19 @@ function StudentTopbar() {
           ) {
 
             handleInvalidToken();
-
           }
-
         }
-
       };
 
 
     fetchUnreadNotifications();
 
 
-    const handleWindowFocus = () => {
+    const handleWindowFocus =
+      () => {
 
-      fetchUnreadNotifications();
-
-    };
+        fetchUnreadNotifications();
+      };
 
 
     window.addEventListener(
@@ -448,7 +461,6 @@ function StudentTopbar() {
         "focus",
         handleWindowFocus
       );
-
     };
 
   }, [
@@ -474,7 +486,6 @@ function StudentTopbar() {
         ) {
 
           setSearchOpen(false);
-
         }
 
 
@@ -486,9 +497,7 @@ function StudentTopbar() {
         ) {
 
           setProfileOpen(false);
-
         }
-
       };
 
 
@@ -504,7 +513,6 @@ function StudentTopbar() {
         "mousedown",
         handleOutsideClick
       );
-
     };
 
   }, []);
@@ -526,13 +534,9 @@ function StudentTopbar() {
           (item) => {
 
             const searchableText = [
-
               item.title,
-
               item.description,
-
               ...item.keywords,
-
             ]
               .join(" ")
               .toLowerCase();
@@ -541,7 +545,6 @@ function StudentTopbar() {
             return searchableText.includes(
               normalizedSearch
             );
-
           }
         )
       : [];
@@ -558,11 +561,20 @@ function StudentTopbar() {
 
       setSearchOpen(false);
 
+
+      if (
+        location.pathname ===
+        item.path
+      ) {
+
+        return;
+      }
+
+
       navigate(
         item.path
       );
-
-  };
+    };
 
 
   /* ========================================
@@ -586,9 +598,7 @@ function StudentTopbar() {
           openSearchResult(
             searchResults[0]
           );
-
         }
-
       }
 
 
@@ -599,9 +609,7 @@ function StudentTopbar() {
         setSearchOpen(false);
 
         setSearchTerm("");
-
       }
-
     };
 
 
@@ -614,7 +622,6 @@ function StudentTopbar() {
     setSearchTerm("");
 
     setSearchOpen(false);
-
   };
 
 
@@ -622,25 +629,26 @@ function StudentTopbar() {
      CREATE INITIALS
   ======================================== */
 
-  const getInitials = (name) => {
+  const getInitials =
+    (name) => {
 
-    if (!name) {
-      return "ST";
-    }
+      if (!name) {
+
+        return "ST";
+      }
 
 
-    return name
-      .split(" ")
-      .filter(Boolean)
-      .map(
-        (word) =>
-          word.charAt(0)
-      )
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-
-  };
+      return name
+        .split(" ")
+        .filter(Boolean)
+        .map(
+          (word) =>
+            word.charAt(0)
+        )
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
+    };
 
 
   const initials =
@@ -650,61 +658,110 @@ function StudentTopbar() {
 
 
   /* ========================================
+     PROFILE IMAGE URL
+  ======================================== */
+
+  const getProfileImageUrl =
+    (profileImage) => {
+
+      if (!profileImage) {
+
+        return "";
+      }
+
+
+      if (
+        /^https?:\/\//i.test(
+          String(profileImage)
+        )
+      ) {
+
+        return String(
+          profileImage
+        );
+      }
+
+
+      const cleanPath =
+        String(profileImage)
+          .replace(
+            /\\/g,
+            "/"
+          )
+          .replace(
+            /^.*?uploads\//,
+            "uploads/"
+          );
+
+
+      return (
+        `http://localhost:5000/${cleanPath}`
+      );
+    };
+
+
+  const profileImageUrl =
+    getProfileImageUrl(
+      student.profile_image
+    );
+
+
+  /* ========================================
      PROFILE NAVIGATION
   ======================================== */
 
-  const goToProfile = () => {
+  const goToProfile =
+    () => {
 
-    setProfileOpen(false);
+      setProfileOpen(false);
 
-    navigate(
-      "/student/profile"
-    );
-
-  };
-
-
-  const goToSettings = () => {
-
-    setProfileOpen(false);
-
-    navigate(
-      "/student/settings"
-    );
-
-  };
+      navigate(
+        "/student/profile"
+      );
+    };
 
 
-  const goToChangePassword = () => {
+  const goToSettings =
+    () => {
 
-    setProfileOpen(false);
+      setProfileOpen(false);
 
-    navigate(
-      "/student/change-password"
-    );
+      navigate(
+        "/student/settings"
+      );
+    };
 
-  };
+
+  const goToChangePassword =
+    () => {
+
+      setProfileOpen(false);
+
+      navigate(
+        "/student/change-password"
+      );
+    };
 
 
   /* ========================================
      LOGOUT
   ======================================== */
 
-  const handleLogout = () => {
+  const handleLogout =
+    () => {
 
-    localStorage.removeItem(
-      "token"
-    );
+      localStorage.removeItem(
+        "token"
+      );
 
-    localStorage.removeItem(
-      "role"
-    );
+      localStorage.removeItem(
+        "role"
+      );
 
-    setProfileOpen(false);
+      setProfileOpen(false);
 
-    navigate("/login");
-
-  };
+      navigate("/login");
+    };
 
 
   return (
@@ -712,35 +769,60 @@ function StudentTopbar() {
     <>
 
       {/* ====================================
-          SEARCH DROPDOWN EXTRA STYLES
+          EXTRA STYLES
       ==================================== */}
 
       <style>{`
 
+        .topbar-avatar,
+        .dropdown-avatar {
+          overflow: hidden;
+        }
+
+
+        .student-layout-profile-image {
+          width: 100%;
+          height: 100%;
+
+          display: block;
+
+          object-fit: cover;
+
+          border-radius: inherit;
+        }
+
+
         .topbar-search-wrapper {
           position: relative;
+
           width: 100%;
           max-width: 470px;
+
           z-index: 1000;
         }
 
 
-        .topbar-search-wrapper .topbar-search {
+        .topbar-search-wrapper
+        .topbar-search {
           width: 100%;
           max-width: none;
         }
 
 
-        .topbar-search-wrapper .topbar-search input {
+        .topbar-search-wrapper
+        .topbar-search input {
           padding-right: 42px;
         }
 
 
         .student-search-clear {
           position: absolute;
+
           right: 13px;
           top: 50%;
-          transform: translateY(-50%);
+
+          transform:
+            translateY(-50%);
 
           width: 26px;
           height: 26px;
@@ -753,6 +835,7 @@ function StudentTopbar() {
           background: transparent;
 
           border: none;
+
           border-radius: 7px;
 
           cursor: pointer;
@@ -761,6 +844,7 @@ function StudentTopbar() {
 
         .student-search-clear:hover {
           color: #6557ed;
+
           background: #f1efff;
         }
 
@@ -769,7 +853,9 @@ function StudentTopbar() {
           position: absolute;
 
           left: 0;
-          top: calc(100% + 10px);
+
+          top:
+            calc(100% + 10px);
 
           width: 100%;
 
@@ -777,24 +863,43 @@ function StudentTopbar() {
 
           padding: 8px;
 
-          background: rgba(255, 255, 255, 0.98);
+          background:
+            rgba(
+              255,
+              255,
+              255,
+              0.98
+            );
 
-          border: 1px solid #e5e7ef;
+          border:
+            1px solid #e5e7ef;
+
           border-radius: 15px;
 
           box-shadow:
-            0 18px 45px rgba(32, 37, 68, 0.14);
+            0 18px 45px
+            rgba(
+              32,
+              37,
+              68,
+              0.14
+            );
 
-          backdrop-filter: blur(18px);
+          backdrop-filter:
+            blur(18px);
         }
 
 
         .student-search-results-header {
           display: flex;
-          justify-content: space-between;
+
+          justify-content:
+            space-between;
+
           align-items: center;
 
-          padding: 7px 9px 8px;
+          padding:
+            7px 9px 8px;
 
           color: #98a2b3;
 
@@ -808,7 +913,10 @@ function StudentTopbar() {
 
           display: grid;
 
-          grid-template-columns: 39px minmax(0, 1fr) auto;
+          grid-template-columns:
+            39px
+            minmax(0, 1fr)
+            auto;
 
           align-items: center;
 
@@ -817,9 +925,12 @@ function StudentTopbar() {
           padding: 10px;
 
           color: inherit;
-          background: transparent;
+
+          background:
+            transparent;
 
           border: none;
+
           border-radius: 11px;
 
           text-align: left;
@@ -827,14 +938,18 @@ function StudentTopbar() {
           cursor: pointer;
 
           transition:
-            background 0.16s ease,
-            transform 0.16s ease;
+            background
+            0.16s ease,
+            transform
+            0.16s ease;
         }
 
 
         .student-search-result:hover {
           background: #f6f4ff;
-          transform: translateX(2px);
+
+          transform:
+            translateX(2px);
         }
 
 
@@ -843,10 +958,14 @@ function StudentTopbar() {
           height: 39px;
 
           display: flex;
+
           align-items: center;
-          justify-content: center;
+
+          justify-content:
+            center;
 
           color: #6557ed;
+
           background: #efedff;
 
           border-radius: 10px;
@@ -866,6 +985,7 @@ function StudentTopbar() {
           color: #182230;
 
           font-size: 10px;
+
           font-weight: 750;
         }
 
@@ -880,7 +1000,9 @@ function StudentTopbar() {
           font-size: 8px;
 
           white-space: nowrap;
-          text-overflow: ellipsis;
+
+          text-overflow:
+            ellipsis;
         }
 
 
@@ -888,11 +1010,13 @@ function StudentTopbar() {
           padding: 4px 6px;
 
           color: #8d96a6;
+
           background: #f4f5f8;
 
           border-radius: 6px;
 
           font-size: 7px;
+
           font-weight: 700;
         }
 
@@ -909,12 +1033,17 @@ function StudentTopbar() {
           height: 42px;
 
           display: flex;
-          align-items: center;
-          justify-content: center;
 
-          margin: 0 auto 9px;
+          align-items: center;
+
+          justify-content:
+            center;
+
+          margin:
+            0 auto 9px;
 
           color: #6557ed;
+
           background: #efedff;
 
           border-radius: 12px;
@@ -941,7 +1070,9 @@ function StudentTopbar() {
         }
 
 
-        @media (max-width: 760px) {
+        @media (
+          max-width: 760px
+        ) {
 
           .topbar-search-wrapper {
             max-width: none;
@@ -956,7 +1087,7 @@ function StudentTopbar() {
 
 
         {/* ====================================
-            WORKING GLOBAL SEARCH
+            SEARCH
         ==================================== */}
 
         <div
@@ -976,10 +1107,14 @@ function StudentTopbar() {
 
             <input
               type="text"
-              value={searchTerm}
+              value={
+                searchTerm
+              }
               placeholder="Search pages, courses, assignments..."
               onFocus={() =>
-                setSearchOpen(true)
+                setSearchOpen(
+                  true
+                )
               }
               onChange={(event) => {
 
@@ -987,8 +1122,9 @@ function StudentTopbar() {
                   event.target.value
                 );
 
-                setSearchOpen(true);
-
+                setSearchOpen(
+                  true
+                );
               }}
               onKeyDown={
                 handleSearchKeyDown
@@ -1035,14 +1171,19 @@ function StudentTopbar() {
                     </span>
 
                     <span>
-                      {searchResults.length}
+                      {
+                        searchResults.length
+                      }
                     </span>
 
                   </div>
 
 
                   {searchResults
-                    .slice(0, 7)
+                    .slice(
+                      0,
+                      7
+                    )
                     .map(
                       (item) => {
 
@@ -1077,13 +1218,20 @@ function StudentTopbar() {
                             <div className="student-search-result-text">
 
                               <strong>
-                                {item.title}
+
+                                {
+                                  item.title
+                                }
+
                               </strong>
 
+
                               <span>
+
                                 {
                                   item.description
                                 }
+
                               </span>
 
                             </div>
@@ -1098,7 +1246,6 @@ function StudentTopbar() {
                           </button>
 
                         );
-
                       }
                     )}
 
@@ -1119,7 +1266,9 @@ function StudentTopbar() {
 
 
                   <strong>
+
                     No page found
+
                   </strong>
 
 
@@ -1149,9 +1298,7 @@ function StudentTopbar() {
         <div className="topbar-actions">
 
 
-          {/* ==================================
-              NOTIFICATION
-          ================================== */}
+          {/* NOTIFICATION */}
 
           <button
             type="button"
@@ -1193,7 +1340,6 @@ function StudentTopbar() {
             }
           >
 
-
             <button
               type="button"
               className="topbar-profile"
@@ -1204,8 +1350,9 @@ function StudentTopbar() {
                     !previous
                 );
 
-                setSearchOpen(false);
-
+                setSearchOpen(
+                  false
+                );
               }}
             >
 
@@ -1214,7 +1361,26 @@ function StudentTopbar() {
 
               <div className="topbar-avatar">
 
-                {initials}
+                {profileImageUrl ? (
+
+                  <img
+                    src={
+                      profileImageUrl
+                    }
+                    alt={
+                      `${
+                        student.name ||
+                        "Student"
+                      } profile`
+                    }
+                    className="student-layout-profile-image"
+                  />
+
+                ) : (
+
+                  initials
+
+                )}
 
               </div>
 
@@ -1247,7 +1413,7 @@ function StudentTopbar() {
 
 
             {/* ==================================
-                DROPDOWN
+                PROFILE DROPDOWN
             ================================== */}
 
             {profileOpen && (
@@ -1255,14 +1421,33 @@ function StudentTopbar() {
               <div className="profile-dropdown">
 
 
-                {/* PROFILE HEADER */}
+                {/* HEADER */}
 
                 <div className="profile-dropdown-header">
 
 
                   <div className="dropdown-avatar">
 
-                    {initials}
+                    {profileImageUrl ? (
+
+                      <img
+                        src={
+                          profileImageUrl
+                        }
+                        alt={
+                          `${
+                            student.name ||
+                            "Student"
+                          } profile`
+                        }
+                        className="student-layout-profile-image"
+                      />
+
+                    ) : (
+
+                      initials
+
+                    )}
 
                   </div>
 
@@ -1270,22 +1455,27 @@ function StudentTopbar() {
                   <div>
 
                     <strong>
+
                       {student.name}
+
                     </strong>
 
+
                     <span>
+
                       {student.email}
+
                     </span>
 
                   </div>
 
+
                 </div>
 
 
-                {/* PROFILE MENU */}
+                {/* MENU */}
 
                 <div className="profile-dropdown-menu">
-
 
                   <button
                     type="button"
@@ -1308,7 +1498,9 @@ function StudentTopbar() {
                     }
                   >
 
-                    <Settings size={17} />
+                    <Settings
+                      size={17}
+                    />
 
                     Settings
 
@@ -1345,13 +1537,16 @@ function StudentTopbar() {
                     }
                   >
 
-                    <LogOut size={17} />
+                    <LogOut
+                      size={17}
+                    />
 
                     Log out
 
                   </button>
 
                 </div>
+
 
               </div>
 
@@ -1366,7 +1561,6 @@ function StudentTopbar() {
     </>
 
   );
-
 }
 
 

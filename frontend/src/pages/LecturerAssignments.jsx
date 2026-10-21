@@ -40,6 +40,27 @@ import {
 import "../styles/lecturerAssignments.css";
 
 
+const DEGREE_OPTIONS = [
+  "BSc (Hons) Software Engineering",
+  "BSc (Hons) Computer Science",
+  "BSc (Hons) Data Science",
+  "BSc (Hons) Computer Security",
+  "BSc (Hons) Computer Networks",
+  "BSc (Hons) Artificial Intelligence",
+  "BSc (Hons) Technology Management",
+];
+
+
+const BATCH_OPTIONS = [
+  "24.1",
+  "24.2",
+  "25.1",
+  "25.2",
+  "26.1",
+  "26.2",
+];
+
+
 function LecturerAssignments() {
 
   const navigate =
@@ -87,14 +108,17 @@ function LecturerAssignments() {
   const [createOpen, setCreateOpen] =
     useState(false);
 
-  const [newAssignment, setNewAssignment] =
-    useState({
-      title: "",
-      course: "",
-      dueDate: "",
-      marks: "",
-      description: "",
-    });
+  const [
+    newAssignment,
+    setNewAssignment,
+  ] = useState({
+    title: "",
+    degree: "",
+    batch: "",
+    dueDate: "",
+    marks: "",
+    description: "",
+  });
 
 
   /* ========================================
@@ -124,15 +148,20 @@ function LecturerAssignments() {
   const [editFile, setEditFile] =
     useState(null);
 
-  const [editingAssignment, setEditingAssignment] =
+  const [
+    editingAssignment,
+    setEditingAssignment,
+  ] =
     useState({
       id: null,
       title: "",
-      course: "",
+      degree: "",
+      batch: "",
       dueDate: "",
       marks: "",
       description: "",
       filePath: "",
+      submissions: 0,
     });
 
 
@@ -183,6 +212,7 @@ function LecturerAssignments() {
       try {
 
         setLoading(true);
+
         setError("");
 
 
@@ -199,7 +229,6 @@ function LecturerAssignments() {
           );
 
           return;
-
         }
 
 
@@ -275,6 +304,7 @@ function LecturerAssignments() {
               ? assignmentsResponse.data
               : []
           )
+
             .filter(
               (assignment) =>
                 Number(
@@ -284,6 +314,7 @@ function LecturerAssignments() {
                   lecturer.id
                 )
             )
+
             .map(
               (assignment) => {
 
@@ -356,6 +387,7 @@ function LecturerAssignments() {
                 };
 
               }
+
             );
 
 
@@ -437,6 +469,7 @@ function LecturerAssignments() {
           );
 
         }
+
       );
 
     }, [
@@ -510,13 +543,16 @@ function LecturerAssignments() {
 
       const futureAssignments =
         assignments
+
           .filter(
             (assignment) => {
 
               if (
                 !assignment.dueDate
               ) {
+
                 return false;
+
               }
 
 
@@ -534,7 +570,9 @@ function LecturerAssignments() {
               );
 
             }
+
           )
+
           .sort(
             (a, b) =>
               new Date(
@@ -570,13 +608,14 @@ function LecturerAssignments() {
 
 
         if (
-          !newAssignment.title ||
-          !newAssignment.course ||
+          !newAssignment.title.trim() ||
+          !newAssignment.degree ||
+          !newAssignment.batch ||
           !newAssignment.dueDate
         ) {
 
           setError(
-            "Please complete all required fields."
+            "Please select a course, batch, due date and enter an assignment title."
           );
 
           return;
@@ -588,27 +627,6 @@ function LecturerAssignments() {
 
           setError(
             "Please select an assignment brief file."
-          );
-
-          return;
-
-        }
-
-
-        const selectedCourse =
-          courses.find(
-            (course) =>
-              String(course.id) ===
-              String(
-                newAssignment.course
-              )
-          );
-
-
-        if (!selectedCourse) {
-
-          setError(
-            "Please select a valid course."
           );
 
           return;
@@ -639,39 +657,40 @@ function LecturerAssignments() {
 
         formData.append(
           "title",
-          newAssignment.title
+          newAssignment.title.trim()
         );
+
 
         formData.append(
           "description",
-          newAssignment.description
+          newAssignment.description.trim()
         );
+
 
         formData.append(
           "dueDate",
           newAssignment.dueDate
         );
 
+
         formData.append(
           "degree",
-          selectedCourse.degree
+          newAssignment.degree
         );
+
 
         formData.append(
           "batch",
-          selectedCourse.batch
+          newAssignment.batch
         );
 
-        formData.append(
-          "courseId",
-          selectedCourse.id
-        );
 
         formData.append(
           "maxMarks",
           newAssignment.marks ||
           100
         );
+
 
         formData.append(
           "file",
@@ -693,7 +712,8 @@ function LecturerAssignments() {
 
         setNewAssignment({
           title: "",
-          course: "",
+          degree: "",
+          batch: "",
           dueDate: "",
           marks: "",
           description: "",
@@ -703,6 +723,7 @@ function LecturerAssignments() {
         setAssignmentFile(
           null
         );
+
 
         setCreateOpen(
           false
@@ -743,7 +764,9 @@ function LecturerAssignments() {
     (date) => {
 
       if (!date) {
+
         return "No date";
+
       }
 
 
@@ -867,10 +890,12 @@ function LecturerAssignments() {
         String(
           selectedAssignment.filePath
         )
+
           .replace(
             /\\/g,
             "/"
           )
+
           .replace(
             /^.*?uploads\//,
             "uploads/"
@@ -906,12 +931,13 @@ function LecturerAssignments() {
           assignment.title ||
           "",
 
-        course:
-          assignment.courseId
-            ? String(
-                assignment.courseId
-              )
-            : "",
+        degree:
+          assignment.degree ||
+          "",
+
+        batch:
+          assignment.batch ||
+          "",
 
         dueDate:
           assignment.dueDate
@@ -935,6 +961,12 @@ function LecturerAssignments() {
           assignment.filePath ||
           "",
 
+        submissions:
+          Number(
+            assignment.submissions ||
+            0
+          ),
+
       });
 
 
@@ -947,7 +979,9 @@ function LecturerAssignments() {
     () => {
 
       if (updating) {
+
         return;
+
       }
 
 
@@ -957,13 +991,25 @@ function LecturerAssignments() {
 
 
       setEditingAssignment({
+
         id: null,
+
         title: "",
-        course: "",
+
+        degree: "",
+
+        batch: "",
+
         dueDate: "",
+
         marks: "",
+
         description: "",
+
         filePath: "",
+
+        submissions: 0,
+
       });
 
     };
@@ -987,8 +1033,9 @@ function LecturerAssignments() {
 
 
         if (
-          !editingAssignment.title ||
-          !editingAssignment.course ||
+          !editingAssignment.title.trim() ||
+          !editingAssignment.degree ||
+          !editingAssignment.batch ||
           !editingAssignment.dueDate ||
           !editingAssignment.marks
         ) {
@@ -1023,23 +1070,33 @@ function LecturerAssignments() {
 
         formData.append(
           "title",
-          editingAssignment.title
+          editingAssignment.title.trim()
         );
+
 
         formData.append(
           "description",
-          editingAssignment.description
+          editingAssignment.description.trim()
         );
+
 
         formData.append(
           "dueDate",
           editingAssignment.dueDate
         );
 
+
         formData.append(
-          "courseId",
-          editingAssignment.course
+          "degree",
+          editingAssignment.degree
         );
+
+
+        formData.append(
+          "batch",
+          editingAssignment.batch
+        );
+
 
         formData.append(
           "maxMarks",
@@ -1076,7 +1133,23 @@ function LecturerAssignments() {
         );
 
 
-        closeEditModal();
+        setEditOpen(false);
+
+        setEditFile(null);
+
+
+        setEditingAssignment({
+          id: null,
+          title: "",
+          degree: "",
+          batch: "",
+          dueDate: "",
+          marks: "",
+          description: "",
+          filePath: "",
+          submissions: 0,
+        });
+
 
         await loadLecturerData();
 
@@ -1118,7 +1191,9 @@ function LecturerAssignments() {
 
 
       if (!confirmed) {
+
         return;
+
       }
 
 
@@ -1241,6 +1316,7 @@ function LecturerAssignments() {
               </p>
 
             </div>
+
 
           </div>
 
@@ -1369,7 +1445,9 @@ function LecturerAssignments() {
 
             </div>
 
+
           </div>
+
 
         </div>
 
@@ -1380,6 +1458,7 @@ function LecturerAssignments() {
 
 
           <div className="la-pulse-top">
+
 
             <div className="la-pulse-icon">
 
@@ -1393,6 +1472,7 @@ function LecturerAssignments() {
             <span>
               SUBMISSION PULSE
             </span>
+
 
           </div>
 
@@ -1432,7 +1512,6 @@ function LecturerAssignments() {
             <span>
 
               {submissionCount} of{" "}
-
               {totalSubmissionSlots} possible
               submissions received.
 
@@ -1496,9 +1575,12 @@ function LecturerAssignments() {
 
             )}
 
+
           </div>
 
+
         </aside>
+
 
       </section>
 
@@ -1507,7 +1589,9 @@ function LecturerAssignments() {
           ERROR
       ==================================== */}
 
-      {error && !createOpen && !editOpen && (
+      {error &&
+        !createOpen &&
+        !editOpen && (
 
         <div className="la-page-error">
 
@@ -1535,7 +1619,6 @@ function LecturerAssignments() {
 
           </div>
 
-
           <span>
 
             <strong>
@@ -1552,7 +1635,6 @@ function LecturerAssignments() {
         <div className="la-search">
 
           <Search size={17} />
-
 
           <input
             type="text"
@@ -1591,6 +1673,7 @@ function LecturerAssignments() {
           </option>
 
         </select>
+
 
       </section>
 
@@ -1645,6 +1728,7 @@ function LecturerAssignments() {
 
         </div>
 
+
       </section>
 
 
@@ -1656,6 +1740,7 @@ function LecturerAssignments() {
 
         <div className="la-state-box">
 
+
           <div className="la-state-icon">
 
             <ClipboardList
@@ -1664,13 +1749,16 @@ function LecturerAssignments() {
 
           </div>
 
+
           <strong>
             Loading assignments...
           </strong>
 
+
           <span>
             Preparing your assessment workspace
           </span>
+
 
         </div>
 
@@ -1682,30 +1770,35 @@ function LecturerAssignments() {
       ==================================== */}
 
       {!loading &&
-        filteredAssignments.length === 0 && (
+        filteredAssignments.length ===
+          0 && (
 
-          <div className="la-state-box">
+        <div className="la-state-box">
 
-            <div className="la-state-icon">
 
-              <Search size={23} />
+          <div className="la-state-icon">
 
-            </div>
-
-            <strong>
-              No assignments found
-            </strong>
-
-            <span>
-
-              Try another search term or
-              status filter.
-
-            </span>
+            <Search size={23} />
 
           </div>
 
-        )}
+
+          <strong>
+            No assignments found
+          </strong>
+
+
+          <span>
+
+            Try another search term or
+            status filter.
+
+          </span>
+
+
+        </div>
+
+      )}
 
 
       {/* ====================================
@@ -1716,8 +1809,10 @@ function LecturerAssignments() {
 
         <section className="la-list">
 
+
           {filteredAssignments.map(
             (assignment) => {
+
 
               const dateParts =
                 getDateParts(
@@ -1808,6 +1903,7 @@ function LecturerAssignments() {
 
                       </span>
 
+
                     </div>
 
 
@@ -1823,6 +1919,7 @@ function LecturerAssignments() {
 
 
                     <div className="la-meta">
+
 
                       <span>
 
@@ -1854,10 +1951,12 @@ function LecturerAssignments() {
 
                       </span>
 
+
                     </div>
 
 
                     <div className="la-submission-progress">
+
 
                       <div className="la-progress-info">
 
@@ -1865,13 +1964,14 @@ function LecturerAssignments() {
                           Submission progress
                         </span>
 
-
                         <strong>
 
                           {
                             assignment.submissions
                           }
+
                           /
+
                           {
                             assignment.students
                           }
@@ -1897,7 +1997,9 @@ function LecturerAssignments() {
 
                       </div>
 
+
                     </div>
+
 
                   </div>
 
@@ -1921,6 +2023,7 @@ function LecturerAssignments() {
 
 
                     <div className="la-actions">
+
 
                       <button
                         className="la-review-button"
@@ -1963,18 +2066,21 @@ function LecturerAssignments() {
 
                       <div className="la-more-wrapper">
 
+
                         <button
                           className="la-icon-button"
                           type="button"
                           title="More options"
                           onClick={() =>
                             setOpenMenuId(
+
                               openMenuId ===
                               assignment.id
 
                                 ? null
 
                                 : assignment.id
+
                             )
                           }
                         >
@@ -2008,18 +2114,24 @@ function LecturerAssignments() {
 
                         )}
 
+
                       </div>
+
 
                     </div>
 
+
                   </div>
+
 
                 </article>
 
               );
 
             }
+
           )}
+
 
         </section>
 
@@ -2035,6 +2147,7 @@ function LecturerAssignments() {
 
         <div className="lecturer-modal-overlay">
 
+
           <div className="la-modal">
 
 
@@ -2042,6 +2155,7 @@ function LecturerAssignments() {
 
 
               <div className="la-modal-title">
+
 
                 <div className="la-modal-title-icon">
 
@@ -2069,6 +2183,7 @@ function LecturerAssignments() {
 
                 </div>
 
+
               </div>
 
 
@@ -2084,6 +2199,7 @@ function LecturerAssignments() {
 
               </button>
 
+
             </div>
 
 
@@ -2091,6 +2207,7 @@ function LecturerAssignments() {
 
 
               <div className="la-view-title">
+
 
                 <div className="la-assignment-icon">
 
@@ -2121,6 +2238,7 @@ function LecturerAssignments() {
                   </span>
 
                 </div>
+
 
               </div>
 
@@ -2197,6 +2315,7 @@ function LecturerAssignments() {
 
                 </div>
 
+
               </div>
 
 
@@ -2255,6 +2374,7 @@ function LecturerAssignments() {
 
                 )}
 
+
               </div>
 
 
@@ -2274,9 +2394,12 @@ function LecturerAssignments() {
 
               </div>
 
+
             </div>
 
+
           </div>
+
 
         </div>
 
@@ -2291,6 +2414,7 @@ function LecturerAssignments() {
 
         <div className="lecturer-modal-overlay">
 
+
           <div className="la-modal">
 
 
@@ -2298,6 +2422,7 @@ function LecturerAssignments() {
 
 
               <div className="la-modal-title">
+
 
                 <div className="la-modal-title-icon">
 
@@ -2325,6 +2450,7 @@ function LecturerAssignments() {
 
                 </div>
 
+
               </div>
 
 
@@ -2342,6 +2468,7 @@ function LecturerAssignments() {
                 <X size={18} />
 
               </button>
+
 
             </div>
 
@@ -2390,54 +2517,143 @@ function LecturerAssignments() {
               </div>
 
 
-              <div className="lecturer-form-group">
+              {/* COURSE + BATCH */}
 
-                <label>
-                  Course
-                </label>
-
-                <select
-                  value={
-                    editingAssignment.course
-                  }
-                  onChange={(event) =>
-                    setEditingAssignment({
-                      ...editingAssignment,
-
-                      course:
-                        event.target.value,
-                    })
-                  }
-                  required
-                >
-
-                  <option value="">
-                    Select course
-                  </option>
+              <div className="lecturer-form-row">
 
 
-                  {courses.map(
-                    (course) => (
+                <div className="lecturer-form-group">
 
-                      <option
-                        key={course.id}
-                        value={course.id}
-                      >
+                  <label>
+                    Course
+                  </label>
 
-                        {course.title}
-                        {" - "}
-                        {course.degree}
-                        {" - Batch "}
-                        {course.batch}
+                  <select
+                    value={
+                      editingAssignment.degree
+                    }
+                    onChange={(event) =>
+                      setEditingAssignment({
+                        ...editingAssignment,
 
-                      </option>
+                        degree:
+                          event.target.value,
+                      })
+                    }
+                    disabled={
+                      editingAssignment.submissions >
+                      0
+                    }
+                    required
+                  >
 
-                    )
-                  )}
+                    <option value="">
+                      Select course
+                    </option>
 
-                </select>
+
+                    {DEGREE_OPTIONS.map(
+                      (degree) => (
+
+                        <option
+                          key={degree}
+                          value={degree}
+                        >
+
+                          {degree}
+
+                        </option>
+
+                      )
+                    )}
+
+
+                  </select>
+
+                </div>
+
+
+                <div className="lecturer-form-group">
+
+                  <label>
+                    Batch
+                  </label>
+
+                  <select
+                    value={
+                      editingAssignment.batch
+                    }
+                    onChange={(event) =>
+                      setEditingAssignment({
+                        ...editingAssignment,
+
+                        batch:
+                          event.target.value,
+                      })
+                    }
+                    disabled={
+                      editingAssignment.submissions >
+                      0
+                    }
+                    required
+                  >
+
+                    <option value="">
+                      Select batch
+                    </option>
+
+
+                    {BATCH_OPTIONS.map(
+                      (batch) => (
+
+                        <option
+                          key={batch}
+                          value={batch}
+                        >
+
+                          {batch}
+
+                        </option>
+
+                      )
+                    )}
+
+
+                  </select>
+
+                </div>
+
 
               </div>
+
+
+              {editingAssignment.submissions >
+                0 && (
+
+                <div
+                  style={{
+                    marginTop: "-4px",
+                    marginBottom: "16px",
+                    padding: "10px 12px",
+                    borderRadius: "9px",
+                    background: "#fff7ed",
+                    border:
+                      "1px solid #fed7aa",
+                    color: "#c2410c",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    lineHeight: 1.5,
+                  }}
+                >
+
+                  Degree and Batch cannot be
+                  changed because students have
+                  already submitted work for this
+                  assignment.
+
+                </div>
+
+              )}
 
 
               <div className="lecturer-form-row">
@@ -2492,6 +2708,7 @@ function LecturerAssignments() {
                   />
 
                 </div>
+
 
               </div>
 
@@ -2552,10 +2769,12 @@ function LecturerAssignments() {
 
                 </div>
 
+
               </div>
 
 
               <div className="lecturer-modal-actions">
+
 
                 <button
                   type="button"
@@ -2589,11 +2808,15 @@ function LecturerAssignments() {
 
                 </button>
 
+
               </div>
+
 
             </form>
 
+
           </div>
+
 
         </div>
 
@@ -2608,6 +2831,7 @@ function LecturerAssignments() {
 
         <div className="lecturer-modal-overlay">
 
+
           <div className="la-modal">
 
 
@@ -2615,6 +2839,7 @@ function LecturerAssignments() {
 
 
               <div className="la-modal-title">
+
 
                 <div className="la-modal-title-icon">
 
@@ -2642,20 +2867,26 @@ function LecturerAssignments() {
 
                 </div>
 
+
               </div>
 
 
               <button
                 className="lecturer-modal-close"
                 type="button"
-                onClick={() =>
-                  setCreateOpen(false)
-                }
+                onClick={() => {
+
+                  setCreateOpen(false);
+
+                  setError("");
+
+                }}
               >
 
                 <X size={18} />
 
               </button>
+
 
             </div>
 
@@ -2699,59 +2930,115 @@ function LecturerAssignments() {
                         event.target.value,
                     })
                   }
+                  required
                 />
 
               </div>
 
 
-              <div className="lecturer-form-group">
+              {/* COURSE + BATCH */}
 
-                <label>
-                  Course
-                </label>
-
-                <select
-                  value={
-                    newAssignment.course
-                  }
-                  onChange={(event) =>
-                    setNewAssignment({
-                      ...newAssignment,
-
-                      course:
-                        event.target.value,
-                    })
-                  }
-                >
-
-                  <option value="">
-                    Select course
-                  </option>
+              <div className="lecturer-form-row">
 
 
-                  {courses.map(
-                    (course) => (
+                <div className="lecturer-form-group">
 
-                      <option
-                        value={course.id}
-                        key={course.id}
-                      >
+                  <label>
+                    Course
+                  </label>
 
-                        {course.title}
-                        {" - "}
-                        {course.degree}
-                        {" - Batch "}
-                        {course.batch}
+                  <select
+                    value={
+                      newAssignment.degree
+                    }
+                    onChange={(event) =>
+                      setNewAssignment({
+                        ...newAssignment,
 
-                      </option>
+                        degree:
+                          event.target.value,
+                      })
+                    }
+                    required
+                  >
 
-                    )
-                  )}
+                    <option value="">
+                      Select course
+                    </option>
 
-                </select>
+
+                    {DEGREE_OPTIONS.map(
+                      (degree) => (
+
+                        <option
+                          key={degree}
+                          value={degree}
+                        >
+
+                          {degree}
+
+                        </option>
+
+                      )
+                    )}
+
+
+                  </select>
+
+                </div>
+
+
+                <div className="lecturer-form-group">
+
+                  <label>
+                    Batch
+                  </label>
+
+                  <select
+                    value={
+                      newAssignment.batch
+                    }
+                    onChange={(event) =>
+                      setNewAssignment({
+                        ...newAssignment,
+
+                        batch:
+                          event.target.value,
+                      })
+                    }
+                    required
+                  >
+
+                    <option value="">
+                      Select batch
+                    </option>
+
+
+                    {BATCH_OPTIONS.map(
+                      (batch) => (
+
+                        <option
+                          key={batch}
+                          value={batch}
+                        >
+
+                          {batch}
+
+                        </option>
+
+                      )
+                    )}
+
+
+                  </select>
+
+                </div>
+
 
               </div>
 
+
+              {/* DATE + MARKS */}
 
               <div className="lecturer-form-row">
 
@@ -2775,6 +3062,7 @@ function LecturerAssignments() {
                           event.target.value,
                       })
                     }
+                    required
                   />
 
                 </div>
@@ -2804,6 +3092,7 @@ function LecturerAssignments() {
                   />
 
                 </div>
+
 
               </div>
 
@@ -2866,17 +3155,23 @@ function LecturerAssignments() {
 
                 </div>
 
+
               </div>
 
 
               <div className="lecturer-modal-actions">
 
+
                 <button
                   type="button"
                   className="lecturer-cancel-button"
-                  onClick={() =>
-                    setCreateOpen(false)
-                  }
+                  onClick={() => {
+
+                    setCreateOpen(false);
+
+                    setError("");
+
+                  }}
                 >
 
                   Cancel
@@ -2895,15 +3190,20 @@ function LecturerAssignments() {
 
                 </button>
 
+
               </div>
+
 
             </form>
 
+
           </div>
+
 
         </div>
 
       )}
+
 
     </div>
 

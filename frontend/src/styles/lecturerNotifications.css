@@ -47,8 +47,7 @@
       #f2f5ff 100%
     );
 
-  border:
-    1px solid #e2e6f0;
+  border: 1px solid #e2e6f0;
 
   border-radius: 23px;
 
@@ -153,7 +152,7 @@
 
   color: #5368dc;
 
-  font-size: 7px;
+  font-size: 11px;
   font-weight: 850;
 
   letter-spacing: 0.11em;
@@ -181,7 +180,7 @@
 
   color: #788397;
 
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.7;
 }
 
@@ -247,7 +246,7 @@
   color:
     rgba(255,255,255,0.57);
 
-  font-size: 5px;
+  font-size: 10px;
   font-weight: 850;
 
   letter-spacing: 0.1em;
@@ -272,7 +271,7 @@
   color:
     rgba(255,255,255,0.66);
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
@@ -357,7 +356,7 @@
 
   color: #929bad;
 
-  font-size: 5px;
+  font-size: 10px;
   font-weight: 850;
 
   letter-spacing: 0.09em;
@@ -379,7 +378,7 @@
 
   color: #a0a8b6;
 
-  font-size: 6px;
+  font-size: 10px;
 }
 
 
@@ -437,7 +436,7 @@
 
   color: #7b8bbc;
 
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 850;
 
   letter-spacing: 0.1em;
@@ -459,7 +458,7 @@
 
   color: #8993a5;
 
-  font-size: 8px;
+  font-size: 11px;
 }
 
 
@@ -480,7 +479,7 @@
 
   border-radius: 9px;
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 700;
 }
 
@@ -513,7 +512,7 @@
 
   color: #7a8598;
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 700;
 }
 
@@ -530,6 +529,7 @@
 .ln-filter-button {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
 
   gap: 5px;
 
@@ -548,7 +548,7 @@
 
   font-family: inherit;
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 700;
 
   cursor: pointer;
@@ -556,7 +556,9 @@
   transition:
     color 0.18s ease,
     background 0.18s ease,
-    border-color 0.18s ease;
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
 }
 
 
@@ -566,6 +568,8 @@
   background: white;
 
   border-color: #e2e6ef;
+
+  transform: translateY(-1px);
 }
 
 
@@ -590,6 +594,320 @@
   min-height: 390px;
 
   padding: 25px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffffff 0%,
+      #fcfdff 100%
+    );
+}
+
+
+/* =========================================
+   REAL NOTIFICATION LIST
+========================================= */
+
+.ln-notification-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+
+/* =========================================
+   NOTIFICATION CARD
+========================================= */
+
+.ln-notification-card {
+  position: relative;
+
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    auto minmax(0, 1fr) auto;
+
+  align-items: center;
+
+  gap: 15px;
+
+  padding: 17px 18px;
+
+  box-sizing: border-box;
+
+  background: #ffffff;
+
+  border:
+    1px solid #e6e9f0;
+
+  border-radius: 15px;
+
+  box-shadow:
+    0 6px 18px
+    rgba(34, 45, 94, 0.035);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+
+.ln-notification-card:hover {
+  transform: translateY(-2px);
+
+  border-color: #dce2f4;
+
+  box-shadow:
+    0 11px 26px
+    rgba(34, 45, 94, 0.07);
+}
+
+
+/* =========================================
+   UNREAD CARD
+========================================= */
+
+.ln-notification-unread {
+  background:
+    linear-gradient(
+      100deg,
+      #f7f8ff 0%,
+      #ffffff 75%
+    );
+
+  border-color: #d9def8;
+
+  box-shadow:
+    0 8px 23px
+    rgba(70, 83, 190, 0.075);
+}
+
+
+.ln-notification-unread::before {
+  content: "";
+
+  position: absolute;
+
+  top: 12px;
+  bottom: 12px;
+  left: 0;
+
+  width: 4px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #405fdf,
+      #6b59e8
+    );
+
+  border-radius:
+    0 6px 6px 0;
+}
+
+
+/* =========================================
+   NOTIFICATION ICON
+========================================= */
+
+.ln-notification-card-icon {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color: #5065dc;
+
+  background:
+    linear-gradient(
+      135deg,
+      #edf1ff,
+      #f4f1ff
+    );
+
+  border:
+    1px solid #e0e5fb;
+
+  border-radius: 12px;
+}
+
+
+.ln-notification-unread
+.ln-notification-card-icon {
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #405fdf,
+      #6859e9
+    );
+
+  border-color: transparent;
+
+  box-shadow:
+    0 7px 17px
+    rgba(70, 86, 210, 0.18);
+}
+
+
+/* =========================================
+   NOTIFICATION CONTENT
+========================================= */
+
+.ln-notification-card-content {
+  min-width: 0;
+}
+
+
+.ln-notification-card-content
+> div:first-child {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 7px;
+
+  margin-bottom: 5px;
+}
+
+
+.ln-notification-card-content strong {
+  color: #172033;
+
+  font-size: 13px;
+  line-height: 1.4;
+
+  font-weight: 800;
+}
+
+
+.ln-notification-card-content
+> div:first-child > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 20px;
+
+  padding: 0 7px;
+
+  color: #4f60d9;
+
+  background: #ebeefe;
+
+  border:
+    1px solid #dce1fb;
+
+  border-radius: 999px;
+
+  font-size: 8px;
+  font-weight: 850;
+
+  letter-spacing: 0.08em;
+}
+
+
+.ln-notification-card-content p {
+  margin: 0;
+
+  color: #5f6b7e;
+
+  font-size: 11px;
+  line-height: 1.6;
+
+  overflow-wrap: anywhere;
+}
+
+
+.ln-notification-card-content small {
+  display: block;
+
+  margin-top: 7px;
+
+  color: #98a1b1;
+
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+
+/* =========================================
+   MARK READ BUTTON
+========================================= */
+
+.ln-notification-card
+> button {
+  min-height: 34px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 0 11px;
+
+  white-space: nowrap;
+
+  color: #5063d9;
+
+  background: #f0f3ff;
+
+  border:
+    1px solid #dce2fb;
+
+  border-radius: 9px;
+
+  font-family: inherit;
+
+  font-size: 10px;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+
+.ln-notification-card
+> button:hover {
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #425fdf,
+      #6658e8
+    );
+
+  border-color: transparent;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 7px 16px
+    rgba(70, 84, 205, 0.17);
+}
+
+
+.ln-notification-card
+> button:active {
+  transform: translateY(0);
 }
 
 
@@ -721,7 +1039,7 @@
 
   color: #5268dc;
 
-  font-size: 6px;
+  font-size: 10px;
   font-weight: 850;
 
   letter-spacing: 0.1em;
@@ -747,7 +1065,7 @@
 
   color: #8791a3;
 
-  font-size: 8px;
+  font-size: 11px;
   line-height: 1.7;
 }
 
@@ -782,13 +1100,13 @@
 
   border-radius: 9px;
 
-  font-size: 7px;
+  font-size: 10px;
   font-weight: 700;
 }
 
 
 /* =========================================
-   RESPONSIVE
+   RESPONSIVE - TABLET
 ========================================= */
 
 @media (max-width: 900px) {
@@ -803,8 +1121,26 @@
     height: 1px;
   }
 
+
+  .ln-notification-card {
+    grid-template-columns:
+      auto minmax(0, 1fr);
+  }
+
+
+  .ln-notification-card
+  > button {
+    grid-column: 2;
+
+    justify-self: flex-start;
+  }
+
 }
 
+
+/* =========================================
+   RESPONSIVE - MOBILE
+========================================= */
 
 @media (max-width: 760px) {
 
@@ -850,8 +1186,104 @@
   }
 
 
+  .ln-filter-button {
+    min-height: 34px;
+
+    font-size: 10px;
+  }
+
+
   .ln-content {
     padding: 18px;
+  }
+
+
+  .ln-notification-card {
+    grid-template-columns: 1fr;
+
+    align-items: flex-start;
+
+    padding: 16px;
+  }
+
+
+  .ln-notification-card-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+
+  .ln-notification-card
+  > button {
+    grid-column: auto;
+
+    justify-self: flex-start;
+  }
+
+
+  .ln-hero h1 {
+    font-size: 27px;
+  }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+
+  .lecturer-notifications-page {
+    padding:
+      20px 13px 34px;
+  }
+
+
+  .ln-hero {
+    border-radius: 18px;
+  }
+
+
+  .ln-workspace {
+    border-radius: 17px;
+  }
+
+
+  .ln-workspace-header {
+    padding:
+      20px 18px;
+  }
+
+
+  .ln-filter-bar {
+    padding:
+      13px 18px;
+  }
+
+
+  .ln-filter-tabs {
+    gap: 5px;
+  }
+
+
+  .ln-filter-button {
+    padding: 0 8px;
+  }
+
+
+  .ln-content {
+    padding: 13px;
+  }
+
+
+  .ln-notification-card-content strong {
+    font-size: 12px;
+  }
+
+
+  .ln-notification-card-content p {
+    font-size: 10px;
   }
 
 }

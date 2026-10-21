@@ -97,6 +97,59 @@ const upload =
         storage: storage
     });
 
+/* =========================================
+   PROFILE IMAGE UPLOAD CONFIGURATION
+========================================= */
+
+const profileUpload =
+    multer({
+
+        storage: storage,
+
+        limits: {
+
+            fileSize:
+                5 * 1024 * 1024
+
+        },
+
+        fileFilter: (
+            req,
+            file,
+            cb
+        ) => {
+
+            const allowedTypes = [
+                'image/jpeg',
+                'image/png',
+                'image/webp'
+            ];
+
+
+            if (
+                allowedTypes.includes(
+                    file.mimetype
+                )
+            ) {
+
+                cb(
+                    null,
+                    true
+                );
+
+            } else {
+
+                cb(
+                    new Error(
+                        'Only JPG, JPEG, PNG and WEBP images are allowed.'
+                    )
+                );
+
+            }
+
+        }
+
+    });
 
 /* =========================================
    AUTHENTICATE TOKEN
@@ -563,6 +616,7 @@ app.get(
                         degree,
                         batch,
                         student_number,
+                        profile_image,
                         last_login,
                         is_active,
                         must_change_password
@@ -614,6 +668,124 @@ app.get(
     }
 );
 
+/* =========================================
+   UPDATE STUDENT PROFILE IMAGE
+========================================= */
+
+app.put(
+    '/me/profile-image',
+
+    authenticateToken,
+
+    authorizeRoles('STUDENT'),
+
+    profileUpload.single(
+        'profileImage'
+    ),
+
+    async (req, res) => {
+
+        try {
+
+            const userId =
+                req.user.user_id;
+
+
+            const file =
+                req.file;
+
+
+            if (!file) {
+
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            'Please select a profile picture.'
+                    });
+
+            }
+
+
+            const profileImagePath =
+                file.path
+                    .replace(
+                        /\\/g,
+                        '/'
+                    );
+
+
+            const updatedUser =
+                await pool.query(
+                    `
+                    UPDATE users
+
+                    SET
+                        profile_image = $1
+
+                    WHERE id = $2
+
+                    RETURNING
+                        id,
+                        name,
+                        email,
+                        role,
+                        degree,
+                        batch,
+                        student_number,
+                        profile_image
+                    `,
+                    [
+                        profileImagePath,
+                        userId
+                    ]
+                );
+
+
+            if (
+                updatedUser.rows.length === 0
+            ) {
+
+                return res
+                    .status(404)
+                    .json({
+                        error:
+                            'Student not found.'
+                    });
+
+            }
+
+
+            res.json({
+
+                message:
+                    'Profile picture updated successfully!',
+
+                user:
+                    updatedUser.rows[0]
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                'Update Profile Image Error:',
+                error
+            );
+
+
+            res
+                .status(500)
+                .json({
+                    error:
+                        'Server error while updating profile picture.'
+                });
+
+        }
+
+    }
+);
 
 /* =========================================
    SUBJECTS
@@ -1398,9 +1570,15 @@ app.get(
 );
 
 
+/* =========================================
+   GET SINGLE COURSE - SECURE ACCESS
+========================================= */
+
 app.get(
     '/courses/:courseId',
+
     authenticateToken,
+
     async (req, res) => {
 
         try {
@@ -1410,7 +1588,19 @@ app.get(
             } = req.params;
 
 
-            const course =
+            const userId =
+                req.user.user_id;
+
+
+            const userRole =
+                req.user.role;
+
+
+            /* =================================
+               FIND COURSE
+            ================================= */
+
+            const courseResult =
                 await pool.query(
                     `
                     SELECT *
@@ -1424,36 +1614,166 @@ app.get(
 
 
             if (
-                course.rows.length === 0
+                courseResult.rows.length === 0
             ) {
 
                 return res
                     .status(404)
                     .json({
                         error:
-                            'Course not found'
+                            'Course not found.'
                     });
 
             }
 
 
-            res.json(
-                course.rows[0]
-            );
+            const course =
+                courseResult.rows[0];
 
 
-        } catch (err) {
+            /* =================================
+               ADMIN ACCESS
+            ================================= */
+
+            if (
+                userRole === 'ADMIN'
+            ) {
+
+                return res.json(
+                    course
+                );
+
+            }
+
+
+            /* =================================
+               LECTURER ACCESS
+               Must own the course
+            ================================= */
+
+            if (
+                userRole === 'LECTURER'
+            ) {
+
+                if (
+                    Number(
+                        course.lecturer_id
+                    ) !==
+                    Number(
+                        userId
+                    )
+                ) {
+
+                    return res
+                        .status(403)
+                        .json({
+                            error:
+                                'You do not have permission to access this course.'
+                        });
+
+                }
+
+
+                return res.json(
+                    course
+                );
+
+            }
+
+
+            /* =================================
+               STUDENT ACCESS
+               Degree + Batch must match
+            ================================= */
+
+            if (
+                userRole === 'STUDENT'
+            ) {
+
+                const studentResult =
+                    await pool.query(
+                        `
+                        SELECT
+                            degree,
+                            batch
+
+                        FROM users
+
+                        WHERE
+                            id = $1
+                            AND role = 'STUDENT'
+                        `,
+                        [
+                            userId
+                        ]
+                    );
+
+
+                if (
+                    studentResult.rows.length === 0
+                ) {
+
+                    return res
+                        .status(404)
+                        .json({
+                            error:
+                                'Student profile not found.'
+                        });
+
+                }
+
+
+                const student =
+                    studentResult.rows[0];
+
+
+                if (
+                    student.degree !==
+                        course.degree ||
+
+                    student.batch !==
+                        course.batch
+                ) {
+
+                    return res
+                        .status(403)
+                        .json({
+                            error:
+                                'You are not enrolled in this course.'
+                        });
+
+                }
+
+
+                return res.json(
+                    course
+                );
+
+            }
+
+
+            return res
+                .status(403)
+                .json({
+                    error:
+                        'Access denied.'
+                });
+
+
+        } catch (error) {
 
             console.error(
-                err.message
+                'Get Course Error:',
+                error
             );
 
 
             res
                 .status(500)
-                .send(
-                    'Server Error'
-                );
+                .json({
+                    error:
+                        'Server error while loading course.'
+                });
 
         }
 
@@ -1461,9 +1781,15 @@ app.get(
 );
 
 
+/* =========================================
+   GET COURSE LESSONS - SECURE ACCESS
+========================================= */
+
 app.get(
     '/courses/:courseId/lessons',
+
     authenticateToken,
+
     async (req, res) => {
 
         try {
@@ -1473,13 +1799,182 @@ app.get(
             } = req.params;
 
 
-            const lessons =
+            const userId =
+                req.user.user_id;
+
+
+            const userRole =
+                req.user.role;
+
+
+            /* =================================
+               FIND COURSE
+            ================================= */
+
+            const courseResult =
                 await pool.query(
                     `
-                    SELECT *
+                    SELECT
+                        id,
+                        degree,
+                        batch,
+                        lecturer_id
+
+                    FROM courses
+
+                    WHERE id = $1
+                    `,
+                    [
+                        courseId
+                    ]
+                );
+
+
+            if (
+                courseResult.rows.length === 0
+            ) {
+
+                return res
+                    .status(404)
+                    .json({
+                        error:
+                            'Course not found.'
+                    });
+
+            }
+
+
+            const course =
+                courseResult.rows[0];
+
+
+            /* =================================
+               ACCESS CHECK
+            ================================= */
+
+            let hasAccess =
+                false;
+
+
+            /* ADMIN */
+
+            if (
+                userRole === 'ADMIN'
+            ) {
+
+                hasAccess =
+                    true;
+
+            }
+
+
+            /* LECTURER */
+
+            if (
+                userRole === 'LECTURER' &&
+                Number(
+                    course.lecturer_id
+                ) ===
+                Number(
+                    userId
+                )
+            ) {
+
+                hasAccess =
+                    true;
+
+            }
+
+
+            /* STUDENT */
+
+            if (
+                userRole === 'STUDENT'
+            ) {
+
+                const studentResult =
+                    await pool.query(
+                        `
+                        SELECT
+                            degree,
+                            batch
+
+                        FROM users
+
+                        WHERE
+                            id = $1
+                            AND role = 'STUDENT'
+                        `,
+                        [
+                            userId
+                        ]
+                    );
+
+
+                if (
+                    studentResult.rows.length > 0
+                ) {
+
+                    const student =
+                        studentResult.rows[0];
+
+
+                    if (
+                        student.degree ===
+                            course.degree &&
+
+                        student.batch ===
+                            course.batch
+                    ) {
+
+                        hasAccess =
+                            true;
+
+                    }
+
+                }
+
+            }
+
+
+            /* =================================
+               BLOCK UNAUTHORIZED USER
+            ================================= */
+
+            if (!hasAccess) {
+
+                return res
+                    .status(403)
+                    .json({
+                        error:
+                            'You do not have permission to access these lessons.'
+                    });
+
+            }
+
+
+            /* =================================
+               LOAD LESSONS
+            ================================= */
+
+            const lessonsResult =
+                await pool.query(
+                    `
+                    SELECT
+                        id,
+                        course_id,
+                        title,
+                        content,
+                        order_number,
+                        file_path
+
                     FROM lessons
+
                     WHERE course_id = $1
-                    ORDER BY order_number ASC
+
+                    ORDER BY
+                        order_number ASC,
+                        id ASC
                     `,
                     [
                         courseId
@@ -1488,22 +1983,839 @@ app.get(
 
 
             res.json(
-                lessons.rows
+                lessonsResult.rows
             );
 
 
-        } catch (err) {
+        } catch (error) {
 
             console.error(
-                err.message
+                'Get Course Lessons Error:',
+                error
             );
 
 
             res
                 .status(500)
-                .send(
-                    'Server Error'
+                .json({
+                    error:
+                        'Server error while loading lessons.'
+                });
+
+        }
+
+    }
+);
+
+/* =========================================
+   ADD LESSON BY LECTURER
+========================================= */
+
+app.post(
+    '/lecturer/courses/:courseId/lessons',
+
+    authenticateToken,
+
+    authorizeRoles('LECTURER'),
+
+    upload.single('file'),
+
+    async (req, res) => {
+
+        try {
+
+            const {
+                courseId
+            } = req.params;
+
+
+            const {
+                title,
+                content,
+                orderNumber
+            } = req.body;
+
+
+            const lecturerId =
+                req.user.user_id;
+
+
+            const file =
+                req.file;
+
+
+            /* =================================
+               VALIDATE TITLE
+            ================================= */
+
+            if (
+                !title ||
+                !title.trim()
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            'Lesson title is required.'
+                    });
+
+            }
+
+
+            /* =================================
+               REQUIRE LEARNING MATERIAL
+            ================================= */
+
+            if (!file) {
+
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            'Please upload a lesson material file.'
+                    });
+
+            }
+
+
+            /* =================================
+               CHECK COURSE OWNERSHIP
+            ================================= */
+
+            const courseResult =
+                await pool.query(
+                    `
+                    SELECT
+                        id,
+                        title,
+                        degree,
+                        batch,
+                        lecturer_id
+
+                    FROM courses
+
+                    WHERE
+                        id = $1
+                        AND lecturer_id = $2
+                    `,
+                    [
+                        courseId,
+                        lecturerId
+                    ]
                 );
+
+
+            if (
+                courseResult.rows.length === 0
+            ) {
+
+                return res
+                    .status(404)
+                    .json({
+                        error:
+                            'Course not found or you do not have permission to add lessons to it.'
+                    });
+
+            }
+
+
+            /* =================================
+               LESSON ORDER
+            ================================= */
+
+            let finalOrderNumber =
+                Number(orderNumber);
+
+
+            if (
+                !Number.isInteger(
+                    finalOrderNumber
+                ) ||
+                finalOrderNumber <= 0
+            ) {
+
+                const orderResult =
+                    await pool.query(
+                        `
+                        SELECT
+                            COALESCE(
+                                MAX(order_number),
+                                0
+                            ) + 1
+                            AS next_order
+
+                        FROM lessons
+
+                        WHERE course_id = $1
+                        `,
+                        [
+                            courseId
+                        ]
+                    );
+
+
+                finalOrderNumber =
+                    Number(
+                        orderResult.rows[0]
+                            .next_order
+                    );
+
+            }
+
+
+            /* =================================
+               CREATE LESSON
+            ================================= */
+
+            const lessonResult =
+                await pool.query(
+                    `
+                    INSERT INTO lessons
+                    (
+                        course_id,
+                        title,
+                        content,
+                        order_number,
+                        file_path
+                    )
+
+                    VALUES
+                    (
+                        $1,
+                        $2,
+                        $3,
+                        $4,
+                        $5
+                    )
+
+                    RETURNING *
+                    `,
+                    [
+                        courseId,
+                        title.trim(),
+                        content?.trim() || null,
+                        finalOrderNumber,
+                        file.path
+                    ]
+                );
+
+
+            /* =================================
+               SUCCESS
+            ================================= */
+
+            res
+                .status(201)
+                .json({
+
+                    message:
+                        'Lesson added successfully!',
+
+                    lesson:
+                        lessonResult.rows[0]
+
+                });
+
+
+        } catch (error) {
+
+            console.error(
+                'Add Lesson Error:',
+                error
+            );
+
+
+            res
+                .status(500)
+                .json({
+                    error:
+                        'Server error while adding lesson.'
+                });
+
+        }
+
+    }
+);
+
+/* =========================================
+   UPDATE LESSON BY LECTURER
+========================================= */
+
+app.put(
+    '/lecturer/courses/:courseId/lessons/:lessonId',
+
+    authenticateToken,
+
+    authorizeRoles('LECTURER'),
+
+    upload.single('file'),
+
+    async (req, res) => {
+
+        try {
+
+            const {
+                courseId,
+                lessonId
+            } = req.params;
+
+
+            const {
+                title,
+                content,
+                orderNumber
+            } = req.body;
+
+
+            const lecturerId =
+                req.user.user_id;
+
+
+            /* =================================
+               VALIDATE TITLE
+            ================================= */
+
+            if (
+                !title ||
+                !title.trim()
+            ) {
+
+                /*
+                  Multer has already saved the
+                  newly uploaded file, so remove
+                  it if validation fails.
+                */
+
+                if (
+                    req.file &&
+                    fs.existsSync(
+                        req.file.path
+                    )
+                ) {
+
+                    fs.unlinkSync(
+                        req.file.path
+                    );
+
+                }
+
+
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            'Lesson title is required.'
+                    });
+
+            }
+
+
+            /* =================================
+               CHECK COURSE + LESSON OWNERSHIP
+
+               This confirms:
+               1. Course belongs to lecturer
+               2. Lesson belongs to course
+            ================================= */
+
+            const lessonCheck =
+                await pool.query(
+                    `
+                    SELECT
+                        l.id,
+                        l.course_id,
+                        l.title,
+                        l.content,
+                        l.order_number,
+                        l.file_path,
+                        c.lecturer_id
+
+                    FROM lessons l
+
+                    JOIN courses c
+                        ON c.id =
+                           l.course_id
+
+                    WHERE
+                        l.id = $1
+                        AND l.course_id = $2
+                        AND c.lecturer_id = $3
+                    `,
+                    [
+                        lessonId,
+                        courseId,
+                        lecturerId
+                    ]
+                );
+
+
+            if (
+                lessonCheck.rows.length ===
+                0
+            ) {
+
+                /*
+                  Remove newly uploaded file
+                  because this lecturer is not
+                  allowed to edit the lesson.
+                */
+
+                if (
+                    req.file &&
+                    fs.existsSync(
+                        req.file.path
+                    )
+                ) {
+
+                    fs.unlinkSync(
+                        req.file.path
+                    );
+
+                }
+
+
+                return res
+                    .status(404)
+                    .json({
+                        error:
+                            'Lesson not found or you do not have permission to edit it.'
+                    });
+
+            }
+
+
+            const existingLesson =
+                lessonCheck.rows[0];
+
+
+            /* =================================
+               LESSON ORDER
+
+               If no new order is provided,
+               keep the existing order.
+            ================================= */
+
+            let finalOrderNumber =
+                existingLesson.order_number;
+
+
+            if (
+                orderNumber !== undefined &&
+                orderNumber !== null &&
+                String(orderNumber).trim() !==
+                    ''
+            ) {
+
+                const parsedOrder =
+                    Number(orderNumber);
+
+
+                if (
+                    !Number.isInteger(
+                        parsedOrder
+                    ) ||
+                    parsedOrder <= 0
+                ) {
+
+                    if (
+                        req.file &&
+                        fs.existsSync(
+                            req.file.path
+                        )
+                    ) {
+
+                        fs.unlinkSync(
+                            req.file.path
+                        );
+
+                    }
+
+
+                    return res
+                        .status(400)
+                        .json({
+                            error:
+                                'Lesson order must be a positive whole number.'
+                        });
+
+                }
+
+
+                finalOrderNumber =
+                    parsedOrder;
+
+            }
+
+
+            /* =================================
+               MATERIAL FILE
+
+               No new file:
+               keep old material.
+
+               New file:
+               replace old material.
+            ================================= */
+
+            let finalFilePath =
+                existingLesson.file_path;
+
+
+            if (req.file) {
+
+                finalFilePath =
+                    req.file.path
+                        .replace(
+                            /\\/g,
+                            '/'
+                        );
+
+            }
+
+
+            /* =================================
+               UPDATE LESSON
+            ================================= */
+
+            const updatedLesson =
+                await pool.query(
+                    `
+                    UPDATE lessons
+
+                    SET
+                        title = $1,
+                        content = $2,
+                        order_number = $3,
+                        file_path = $4
+
+                    WHERE
+                        id = $5
+                        AND course_id = $6
+
+                    RETURNING *
+                    `,
+                    [
+                        title.trim(),
+
+                        content?.trim() ||
+                            null,
+
+                        finalOrderNumber,
+
+                        finalFilePath,
+
+                        lessonId,
+
+                        courseId
+                    ]
+                );
+
+
+            /* =================================
+               REMOVE OLD MATERIAL
+
+               Only remove it after PostgreSQL
+               successfully updates the lesson.
+            ================================= */
+
+            if (
+                req.file &&
+                existingLesson.file_path &&
+                existingLesson.file_path !==
+                    finalFilePath
+            ) {
+
+                try {
+
+                    const oldFilePath =
+                        path.isAbsolute(
+                            existingLesson
+                                .file_path
+                        )
+                            ? existingLesson
+                                .file_path
+                            : path.join(
+                                __dirname,
+                                existingLesson
+                                    .file_path
+                              );
+
+
+                    if (
+                        fs.existsSync(
+                            oldFilePath
+                        )
+                    ) {
+
+                        fs.unlinkSync(
+                            oldFilePath
+                        );
+
+                    }
+
+                } catch (
+                    fileError
+                ) {
+
+                    console.error(
+                        'Old lesson material cleanup warning:',
+                        fileError.message
+                    );
+
+                }
+
+            }
+
+
+            /* =================================
+               SUCCESS
+            ================================= */
+
+            res.json({
+
+                message:
+                    'Lesson updated successfully!',
+
+                lesson:
+                    updatedLesson.rows[0]
+
+            });
+
+
+        } catch (error) {
+
+            /*
+              If something failed after Multer
+              uploaded a new replacement file,
+              try to remove that unused file.
+            */
+
+            if (
+                req.file &&
+                fs.existsSync(
+                    req.file.path
+                )
+            ) {
+
+                try {
+
+                    fs.unlinkSync(
+                        req.file.path
+                    );
+
+                } catch (
+                    fileError
+                ) {
+
+                    console.error(
+                        'Uploaded lesson file cleanup warning:',
+                        fileError.message
+                    );
+
+                }
+
+            }
+
+
+            console.error(
+                'Update Lesson Error:',
+                error
+            );
+
+
+            res
+                .status(500)
+                .json({
+                    error:
+                        'Server error while updating lesson.'
+                });
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   DELETE LESSON BY LECTURER
+========================================= */
+
+app.delete(
+    '/lecturer/courses/:courseId/lessons/:lessonId',
+
+    authenticateToken,
+
+    authorizeRoles('LECTURER'),
+
+    async (req, res) => {
+
+        try {
+
+            const {
+                courseId,
+                lessonId
+            } = req.params;
+
+
+            const lecturerId =
+                req.user.user_id;
+
+
+            /* =================================
+               CHECK COURSE + LESSON OWNERSHIP
+            ================================= */
+
+            const lessonCheck =
+                await pool.query(
+                    `
+                    SELECT
+                        l.id,
+                        l.course_id,
+                        l.title,
+                        l.file_path,
+                        c.lecturer_id
+
+                    FROM lessons l
+
+                    JOIN courses c
+                        ON c.id =
+                           l.course_id
+
+                    WHERE
+                        l.id = $1
+                        AND l.course_id = $2
+                        AND c.lecturer_id = $3
+                    `,
+                    [
+                        lessonId,
+                        courseId,
+                        lecturerId
+                    ]
+                );
+
+
+            if (
+                lessonCheck.rows.length ===
+                0
+            ) {
+
+                return res
+                    .status(404)
+                    .json({
+                        error:
+                            'Lesson not found or you do not have permission to delete it.'
+                    });
+
+            }
+
+
+            const lesson =
+                lessonCheck.rows[0];
+
+
+            /* =================================
+               DELETE LESSON FROM DATABASE
+            ================================= */
+
+            const deletedLesson =
+                await pool.query(
+                    `
+                    DELETE FROM lessons
+
+                    WHERE
+                        id = $1
+                        AND course_id = $2
+
+                    RETURNING *
+                    `,
+                    [
+                        lessonId,
+                        courseId
+                    ]
+                );
+
+
+            /* =================================
+               DELETE LESSON MATERIAL FILE
+
+               Database deletion happens first.
+               A file cleanup problem should not
+               restore the deleted lesson.
+            ================================= */
+
+            if (
+                lesson.file_path
+            ) {
+
+                try {
+
+                    const materialPath =
+                        path.isAbsolute(
+                            lesson.file_path
+                        )
+                            ? lesson.file_path
+                            : path.join(
+                                __dirname,
+                                lesson.file_path
+                              );
+
+
+                    if (
+                        fs.existsSync(
+                            materialPath
+                        )
+                    ) {
+
+                        fs.unlinkSync(
+                            materialPath
+                        );
+
+                    }
+
+                } catch (
+                    fileError
+                ) {
+
+                    console.error(
+                        'Lesson material cleanup warning:',
+                        fileError.message
+                    );
+
+                }
+
+            }
+
+
+            /* =================================
+               SUCCESS
+            ================================= */
+
+            res.json({
+
+                message:
+                    'Lesson deleted successfully!',
+
+                lesson:
+                    deletedLesson.rows[0]
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                'Delete Lesson Error:',
+                error
+            );
+
+
+            res
+                .status(500)
+                .json({
+                    error:
+                        'Server error while deleting lesson.'
+                });
 
         }
 
@@ -2618,6 +3930,76 @@ app.post(
                     ]
                 );
 
+            /* =========================================
+                NOTIFY LECTURER ABOUT NEW SUBMISSION
+                ========================================= */
+
+                const submissionInfo =
+                    await pool.query(
+                        `
+                        SELECT
+                            a.lecturer_id,
+                            a.title AS assignment_title,
+                            u.name AS student_name
+
+                        FROM assignments a
+
+                        JOIN users u
+                            ON u.id = $2
+
+                        WHERE
+                            a.id = $1
+                            AND a.lecturer_id IS NOT NULL
+                        `,
+                        [
+                            assignmentId,
+                            studentId
+                        ]
+                    );
+
+
+                if (
+                    submissionInfo.rows.length > 0
+                ) {
+
+                    const info =
+                        submissionInfo.rows[0];
+
+
+                    const notificationMessage =
+                        `${info.student_name} submitted "${info.assignment_title}".`;
+
+
+                    await pool.query(
+                        `
+                        INSERT INTO notifications
+                        (
+                            user_id,
+                            type,
+                            title,
+                            message,
+                            category,
+                            is_read
+                        )
+
+                        VALUES
+                        (
+                            $1,
+                            'submission',
+                            'New Student Submission',
+                            $2,
+                            'Submission',
+                            FALSE
+                        )
+                        `,
+                        [
+                            info.lecturer_id,
+                            notificationMessage
+                        ]
+                    );
+
+                }
+
 
             return res
                 .status(201)
@@ -3382,13 +4764,223 @@ app.put(
 );
 
 /* =========================================
-   AI STUDY TUTOR
+   LECTURER NOTIFICATIONS
 ========================================= */
+
+
+/* =========================================
+   GET LECTURER NOTIFICATIONS
+========================================= */
+
+app.get(
+    '/lecturer/notifications',
+    authenticateToken,
+    authorizeRoles('LECTURER'),
+    async (req, res) => {
+
+        try {
+
+            const lecturerId =
+                req.user.user_id;
+
+
+            const notifications =
+                await pool.query(
+                    `
+                    SELECT
+                        id,
+                        type,
+                        title,
+                        message,
+                        category,
+                        is_read,
+                        created_at
+
+                    FROM notifications
+
+                    WHERE user_id = $1
+
+                    ORDER BY
+                        created_at DESC
+                    `,
+                    [
+                        lecturerId
+                    ]
+                );
+
+
+            res.json(
+                notifications.rows
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                'Fetch Lecturer Notifications Error:',
+                error.message
+            );
+
+
+            res
+                .status(500)
+                .json({
+                    error:
+                        'Server error while loading lecturer notifications.'
+                });
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   MARK ONE LECTURER NOTIFICATION AS READ
+========================================= */
+
+app.put(
+    '/lecturer/notifications/:id/read',
+    authenticateToken,
+    authorizeRoles('LECTURER'),
+    async (req, res) => {
+
+        try {
+
+            const lecturerId =
+                req.user.user_id;
+
+            const notificationId =
+                req.params.id;
+
+
+            const result =
+                await pool.query(
+                    `
+                    UPDATE notifications
+
+                    SET is_read = TRUE
+
+                    WHERE
+                        id = $1
+                        AND user_id = $2
+
+                    RETURNING *
+                    `,
+                    [
+                        notificationId,
+                        lecturerId
+                    ]
+                );
+
+
+            if (
+                result.rows.length === 0
+            ) {
+
+                return res
+                    .status(404)
+                    .json({
+                        error:
+                            'Notification not found.'
+                    });
+
+            }
+
+
+            res.json({
+
+                message:
+                    'Notification marked as read.',
+
+                notification:
+                    result.rows[0]
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                'Lecturer Notification Read Error:',
+                error.message
+            );
+
+
+            res
+                .status(500)
+                .json({
+                    error:
+                        'Server error while updating notification.'
+                });
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   MARK ALL LECTURER NOTIFICATIONS AS READ
+========================================= */
+
+app.put(
+    '/lecturer/notifications/read-all',
+    authenticateToken,
+    authorizeRoles('LECTURER'),
+    async (req, res) => {
+
+        try {
+
+            const lecturerId =
+                req.user.user_id;
+
+
+            await pool.query(
+                `
+                UPDATE notifications
+
+                SET is_read = TRUE
+
+                WHERE
+                    user_id = $1
+                    AND is_read = FALSE
+                `,
+                [
+                    lecturerId
+                ]
+            );
+
+
+            res.json({
+                message:
+                    'All lecturer notifications marked as read.'
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                'Lecturer Mark All Notifications Error:',
+                error.message
+            );
+
+
+            res
+                .status(500)
+                .json({
+                    error:
+                        'Server error while updating notifications.'
+                });
+
+        }
+
+    }
+);
 
 /* =========================================
    AI STUDY TUTOR
 ========================================= */
-
 
 /* =========================================
    WAIT HELPER
@@ -3987,9 +5579,6 @@ ${context || 'No specific lesson context was provided.'}
 );
 
 
-/* =========================================
-   ADMIN ROUTES
-========================================= */
 
 
 /* =========================================
@@ -4439,60 +6028,70 @@ app.post(
                GENERATE EMAIL
             ------------------------------ */
 
-            let generatedEmail = '';
+/* ------------------------------
+   GENERATE EMAIL
+------------------------------ */
+
+let generatedEmail = '';
 
 
-            if (
-                cleanRole === 'STUDENT'
-            ) {
+if (
+    cleanRole === 'STUDENT'
+) {
 
-                generatedEmail =
-                    `${emailName}.${studentNumber}@campuslearn.edu`;
+    generatedEmail =
+        `${emailName}.${studentNumber}@students.campuslearn.edu`;
 
-            } else {
+} else if (
+    cleanRole === 'LECTURER'
+) {
 
-                /*
-                   Lecturer/Admin currently
-                   keep random unique numbers.
-                */
+    generatedEmail =
+        `${emailName}@campuslearn.edu`;
 
-                let emailExists = true;
+} else {
 
+    /*
+       Admin keeps a random unique number.
+    */
 
-                while (emailExists) {
-
-                    const randomNumber =
-                        crypto.randomInt(
-                            1000,
-                            10000
-                        );
+    let emailExists = true;
 
 
-                    generatedEmail =
-                        `${emailName}.${randomNumber}@campuslearn.edu`;
+    while (emailExists) {
+
+        const randomNumber =
+            crypto.randomInt(
+                1000,
+                10000
+            );
 
 
-                    const emailCheck =
-                        await pool.query(
-                            `
-                            SELECT id
-                            FROM users
-                            WHERE LOWER(email) =
-                                  LOWER($1)
-                            `,
-                            [
-                                generatedEmail
-                            ]
-                        );
+        generatedEmail =
+            `${emailName}.${randomNumber}@campuslearn.edu`;
 
 
-                    emailExists =
-                        emailCheck.rows.length >
-                        0;
+        const emailCheck =
+            await pool.query(
+                `
+                SELECT id
+                FROM users
+                WHERE LOWER(email) =
+                      LOWER($1)
+                `,
+                [
+                    generatedEmail
+                ]
+            );
 
-                }
 
-            }
+        emailExists =
+            emailCheck.rows.length >
+            0;
+
+    }
+
+}
 
 
             /* ------------------------------
@@ -8921,7 +10520,8 @@ app.put(
                 title,
                 description,
                 dueDate,
-                courseId,
+                degree,
+                batch,
                 maxMarks
             } = req.body;
 
@@ -8945,6 +10545,36 @@ app.put(
             }
 
 
+            if (
+                !degree ||
+                !degree.trim()
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            'Degree / program is required.'
+                    });
+
+            }
+
+
+            if (
+                !batch ||
+                !batch.trim()
+            ) {
+
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            'Batch is required.'
+                    });
+
+            }
+
+
             if (!dueDate) {
 
                 return res
@@ -8952,18 +10582,6 @@ app.put(
                     .json({
                         error:
                             'Due date is required.'
-                    });
-
-            }
-
-
-            if (!courseId) {
-
-                return res
-                    .status(400)
-                    .json({
-                        error:
-                            'Please select a course.'
                     });
 
             }
@@ -9012,8 +10630,8 @@ app.put(
 
 
             if (
-                existingAssignment.rows.length ===
-                0
+                existingAssignment
+                    .rows.length === 0
             ) {
 
                 return res
@@ -9025,99 +10643,115 @@ app.put(
 
             }
 
-            /* ==============================
-   PREVENT COURSE CHANGE
-   AFTER SUBMISSIONS
-============================== */
 
-const submissionCheck =
-    await pool.query(
-        `
-        SELECT COUNT(*)::int
-            AS submission_count
-
-        FROM submissions
-
-        WHERE assignment_id = $1
-        `,
-        [id]
-    );
-
-
-const submissionCount =
-    submissionCheck.rows[0]
-        .submission_count;
-
-
-const oldCourseId =
-    existingAssignment.rows[0]
-        .course_id;
-
-
-const newCourseId =
-    Number(courseId);
-
-
-if (
-    submissionCount > 0 &&
-    oldCourseId !== null &&
-    Number(oldCourseId) !==
-        newCourseId
-) {
-
-    return res
-        .status(409)
-        .json({
-            error:
-                'The course cannot be changed because students have already submitted work.'
-        });
-
-}
+            const oldAssignment =
+                existingAssignment
+                    .rows[0];
 
 
             /* ==============================
-               CHECK SELECTED COURSE
+               CHECK STUDENT SUBMISSIONS
             ============================== */
 
-            const selectedCourse =
+            const submissionCheck =
                 await pool.query(
                     `
                     SELECT
-                        id,
-                        title,
-                        degree,
-                        batch
+                        COUNT(*)::int
+                            AS submission_count
 
-                    FROM courses
+                    FROM submissions
 
-                    WHERE
-                        id = $1
-                        AND lecturer_id = $2
+                    WHERE assignment_id = $1
                     `,
                     [
-                        courseId,
-                        req.user.user_id
+                        id
                     ]
                 );
 
 
+            const submissionCount =
+                submissionCheck
+                    .rows[0]
+                    .submission_count;
+
+
+            /* ==============================
+               PROTECT TARGET AFTER
+               STUDENT SUBMISSIONS
+
+               Lecturer may still change:
+               - title
+               - instructions
+               - due date
+               - max marks
+               - assignment file
+
+               But Degree / Batch cannot be
+               changed once submissions exist.
+            ============================== */
+
+            const degreeChanged =
+                oldAssignment.degree !==
+                degree.trim();
+
+
+            const batchChanged =
+                oldAssignment.batch !==
+                batch.trim();
+
+
             if (
-                selectedCourse.rows.length ===
-                0
+                submissionCount > 0 &&
+                (
+                    degreeChanged ||
+                    batchChanged
+                )
             ) {
 
+                /*
+                  Multer may already have saved
+                  a replacement file.
+
+                  Remove it because this update
+                  is being rejected.
+                */
+
+                if (
+                    req.file &&
+                    fs.existsSync(
+                        req.file.path
+                    )
+                ) {
+
+                    try {
+
+                        fs.unlinkSync(
+                            req.file.path
+                        );
+
+                    } catch (
+                        fileError
+                    ) {
+
+                        console.error(
+                            'Rejected assignment file cleanup warning:',
+                            fileError.message
+                        );
+
+                    }
+
+                }
+
+
                 return res
-                    .status(400)
+                    .status(409)
                     .json({
                         error:
-                            'The selected course is not valid.'
+                            'Degree or batch cannot be changed because students have already submitted work for this assignment.'
                     });
 
             }
-
-
-            const course =
-                selectedCourse.rows[0];
 
 
             /* ==============================
@@ -9154,6 +10788,33 @@ if (
                 highestMarks
             ) {
 
+                if (
+                    req.file &&
+                    fs.existsSync(
+                        req.file.path
+                    )
+                ) {
+
+                    try {
+
+                        fs.unlinkSync(
+                            req.file.path
+                        );
+
+                    } catch (
+                        fileError
+                    ) {
+
+                        console.error(
+                            'Rejected assignment file cleanup warning:',
+                            fileError.message
+                        );
+
+                    }
+
+                }
+
+
                 return res
                     .status(400)
                     .json({
@@ -9169,21 +10830,28 @@ if (
             ============================== */
 
             let finalFilePath =
-                existingAssignment
-                    .rows[0]
+                oldAssignment
                     .file_path;
 
 
             if (req.file) {
 
                 finalFilePath =
-                    req.file.path;
+                    req.file.path
+                        .replace(
+                            /\\/g,
+                            '/'
+                        );
 
             }
 
 
             /* ==============================
                UPDATE ASSIGNMENT
+
+               course_id becomes NULL because
+               assignments are now targeted
+               directly by Degree + Batch.
             ============================== */
 
             const updatedAssignment =
@@ -9197,30 +10865,96 @@ if (
                         due_date = $3,
                         degree = $4,
                         batch = $5,
-                        course_id = $6,
-                        max_marks = $7,
-                        file_path = $8
+                        course_id = NULL,
+                        max_marks = $6,
+                        file_path = $7
 
                     WHERE
-                        id = $9
-                        AND lecturer_id = $10
+                        id = $8
+                        AND lecturer_id = $9
 
                     RETURNING *
                     `,
                     [
                         title.trim(),
-                        description || '',
+
+                        description?.trim() ||
+                            '',
+
                         dueDate,
-                        course.degree,
-                        course.batch,
-                        Number(courseId),
+
+                        degree.trim(),
+
+                        batch.trim(),
+
                         numericMaxMarks,
+
                         finalFilePath,
+
                         id,
+
                         req.user.user_id
                     ]
                 );
 
+
+            /* ==============================
+               DELETE OLD ASSIGNMENT FILE
+               AFTER SUCCESSFUL REPLACEMENT
+            ============================== */
+
+            if (
+                req.file &&
+                oldAssignment.file_path &&
+                oldAssignment.file_path !==
+                    finalFilePath
+            ) {
+
+                try {
+
+                    const oldFilePath =
+                        path.isAbsolute(
+                            oldAssignment
+                                .file_path
+                        )
+                            ? oldAssignment
+                                .file_path
+                            : path.join(
+                                __dirname,
+                                oldAssignment
+                                    .file_path
+                              );
+
+
+                    if (
+                        fs.existsSync(
+                            oldFilePath
+                        )
+                    ) {
+
+                        fs.unlinkSync(
+                            oldFilePath
+                        );
+
+                    }
+
+                } catch (
+                    fileError
+                ) {
+
+                    console.error(
+                        'Old assignment file cleanup warning:',
+                        fileError.message
+                    );
+
+                }
+
+            }
+
+
+            /* ==============================
+               SUCCESS
+            ============================== */
 
             res.json({
 
@@ -9228,16 +10962,49 @@ if (
                     'Assignment updated successfully!',
 
                 assignment:
-                    updatedAssignment.rows[0]
+                    updatedAssignment
+                        .rows[0]
 
             });
 
 
         } catch (error) {
 
+            /*
+              Remove a newly uploaded file
+              if the database update failed.
+            */
+
+            if (
+                req.file &&
+                fs.existsSync(
+                    req.file.path
+                )
+            ) {
+
+                try {
+
+                    fs.unlinkSync(
+                        req.file.path
+                    );
+
+                } catch (
+                    fileError
+                ) {
+
+                    console.error(
+                        'Assignment upload cleanup warning:',
+                        fileError.message
+                    );
+
+                }
+
+            }
+
+
             console.error(
                 'Update Assignment Error:',
-                error.message
+                error
             );
 
 

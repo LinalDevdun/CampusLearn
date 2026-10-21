@@ -5,7 +5,9 @@ import {
   useState,
 } from "react";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import axios from "axios";
 
@@ -22,6 +24,12 @@ import {
   ChartNoAxesCombined,
   Award,
   ClipboardList,
+  Sparkles,
+  SlidersHorizontal,
+  RefreshCw,
+  Activity,
+  Clock3,
+  Layers3,
 } from "lucide-react";
 
 import "../styles/adminStudents.css";
@@ -32,17 +40,23 @@ import "../styles/adminStudents.css";
 ========================================= */
 
 const getInitials = (name) => {
+
   if (!name) {
     return "ST";
   }
 
+
   return name
     .split(" ")
     .filter(Boolean)
-    .map((word) => word.charAt(0))
+    .map(
+      (word) =>
+        word.charAt(0)
+    )
     .join("")
     .slice(0, 2)
     .toUpperCase();
+
 };
 
 
@@ -51,11 +65,15 @@ const getInitials = (name) => {
 ========================================= */
 
 const formatLastLogin = (date) => {
+
   if (!date) {
     return "Never";
   }
 
-  return new Date(date).toLocaleDateString(
+
+  return new Date(
+    date
+  ).toLocaleDateString(
     "en-US",
     {
       month: "short",
@@ -63,36 +81,52 @@ const formatLastLogin = (date) => {
       year: "numeric",
     }
   );
+
 };
 
 
 function AdminStudents() {
-  const navigate = useNavigate();
+
+  const navigate =
+    useNavigate();
 
 
   /* ========================================
      STUDENTS
   ======================================== */
 
-  const [students, setStudents] =
-    useState([]);
+  const [
+    students,
+    setStudents,
+  ] = useState([]);
 
-  const [loading, setLoading] =
-    useState(true);
 
-  const [error, setError] =
-    useState("");
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
+
+
+  const [
+    error,
+    setError,
+  ] = useState("");
 
 
   /* ========================================
      SEARCH + FILTER
   ======================================== */
 
-  const [searchTerm, setSearchTerm] =
-    useState("");
+  const [
+    searchTerm,
+    setSearchTerm,
+  ] = useState("");
 
-  const [batchFilter, setBatchFilter] =
-    useState("ALL");
+
+  const [
+    batchFilter,
+    setBatchFilter,
+  ] = useState("ALL");
 
 
   /* ========================================
@@ -110,150 +144,187 @@ function AdminStudents() {
   ======================================== */
 
   const loadStudents =
-    useCallback(async () => {
-      try {
-        setLoading(true);
-        setError("");
+    useCallback(
+      async () => {
 
-        const token =
-          localStorage.getItem("token");
+        try {
 
-        if (!token) {
-          navigate("/login");
-          return;
+          setLoading(true);
+
+          setError("");
+
+
+          const token =
+            localStorage.getItem(
+              "token"
+            );
+
+
+          if (!token) {
+
+            navigate("/login");
+
+            return;
+
+          }
+
+
+          const response =
+            await axios.get(
+              "http://localhost:5000/admin/students/academic-summary",
+              {
+                headers: {
+                  Authorization:
+                    `Bearer ${token}`,
+                },
+              }
+            );
+
+
+          const realStudents =
+            response.data.map(
+              (student) => ({
+
+                id:
+                  student.id,
+
+                studentId:
+                  `STU${String(
+                    student.id
+                  ).padStart(
+                    3,
+                    "0"
+                  )}`,
+
+                name:
+                  student.name ||
+                  "Unnamed Student",
+
+                initials:
+                  getInitials(
+                    student.name
+                  ),
+
+                email:
+                  student.email ||
+                  "No email",
+
+                degree:
+                  student.degree ||
+                  "Not assigned",
+
+                batch:
+                  student.batch ||
+                  "Not assigned",
+
+                courses:
+                  Number(
+                    student.courses
+                  ) || 0,
+
+                totalAssignments:
+                  Number(
+                    student
+                      .total_assignments
+                  ) || 0,
+
+                submittedAssignments:
+                  Number(
+                    student
+                      .submitted_assignments
+                  ) || 0,
+
+                gradedAssignments:
+                  Number(
+                    student
+                      .graded_assignments
+                  ) || 0,
+
+                progress:
+                  Number(
+                    student.progress
+                  ) || 0,
+
+                average:
+                  Number(
+                    student
+                      .average_score
+                  ) || 0,
+
+                status:
+                  student.is_active
+                    ? "Active"
+                    : "Disabled",
+
+                isActive:
+                  student.is_active,
+
+                lastLogin:
+                  formatLastLogin(
+                    student.last_login
+                  ),
+
+              })
+            );
+
+
+          setStudents(
+            realStudents
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Failed to load student academic data:",
+            error
+          );
+
+
+          if (
+            error.response?.status ===
+              401 ||
+            error.response?.status ===
+              403
+          ) {
+
+            localStorage.removeItem(
+              "token"
+            );
+
+            localStorage.removeItem(
+              "role"
+            );
+
+            navigate("/login");
+
+            return;
+
+          }
+
+
+          setError(
+            error.response?.data
+              ?.error ||
+            "Failed to load students."
+          );
+
+
+        } finally {
+
+          setLoading(false);
+
         }
 
-        const response =
-          await axios.get(
-            "http://localhost:5000/admin/students/academic-summary",
-            {
-              headers: {
-                Authorization:
-                  `Bearer ${token}`,
-              },
-            }
-          );
-
-
-        const realStudents =
-          response.data.map(
-            (student) => ({
-              id: student.id,
-
-              studentId:
-                `STU${String(
-                  student.id
-                ).padStart(3, "0")}`,
-
-              name:
-                student.name ||
-                "Unnamed Student",
-
-              initials:
-                getInitials(
-                  student.name
-                ),
-
-              email:
-                student.email ||
-                "No email",
-
-              degree:
-                student.degree ||
-                "Not assigned",
-
-              batch:
-                student.batch ||
-                "Not assigned",
-
-              courses:
-                Number(
-                  student.courses
-                ) || 0,
-
-              totalAssignments:
-                Number(
-                  student.total_assignments
-                ) || 0,
-
-              submittedAssignments:
-                Number(
-                  student.submitted_assignments
-                ) || 0,
-
-              gradedAssignments:
-                Number(
-                  student.graded_assignments
-                ) || 0,
-
-              progress:
-                Number(
-                  student.progress
-                ) || 0,
-
-              average:
-                Number(
-                  student.average_score
-                ) || 0,
-
-              status:
-                student.is_active
-                  ? "Active"
-                  : "Disabled",
-
-              isActive:
-                student.is_active,
-
-              lastLogin:
-                formatLastLogin(
-                  student.last_login
-                ),
-            })
-          );
-
-
-        setStudents(
-          realStudents
-        );
-
-      } catch (error) {
-        console.error(
-          "Failed to load student academic data:",
-          error
-        );
-
-        if (
-          error.response?.status ===
-            401 ||
-          error.response?.status ===
-            403
-        ) {
-          localStorage.removeItem(
-            "token"
-          );
-
-          localStorage.removeItem(
-            "role"
-          );
-
-          navigate("/login");
-          return;
-        }
-
-        setError(
-          error.response?.data
-            ?.error ||
-          "Failed to load students."
-        );
-
-      } finally {
-        setLoading(false);
-      }
-    }, [navigate]);
+      },
+      [navigate]
+    );
 
 
   useEffect(() => {
+
     loadStudents();
+
   }, [loadStudents]);
 
 
@@ -263,6 +334,7 @@ function AdminStudents() {
 
   const batchOptions =
     useMemo(() => {
+
       const batches =
         students
           .map(
@@ -275,6 +347,7 @@ function AdminStudents() {
               batch !==
                 "Not assigned"
           );
+
 
       return [
         ...new Set(batches),
@@ -289,14 +362,18 @@ function AdminStudents() {
 
   const filteredStudents =
     useMemo(() => {
+
       const search =
         searchTerm
           .toLowerCase()
           .trim();
 
+
       return students.filter(
         (student) => {
+
           const matchesSearch =
+
             student.name
               .toLowerCase()
               .includes(search) ||
@@ -319,8 +396,7 @@ function AdminStudents() {
 
 
           const matchesBatch =
-            batchFilter ===
-              "ALL" ||
+            batchFilter === "ALL" ||
             student.batch ===
               batchFilter;
 
@@ -329,6 +405,7 @@ function AdminStudents() {
             matchesSearch &&
             matchesBatch
           );
+
         }
       );
 
@@ -375,22 +452,21 @@ function AdminStudents() {
               student.progress,
             0
           ) /
-            totalStudents
+          totalStudents
         )
       : 0;
 
 
   /*
     Only students with at least one
-    graded assignment are used for
-    average score.
+    graded assignment are included.
   */
 
   const studentsWithGrades =
     students.filter(
       (student) =>
-        student.gradedAssignments >
-        0
+        student
+          .gradedAssignments > 0
     );
 
 
@@ -406,598 +482,834 @@ function AdminStudents() {
               student.average,
             0
           ) /
-            studentsWithGrades.length
+          studentsWithGrades.length
         )
       : 0;
 
 
+  const activeStudents =
+    students.filter(
+      (student) =>
+        student.status ===
+        "Active"
+    ).length;
+
+
+  const filtersActive =
+    Boolean(
+      searchTerm.trim()
+    ) ||
+    batchFilter !== "ALL";
+
+
+  const clearFilters = () => {
+
+    setSearchTerm("");
+
+    setBatchFilter("ALL");
+
+  };
+
+
   return (
+
     <div className="admin-students-page">
 
 
       {/* ====================================
-          HEADER
+          STUDENT SUCCESS HERO
       ==================================== */}
 
-      <section className="ast-header">
+      <section className="ast-success-hero">
 
-        <div>
+
+        <div className="ast-hero-copy">
+
+
+          <div className="ast-eyebrow">
+
+            <Sparkles size={12} />
+
+            STUDENT SUCCESS OBSERVATORY
+
+          </div>
+
 
           <h1>
             Students
           </h1>
 
+
           <p>
-            Monitor student enrollment,
-            learning progress and
-            academic performance.
+
+            Follow enrollment,
+            academic engagement and
+            learning performance across
+            the CampusLearn student
+            community.
+
           </p>
 
+
+          <div className="ast-hero-tags">
+
+
+            <span>
+
+              <GraduationCap
+                size={13}
+              />
+
+              {totalStudents} learners
+
+            </span>
+
+
+            <span>
+
+              <BookOpen
+                size={13}
+              />
+
+              {studyPrograms} study programs
+
+            </span>
+
+
+            <span>
+
+              <CircleCheckBig
+                size={13}
+              />
+
+              {activeStudents} active
+
+            </span>
+
+
+          </div>
+
+
         </div>
 
 
-        <div className="ast-header-badge">
+        {/* ACADEMIC PULSE */}
 
-          <GraduationCap
-            size={16}
-          />
+        <div className="ast-pulse-card">
 
-          {totalStudents} Students
+
+          <div className="ast-pulse-heading">
+
+            <div>
+
+              <span>
+                ACADEMIC PULSE
+              </span>
+
+              <strong>
+                Cohort Progress
+              </strong>
+
+            </div>
+
+
+            <div className="ast-pulse-icon">
+
+              <Activity size={19} />
+
+            </div>
+
+
+          </div>
+
+
+          <div className="ast-pulse-main">
+
+
+            <div
+              className="ast-progress-ring"
+              style={{
+                "--ast-progress":
+                  `${Math.min(
+                    Math.max(
+                      averageProgress,
+                      0
+                    ),
+                    100
+                  ) * 3.6}deg`,
+              }}
+            >
+
+              <div>
+
+                <strong>
+                  {averageProgress}%
+                </strong>
+
+                <span>
+                  AVG PROGRESS
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div className="ast-pulse-details">
+
+
+              <div>
+
+                <span>
+                  Average Score
+                </span>
+
+                <strong>
+                  {averageScore}%
+                </strong>
+
+              </div>
+
+
+              <div>
+
+                <span>
+                  Students Graded
+                </span>
+
+                <strong>
+                  {
+                    studentsWithGrades
+                      .length
+                  }
+                </strong>
+
+              </div>
+
+
+            </div>
+
+
+          </div>
+
 
         </div>
+
 
       </section>
 
 
-
       {/* ====================================
-          SUMMARY CARDS
+          COHORT OVERVIEW
       ==================================== */}
 
-      <section className="ast-summary">
+      <section className="ast-overview-strip">
 
 
-        {/* TOTAL STUDENTS */}
-
-        <div className="ast-summary-card ast-teal">
-
-          <div className="ast-summary-icon">
-
-            <Users size={21} />
-
-          </div>
-
-          <div>
-
-            <strong>
-              {totalStudents}
-            </strong>
-
-            <span>
-              Total Students
-            </span>
-
-          </div>
-
-        </div>
+        <OverviewItem
+          icon={
+            <Users size={19} />
+          }
+          label="Total Students"
+          value={totalStudents}
+          description="Registered learners"
+          className="ast-overview-teal"
+        />
 
 
-
-        {/* STUDY PROGRAMS */}
-
-        <div className="ast-summary-card ast-purple">
-
-          <div className="ast-summary-icon">
-
-            <BookOpen size={21} />
-
-          </div>
-
-          <div>
-
-            <strong>
-              {studyPrograms}
-            </strong>
-
-            <span>
-              Study Programs
-            </span>
-
-          </div>
-
-        </div>
+        <div className="ast-overview-divider" />
 
 
+        <OverviewItem
+          icon={
+            <BookOpen size={19} />
+          }
+          label="Study Programs"
+          value={studyPrograms}
+          description="Academic programs"
+          className="ast-overview-purple"
+        />
 
-        {/* AVERAGE PROGRESS */}
 
-        <div className="ast-summary-card ast-blue">
+        <div className="ast-overview-divider" />
 
-          <div className="ast-summary-icon">
 
+        <OverviewItem
+          icon={
             <ChartNoAxesCombined
-              size={21}
+              size={19}
+            />
+          }
+          label="Avg. Progress"
+          value={`${averageProgress}%`}
+          description="Assignment progress"
+          className="ast-overview-blue"
+        />
+
+
+        <div className="ast-overview-divider" />
+
+
+        <OverviewItem
+          icon={
+            <Award size={19} />
+          }
+          label="Avg. Score"
+          value={`${averageScore}%`}
+          description="Graded students"
+          className="ast-overview-orange"
+        />
+
+
+      </section>
+
+
+      {/* ====================================
+          STUDENT DIRECTORY
+      ==================================== */}
+
+      <section className="ast-directory">
+
+
+        <div className="ast-directory-header">
+
+
+          <div>
+
+            <span>
+              ACADEMIC DIRECTORY
+            </span>
+
+            <h2>
+              Student Records
+            </h2>
+
+            <p>
+
+              Search learners and review
+              academic activity by batch.
+
+            </p>
+
+          </div>
+
+
+          <div className="ast-result-counter">
+
+            <strong>
+              {
+                filteredStudents.length
+              }
+            </strong>
+
+            <span>
+              of {totalStudents} shown
+            </span>
+
+          </div>
+
+
+        </div>
+
+
+        {/* ==================================
+            TOOLBAR
+        ================================== */}
+
+        <div className="ast-toolbar">
+
+
+          <div className="ast-search">
+
+            <Search size={17} />
+
+            <input
+              type="text"
+              placeholder="Search name, ID, program, email or batch..."
+              value={searchTerm}
+              onChange={
+                (event) =>
+                  setSearchTerm(
+                    event.target.value
+                  )
+              }
             />
 
           </div>
 
-          <div>
 
-            <strong>
-              {averageProgress}%
-            </strong>
+          <div className="ast-filter-label">
 
-            <span>
-              Average Progress
-            </span>
+            <SlidersHorizontal
+              size={14}
+            />
 
-          </div>
-
-        </div>
-
-
-
-        {/* AVERAGE SCORE */}
-
-        <div className="ast-summary-card ast-orange">
-
-          <div className="ast-summary-icon">
-
-            <Award size={21} />
+            Batch
 
           </div>
 
-          <div>
 
-            <strong>
-              {averageScore}%
-            </strong>
-
-            <span>
-              Average Score
-            </span>
-
-          </div>
-
-        </div>
-
-      </section>
+          <div className="ast-toolbar-actions">
 
 
+            <select
+              value={batchFilter}
+              onChange={
+                (event) =>
+                  setBatchFilter(
+                    event.target.value
+                  )
+              }
+            >
 
-      {/* ====================================
-          TOOLBAR
-      ==================================== */}
-
-      <section className="ast-toolbar">
-
-
-        {/* SEARCH */}
-
-        <div className="ast-search">
-
-          <Search size={17} />
-
-          <input
-            type="text"
-            placeholder="Search students..."
-            value={searchTerm}
-            onChange={(event) =>
-              setSearchTerm(
-                event.target.value
-              )
-            }
-          />
-
-        </div>
-
-
-        {/* BATCH FILTER */}
-
-        <select
-          value={batchFilter}
-          onChange={(event) =>
-            setBatchFilter(
-              event.target.value
-            )
-          }
-        >
-
-          <option value="ALL">
-            All Batches
-          </option>
-
-          {batchOptions.map(
-            (batch) => (
-              <option
-                key={batch}
-                value={batch}
-              >
-                Batch {batch}
+              <option value="ALL">
+                All Batches
               </option>
-            )
+
+
+              {batchOptions.map(
+                (batch) => (
+
+                  <option
+                    key={batch}
+                    value={batch}
+                  >
+
+                    Batch {batch}
+
+                  </option>
+
+                )
+              )}
+
+            </select>
+
+
+            {filtersActive && (
+
+              <button
+                type="button"
+                className="ast-reset-button"
+                onClick={
+                  clearFilters
+                }
+              >
+
+                <RefreshCw
+                  size={13}
+                />
+
+                Reset
+
+              </button>
+
+            )}
+
+
+          </div>
+
+
+        </div>
+
+
+        {/* ==================================
+            TABLE
+        ================================== */}
+
+        <div className="ast-table-container">
+
+
+          {/* LOADING */}
+
+          {loading && (
+
+            <div className="ast-empty-state">
+
+              <div className="ast-spinner" />
+
+              <h3>
+                Loading student records
+              </h3>
+
+              <p>
+                Getting academic information
+                from PostgreSQL.
+              </p>
+
+            </div>
+
           )}
 
-        </select>
 
-      </section>
+          {/* ERROR */}
 
+          {!loading &&
+            error && (
 
+            <div className="ast-empty-state ast-error-state">
 
-      {/* ====================================
-          STUDENT TABLE
-      ==================================== */}
+              <UserX size={28} />
 
-      <section className="ast-table-container">
+              <h3>
+                Unable to load students
+              </h3>
 
+              <p>
+                {error}
+              </p>
 
-        {/* LOADING */}
+            </div>
 
-        {loading && (
-
-          <div
-            style={{
-              padding: "45px",
-              textAlign: "center",
-            }}
-          >
-
-            <Users size={30} />
-
-            <h3>
-              Loading students...
-            </h3>
-
-            <p>
-              Loading academic
-              information from
-              PostgreSQL.
-            </p>
-
-          </div>
-
-        )}
+          )}
 
 
+          {/* TABLE */}
 
-        {/* ERROR */}
+          {!loading &&
+            !error && (
 
-        {!loading && error && (
-
-          <div
-            style={{
-              padding: "45px",
-              textAlign: "center",
-            }}
-          >
-
-            <UserX size={30} />
-
-            <h3>
-              Unable to load students
-            </h3>
-
-            <p>
-              {error}
-            </p>
-
-          </div>
-
-        )}
+            <>
 
 
+              {filteredStudents.length >
+              0 ? (
 
-        {/* TABLE */}
-
-        {!loading &&
-          !error && (
-
-          <>
-
-            <table className="ast-table">
-
-              <thead>
-
-                <tr>
-
-                  <th>
-                    Student
-                  </th>
-
-                  <th>
-                    Program
-                  </th>
-
-                  <th>
-                    Batch
-                  </th>
-
-                  <th>
-                    Courses
-                  </th>
-
-                  <th>
-                    Progress
-                  </th>
-
-                  <th>
-                    Average
-                  </th>
-
-                  <th>
-                    Status
-                  </th>
-
-                  <th>
-                    Action
-                  </th>
-
-                </tr>
-
-              </thead>
+                <table className="ast-table">
 
 
-              <tbody>
+                  <thead>
 
-                {filteredStudents.map(
-                  (student) => (
+                    <tr>
 
-                    <tr
-                      key={student.id}
-                    >
+                      <th>
+                        Student
+                      </th>
+
+                      <th>
+                        Program
+                      </th>
+
+                      <th>
+                        Batch
+                      </th>
+
+                      <th>
+                        Courses
+                      </th>
+
+                      <th>
+                        Progress
+                      </th>
+
+                      <th>
+                        Average
+                      </th>
+
+                      <th>
+                        Status
+                      </th>
+
+                      <th>
+                        Profile
+                      </th>
+
+                    </tr>
+
+                  </thead>
 
 
-                      {/* STUDENT */}
+                  <tbody>
 
-                      <td>
 
-                        <div className="ast-profile">
+                    {filteredStudents.map(
+                      (student) => (
 
-                          <div className="ast-avatar">
+                        <tr
+                          key={student.id}
+                        >
 
-                            {
-                              student.initials
-                            }
 
-                          </div>
+                          {/* STUDENT */}
 
-                          <div>
+                          <td>
 
-                            <strong>
+                            <div className="ast-profile">
+
+
+                              <div className="ast-avatar">
+
+                                {
+                                  student
+                                    .initials
+                                }
+
+                              </div>
+
+
+                              <div>
+
+                                <strong>
+                                  {
+                                    student
+                                      .name
+                                  }
+                                </strong>
+
+                                <span>
+                                  {
+                                    student
+                                      .studentId
+                                  }
+                                </span>
+
+                              </div>
+
+
+                            </div>
+
+                          </td>
+
+
+                          {/* PROGRAM */}
+
+                          <td>
+
+                            <span className="ast-program">
 
                               {
-                                student.name
+                                student.degree
+                              }
+
+                            </span>
+
+                          </td>
+
+
+                          {/* BATCH */}
+
+                          <td>
+
+                            <span className="ast-batch">
+
+                              {
+                                student.batch
+                              }
+
+                            </span>
+
+                          </td>
+
+
+                          {/* COURSES */}
+
+                          <td>
+
+                            <div className="ast-course-count">
+
+                              <BookOpen
+                                size={13}
+                              />
+
+                              {
+                                student.courses
+                              }
+
+                            </div>
+
+                          </td>
+
+
+                          {/* PROGRESS */}
+
+                          <td>
+
+                            <div className="ast-progress-wrapper">
+
+
+                              <div className="ast-progress-text">
+
+                                <span>
+                                  {
+                                    student
+                                      .progress
+                                  }
+                                  %
+                                </span>
+
+                              </div>
+
+
+                              <div className="ast-progress-track">
+
+                                <div
+                                  className="ast-progress-bar"
+                                  style={{
+                                    width:
+                                      `${Math.max(
+                                        0,
+                                        Math.min(
+                                          student
+                                            .progress,
+                                          100
+                                        )
+                                      )}%`,
+                                  }}
+                                />
+
+                              </div>
+
+
+                            </div>
+
+                          </td>
+
+
+                          {/* AVERAGE */}
+
+                          <td>
+
+                            <strong className="ast-score">
+
+                              {
+                                student
+                                  .gradedAssignments >
+                                0
+                                  ? `${Math.round(
+                                      student.average
+                                    )}%`
+                                  : "—"
                               }
 
                             </strong>
 
-                            <span>
+                          </td>
 
-                              {
-                                student.studentId
+
+                          {/* STATUS */}
+
+                          <td>
+
+                            {student.status ===
+                            "Active" ? (
+
+                              <span className="ast-status ast-status-active">
+
+                                <i />
+
+                                Active
+
+                              </span>
+
+                            ) : (
+
+                              <span className="ast-status ast-status-disabled">
+
+                                <i />
+
+                                Disabled
+
+                              </span>
+
+                            )}
+
+                          </td>
+
+
+                          {/* ACTION */}
+
+                          <td>
+
+                            <button
+                              type="button"
+                              className="ast-view-button"
+                              onClick={() =>
+                                setSelectedStudent(
+                                  student
+                                )
                               }
+                            >
 
-                            </span>
+                              <Eye
+                                size={14}
+                              />
 
-                          </div>
+                              View
 
-                        </div>
+                            </button>
 
-                      </td>
+                          </td>
 
 
+                        </tr>
 
-                      {/* PROGRAM */}
+                      )
+                    )}
 
-                      <td>
 
-                        {
-                          student.degree
-                        }
+                  </tbody>
 
-                      </td>
 
+                </table>
 
+              ) : (
 
-                      {/* BATCH */}
+                <div className="ast-empty-state">
 
-                      <td>
 
-                        {
-                          student.batch
-                        }
+                  <div className="ast-empty-icon">
 
-                      </td>
+                    <Search
+                      size={23}
+                    />
 
+                  </div>
 
 
-                      {/* COURSES */}
+                  <h3>
+                    No matching students
+                  </h3>
 
-                      <td>
 
-                        {
-                          student.courses
-                        }
+                  <p>
 
-                      </td>
+                    Try another search
+                    or reset your batch
+                    filter.
 
+                  </p>
 
 
-                      {/* PROGRESS */}
+                  {filtersActive && (
 
-                      <td>
+                    <button
+                      type="button"
+                      className="ast-empty-reset"
+                      onClick={
+                        clearFilters
+                      }
+                    >
 
-                        <div className="ast-progress-wrapper">
+                      Reset Filters
 
-                          <div className="ast-progress-text">
+                    </button>
 
-                            <span>
+                  )}
 
-                              {
-                                student.progress
-                              }
-                              %
 
-                            </span>
+                </div>
 
-                          </div>
+              )}
 
 
-                          <div className="ast-progress-track">
+            </>
 
-                            <div
-                              className="ast-progress-bar"
-                              style={{
-                                width:
-                                  `${Math.min(
-                                    student.progress,
-                                    100
-                                  )}%`,
-                              }}
-                            />
+          )}
 
-                          </div>
 
-                        </div>
+        </div>
 
-                      </td>
-
-
-
-                      {/* AVERAGE */}
-
-                      <td>
-
-                        <strong>
-
-                          {
-                            student
-                              .gradedAssignments >
-                            0
-                              ? `${Math.round(
-                                  student.average
-                                )}%`
-                              : "—"
-                          }
-
-                        </strong>
-
-                      </td>
-
-
-
-                      {/* STATUS */}
-
-                      <td>
-
-                        {student.status ===
-                        "Active" ? (
-
-                          <span className="ast-active">
-
-                            <CircleCheckBig
-                              size={10}
-                            />
-
-                            Active
-
-                          </span>
-
-                        ) : (
-
-                          <span
-                            className="ast-active"
-                            style={{
-                              color:
-                                "#dc2626",
-
-                              background:
-                                "#fef2f2",
-                            }}
-                          >
-
-                            <UserX
-                              size={10}
-                            />
-
-                            Disabled
-
-                          </span>
-
-                        )}
-
-                      </td>
-
-
-
-                      {/* ACTION */}
-
-                      <td>
-
-                        <button
-                          className="ast-view-button"
-                          onClick={() =>
-                            setSelectedStudent(
-                              student
-                            )
-                          }
-                        >
-
-                          <Eye size={14} />
-
-                          View
-
-                        </button>
-
-                      </td>
-
-                    </tr>
-
-                  )
-                )}
-
-              </tbody>
-
-            </table>
-
-
-
-            {/* NO RESULTS */}
-
-            {filteredStudents.length ===
-              0 && (
-
-              <div
-                style={{
-                  padding:
-                    "45px",
-                  textAlign:
-                    "center",
-                }}
-              >
-
-                <Users size={30} />
-
-                <h3>
-                  No students found
-                </h3>
-
-                <p>
-                  Try changing your
-                  search or batch
-                  filter.
-                </p>
-
-              </div>
-
-            )}
-
-          </>
-
-        )}
 
       </section>
-
 
 
       {/* ====================================
@@ -1008,27 +1320,78 @@ function AdminStudents() {
 
         <div className="ast-modal-overlay">
 
+
           <div className="ast-modal">
 
 
-            {/* HEADER */}
+            {/* MODAL HERO */}
 
-            <div className="ast-modal-header">
+            <div className="ast-modal-hero">
 
-              <div>
+
+              <div className="ast-modal-avatar">
+
+                {
+                  selectedStudent
+                    .initials
+                }
+
+              </div>
+
+
+              <div className="ast-modal-person">
+
+                <span>
+                  STUDENT ACADEMIC PROFILE
+                </span>
 
                 <h2>
-                  Student Details
+                  {
+                    selectedStudent
+                      .name
+                  }
                 </h2>
 
                 <p>
-                  Academic and account
-                  information.
+
+                  {
+                    selectedStudent
+                      .studentId
+                  }
+
+                  <i />
+
+                  {
+                    selectedStudent
+                      .degree
+                  }
+
                 </p>
 
               </div>
 
+
+              <div
+                className={
+                  selectedStudent
+                    .status ===
+                  "Active"
+                    ? "ast-modal-status ast-modal-status-active"
+                    : "ast-modal-status ast-modal-status-disabled"
+                }
+              >
+
+                {
+                  selectedStudent
+                    .status
+                }
+
+              </div>
+
+
               <button
+                type="button"
+                className="ast-modal-close"
                 onClick={() =>
                   setSelectedStudent(
                     null
@@ -1040,277 +1403,376 @@ function AdminStudents() {
 
               </button>
 
-            </div>
-
-
-
-            {/* PROFILE */}
-
-            <div className="ast-modal-profile">
-
-              <div className="ast-modal-avatar">
-
-                {
-                  selectedStudent.initials
-                }
-
-              </div>
-
-              <div>
-
-                <h3>
-                  {
-                    selectedStudent.name
-                  }
-                </h3>
-
-                <p>
-                  {
-                    selectedStudent.studentId
-                  }
-                </p>
-
-              </div>
 
             </div>
 
 
-
-            {/* DETAILS */}
-
-            <div className="ast-modal-grid">
+            <div className="ast-modal-body">
 
 
-              {/* EMAIL */}
+              {/* DETAILS */}
 
-              <div>
+              <div className="ast-modal-section-title">
 
-                <Mail size={17} />
+                <div>
 
-                <span>
-                  Email
-                </span>
+                  <span>
+                    STUDENT INFORMATION
+                  </span>
 
-                <strong>
-                  {
-                    selectedStudent.email
-                  }
-                </strong>
+                  <h3>
+                    Academic Identity
+                  </h3>
+
+                </div>
 
               </div>
 
 
+              <div className="ast-modal-grid">
 
-              {/* PROGRAM */}
 
-              <div>
-
-                <GraduationCap
-                  size={17}
+                <StudentDetail
+                  icon={
+                    <Mail
+                      size={16}
+                    />
+                  }
+                  label="Email"
+                  value={
+                    selectedStudent
+                      .email
+                  }
                 />
 
-                <span>
-                  Program
-                </span>
 
-                <strong>
-                  {
-                    selectedStudent.degree
+                <StudentDetail
+                  icon={
+                    <GraduationCap
+                      size={16}
+                    />
                   }
-                </strong>
-
-              </div>
-
-
-
-              {/* BATCH */}
-
-              <div>
-
-                <Users size={17} />
-
-                <span>
-                  Batch
-                </span>
-
-                <strong>
-                  {
-                    selectedStudent.batch
+                  label="Program"
+                  value={
+                    selectedStudent
+                      .degree
                   }
-                </strong>
-
-              </div>
-
-
-
-              {/* COURSES */}
-
-              <div>
-
-                <BookOpen size={17} />
-
-                <span>
-                  Courses
-                </span>
-
-                <strong>
-                  {
-                    selectedStudent.courses
-                  }
-                </strong>
-
-              </div>
-
-            </div>
-
-
-
-            {/* ACADEMIC RESULTS */}
-
-            <div className="ast-modal-results">
-
-
-              {/* PROGRESS */}
-
-              <div>
-
-                <ChartNoAxesCombined
-                  size={18}
                 />
 
-                <span>
-                  Assignment Progress
-                </span>
 
-                <strong>
-                  {
-                    selectedStudent.progress
+                <StudentDetail
+                  icon={
+                    <Layers3
+                      size={16}
+                    />
                   }
-                  %
-                </strong>
+                  label="Batch"
+                  value={
+                    selectedStudent
+                      .batch
+                  }
+                />
+
+
+                <StudentDetail
+                  icon={
+                    <BookOpen
+                      size={16}
+                    />
+                  }
+                  label="Courses"
+                  value={
+                    selectedStudent
+                      .courses
+                  }
+                />
+
+
+                <StudentDetail
+                  icon={
+                    <Clock3
+                      size={16}
+                    />
+                  }
+                  label="Last Login"
+                  value={
+                    selectedStudent
+                      .lastLogin
+                  }
+                />
+
+
+                <StudentDetail
+                  icon={
+                    <CircleCheckBig
+                      size={16}
+                    />
+                  }
+                  label="Account Status"
+                  value={
+                    selectedStudent
+                      .status
+                  }
+                />
+
 
               </div>
 
 
+              {/* ACADEMIC PERFORMANCE */}
 
-              {/* AVERAGE */}
+              <div className="ast-modal-section-title ast-performance-heading">
 
-              <div>
+                <div>
 
-                <Award size={18} />
+                  <span>
+                    LEARNING SNAPSHOT
+                  </span>
 
-                <span>
-                  Average Score
-                </span>
+                  <h3>
+                    Academic Performance
+                  </h3>
 
-                <strong>
+                </div>
 
-                  {
+              </div>
+
+
+              <div className="ast-modal-results">
+
+
+                <ResultCard
+                  icon={
+                    <ChartNoAxesCombined
+                      size={18}
+                    />
+                  }
+                  label="Assignment Progress"
+                  value={
+                    `${selectedStudent.progress}%`
+                  }
+                  className="ast-result-progress"
+                />
+
+
+                <ResultCard
+                  icon={
+                    <Award
+                      size={18}
+                    />
+                  }
+                  label="Average Score"
+                  value={
                     selectedStudent
                       .gradedAssignments >
                     0
                       ? `${Number(
-                          selectedStudent.average
+                          selectedStudent
+                            .average
                         ).toFixed(
                           1
                         )}%`
                       : "No grades yet"
                   }
-
-                </strong>
-
-              </div>
-
-
-
-              {/* SUBMITTED */}
-
-              <div>
-
-                <ClipboardList
-                  size={18}
+                  className="ast-result-score"
                 />
 
-                <span>
-                  Submitted Assignments
-                </span>
 
-                <strong>
-
-                  {
-                    selectedStudent
-                      .submittedAssignments
+                <ResultCard
+                  icon={
+                    <ClipboardList
+                      size={18}
+                    />
                   }
-                  /
-                  {
-                    selectedStudent
-                      .totalAssignments
+                  label="Submitted"
+                  value={
+                    `${selectedStudent.submittedAssignments}/${selectedStudent.totalAssignments}`
                   }
-
-                </strong>
-
-              </div>
-
-
-
-              {/* GRADED */}
-
-              <div>
-
-                <CircleCheckBig
-                  size={18}
+                  className="ast-result-submitted"
                 />
 
-                <span>
-                  Graded Assignments
-                </span>
 
-                <strong>
-
-                  {
-                    selectedStudent
-                      .gradedAssignments
+                <ResultCard
+                  icon={
+                    <CircleCheckBig
+                      size={18}
+                    />
                   }
-                  /
-                  {
-                    selectedStudent
-                      .submittedAssignments
+                  label="Graded"
+                  value={
+                    `${selectedStudent.gradedAssignments}/${selectedStudent.submittedAssignments}`
                   }
+                  className="ast-result-graded"
+                />
 
-                </strong>
 
               </div>
+
+
+              {/* FOOTER */}
+
+              <div className="ast-modal-footer">
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSelectedStudent(
+                      null
+                    )
+                  }
+                >
+
+                  Close Profile
+
+                </button>
+
+              </div>
+
 
             </div>
 
-
-
-            {/* FOOTER */}
-
-            <div className="ast-modal-footer">
-
-              <button
-                onClick={() =>
-                  setSelectedStudent(
-                    null
-                  )
-                }
-              >
-
-                Close
-
-              </button>
-
-            </div>
 
           </div>
+
 
         </div>
 
       )}
 
+
     </div>
+
   );
+
+}
+
+
+/* ========================================
+   OVERVIEW ITEM
+======================================== */
+
+function OverviewItem({
+  icon,
+  label,
+  value,
+  description,
+  className,
+}) {
+
+  return (
+
+    <div
+      className={
+        `ast-overview-item ${className}`
+      }
+    >
+
+      <div className="ast-overview-icon">
+
+        {icon}
+
+      </div>
+
+
+      <div>
+
+        <span>
+          {label}
+        </span>
+
+        <strong>
+          {value}
+        </strong>
+
+        <small>
+          {description}
+        </small>
+
+      </div>
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   STUDENT DETAIL
+======================================== */
+
+function StudentDetail({
+  icon,
+  label,
+  value,
+}) {
+
+  return (
+
+    <div className="ast-detail-card">
+
+      <div className="ast-detail-icon">
+
+        {icon}
+
+      </div>
+
+      <div>
+
+        <span>
+          {label}
+        </span>
+
+        <strong>
+          {value}
+        </strong>
+
+      </div>
+
+    </div>
+
+  );
+
+}
+
+
+/* ========================================
+   RESULT CARD
+======================================== */
+
+function ResultCard({
+  icon,
+  label,
+  value,
+  className,
+}) {
+
+  return (
+
+    <div
+      className={
+        `ast-result-card ${className}`
+      }
+    >
+
+      <div className="ast-result-icon">
+
+        {icon}
+
+      </div>
+
+      <span>
+        {label}
+      </span>
+
+      <strong>
+        {value}
+      </strong>
+
+    </div>
+
+  );
+
 }
 
 

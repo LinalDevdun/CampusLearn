@@ -77,7 +77,6 @@ function StudentSettings() {
             navigate("/login");
 
             return;
-
           }
 
 
@@ -137,7 +136,6 @@ function StudentSettings() {
             navigate("/login");
 
             return;
-
           }
 
 
@@ -171,6 +169,7 @@ function StudentSettings() {
   ) => {
 
     setSuccess("");
+
 
     setSettings(
       (previous) => ({
@@ -213,7 +212,6 @@ function StudentSettings() {
           navigate("/login");
 
           return;
-
         }
 
 
@@ -269,7 +267,6 @@ function StudentSettings() {
           navigate("/login");
 
           return;
-
         }
 
 
@@ -358,7 +355,7 @@ function StudentSettings() {
 
           color: #6958ee;
 
-          font-size: 11px;
+          font-size: 12px;
 
           font-weight: 800;
 
@@ -631,7 +628,7 @@ function StudentSettings() {
           color:
             rgba(255,255,255,.77);
 
-          font-size: 12px;
+          font-size: 13px;
 
           line-height: 1.65;
 
@@ -690,7 +687,7 @@ function StudentSettings() {
           color:
             rgba(255,255,255,.70);
 
-          font-size: 10px;
+          font-size: 11px;
 
           font-weight: 700;
 
@@ -808,7 +805,7 @@ function StudentSettings() {
 
           color: #98a2b3;
 
-          font-size: 11px;
+          font-size: 12px;
 
           line-height: 1.5;
 
@@ -819,7 +816,7 @@ function StudentSettings() {
 
           color: #6759ed;
 
-          font-size: 11px;
+          font-size: 12px;
 
           font-weight: 700;
 
@@ -877,7 +874,6 @@ function StudentSettings() {
             #e9ecf4;
 
           background:
-
             linear-gradient(
               145deg,
               #fbfbff,
@@ -989,7 +985,7 @@ function StudentSettings() {
           border-radius:
             999px;
 
-          font-size: 9px;
+          font-size: 10px;
 
           font-weight: 800;
 
@@ -1043,7 +1039,7 @@ function StudentSettings() {
 
           color: #182230;
 
-          font-size: 14px;
+          font-size: 15px;
 
           font-weight: 800;
 
@@ -1061,7 +1057,7 @@ function StudentSettings() {
 
           color: #8c97aa;
 
-          font-size: 11px;
+          font-size: 12px;
 
           line-height: 1.55;
 
@@ -1091,7 +1087,7 @@ function StudentSettings() {
 
           color: #98a2b3;
 
-          font-size: 10px;
+          font-size: 11px;
 
           font-weight: 600;
 
@@ -1215,7 +1211,7 @@ function StudentSettings() {
 
           color: #8490a4;
 
-          font-size: 10px;
+          font-size: 12px;
 
           line-height: 1.5;
 
@@ -1347,7 +1343,7 @@ function StudentSettings() {
 
           border-radius: 12px;
 
-          font-size: 11px;
+          font-size: 12px;
 
           font-weight: 600;
 
@@ -1398,7 +1394,7 @@ function StudentSettings() {
 
           color: #8490a4;
 
-          font-size: 12px;
+          font-size: 13px;
 
         }
 
@@ -1427,8 +1423,10 @@ function StudentSettings() {
         @keyframes settingsSpin {
 
           to {
+
             transform:
               rotate(360deg);
+
           }
 
         }
@@ -1618,12 +1616,14 @@ function StudentSettings() {
 
           <div className="settings-hero-grid" />
 
+
           <div
             className="
               settings-orb
               settings-orb-one
             "
           />
+
 
           <div
             className="
@@ -1669,11 +1669,16 @@ function StudentSettings() {
           <div className="settings-hero-stat">
 
             <strong>
+
               {enabledCount}/3
+
             </strong>
 
+
             <span>
+
               Preferences Enabled
+
             </span>
 
           </div>
@@ -1781,70 +1786,89 @@ function StudentSettings() {
 
             <>
 
+
               <div className="settings-grid">
 
 
                 {/* EMAIL */}
 
                 <SettingCard
+
                   icon={
                     <Mail size={21} />
                   }
+
                   title="Email Notifications"
+
                   description="Receive important account and academic updates directly through your CampusLearn email."
+
                   enabled={
                     settings
                       .email_notifications
                   }
+
                   onToggle={() =>
                     toggleSetting(
                       "email_notifications"
                     )
                   }
+
                 />
 
 
                 {/* ASSIGNMENTS */}
 
                 <SettingCard
+
                   icon={
                     <BellRing
                       size={21}
                     />
                   }
+
                   title="Assignment Updates"
+
                   description="Stay informed when assignments, submissions or important coursework updates are available."
+
                   enabled={
                     settings
                       .submission_alerts
                   }
+
                   onToggle={() =>
                     toggleSetting(
                       "submission_alerts"
                     )
                   }
+
                 />
 
 
                 {/* REMINDERS */}
 
                 <SettingCard
+
                   icon={
                     <CalendarClock
                       size={21}
                     />
                   }
+
                   title="Academic Reminders"
+
                   description="Get helpful reminders about upcoming deadlines, academic tasks and important study dates."
+
                   enabled={
                     settings
                       .academic_reminders
                   }
+
                   onToggle={() =>
                     toggleSetting(
                       "academic_reminders"
                     )
                   }
+
                 />
 
               </div>
@@ -1855,6 +1879,7 @@ function StudentSettings() {
               ==================================== */}
 
               <div className="settings-save-area">
+
 
                 <div className="settings-security">
 
@@ -1879,14 +1904,19 @@ function StudentSettings() {
 
 
                 <button
+
                   type="button"
+
                   className="settings-save-button"
+
                   onClick={
                     saveSettings
                   }
+
                   disabled={
                     saving
                   }
+
                 >
 
                   {saving ? (
@@ -1948,11 +1978,13 @@ function SettingCard({
   return (
 
     <div
+
       className={
         enabled
           ? "setting-card enabled"
           : "setting-card"
       }
+
     >
 
       <div>
@@ -1968,11 +2000,13 @@ function SettingCard({
 
 
           <div
+
             className={
               enabled
                 ? "setting-card-status on"
                 : "setting-card-status off"
             }
+
           >
 
             <span className="setting-status-dot" />
@@ -2014,19 +2048,25 @@ function SettingCard({
 
 
         <button
+
           type="button"
+
           className={
             enabled
               ? "modern-toggle enabled"
               : "modern-toggle disabled"
           }
+
           onClick={onToggle}
+
           aria-label={
             `Toggle ${title}`
           }
+
           aria-pressed={
             enabled
           }
+
         >
 
           <span className="modern-toggle-circle" />
