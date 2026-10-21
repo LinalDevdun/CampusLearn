@@ -39,6 +39,8 @@ import {
 
 import "../styles/lecturerAssignments.css";
 
+import API_BASE_URL from "../config/api";
+
 
 const DEGREE_OPTIONS = [
   "BSc (Hons) Software Engineering",
@@ -252,17 +254,17 @@ function LecturerAssignments() {
           await Promise.all([
 
             axios.get(
-              "http://localhost:5000/me",
+              `${API_BASE_URL}/me`,
               config
             ),
 
             axios.get(
-              "http://localhost:5000/courses",
+              `${API_BASE_URL}/courses`,
               config
             ),
 
             axios.get(
-              "http://localhost:5000/assignments",
+              `${API_BASE_URL}/assignments`,
               config
             ),
 
@@ -699,7 +701,7 @@ function LecturerAssignments() {
 
 
         await axios.post(
-          "http://localhost:5000/assignments",
+          `${API_BASE_URL}/assignments`,
           formData,
           {
             headers: {
@@ -903,7 +905,7 @@ function LecturerAssignments() {
 
 
       window.open(
-        `http://localhost:5000/${cleanPath}`,
+        `${API_BASE_URL}/${cleanPath}`,
         "_blank"
       );
 
@@ -1116,7 +1118,7 @@ function LecturerAssignments() {
 
         const response =
           await axios.put(
-            `http://localhost:5000/lecturer/assignments/${editingAssignment.id}`,
+            `${API_BASE_URL}/lecturer/assignments/${editingAssignment.id}`,
             formData,
             {
               headers: {
@@ -1216,7 +1218,7 @@ function LecturerAssignments() {
 
         const response =
           await axios.delete(
-            `http://localhost:5000/lecturer/assignments/${assignment.id}`,
+            `${API_BASE_URL}/lecturer/assignments/${assignment.id}`,
             {
               headers: {
                 Authorization:

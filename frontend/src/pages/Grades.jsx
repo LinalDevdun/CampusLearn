@@ -21,6 +21,8 @@ import {
 
 import "../styles/grades.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function Grades() {
 
@@ -68,7 +70,7 @@ function Grades() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/my-grades",
+              `${API_BASE_URL}/my-grades`,
               {
                 headers: {
                   Authorization:

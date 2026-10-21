@@ -25,6 +25,8 @@ import {
 
 import "../styles/courseDetails.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function Course() {
 
@@ -91,7 +93,7 @@ function Course() {
 
           const courseResponse =
             await axios.get(
-              `http://localhost:5000/courses/${id}`,
+              `${API_BASE_URL}/courses/${id}`,
               {
                 headers,
               }
@@ -100,7 +102,7 @@ function Course() {
 
           const lessonsResponse =
             await axios.get(
-              `http://localhost:5000/courses/${id}/lessons`,
+              `${API_BASE_URL}/courses/${id}/lessons`,
               {
                 headers,
               }
@@ -228,7 +230,7 @@ function Course() {
 
 
       return (
-        `http://localhost:5000/${cleanPath}`
+        `${API_BASE_URL}/${cleanPath}`
       );
 
     };

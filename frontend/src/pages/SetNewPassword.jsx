@@ -13,6 +13,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 
+import API_BASE_URL from "../config/api";
+
 
 function SetNewPassword() {
 
@@ -140,7 +142,7 @@ function SetNewPassword() {
 
 
         await axios.put(
-          "http://localhost:5000/change-password",
+          `${API_BASE_URL}/change-password`,
 
           {
             currentPassword,

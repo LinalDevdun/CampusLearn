@@ -32,6 +32,8 @@ import {
 
 import "../../styles/lecturerTopbarSearch.css";
 
+import API_BASE_URL from "../../config/api";
+
 
 function LecturerTopbar() {
 
@@ -374,7 +376,7 @@ function LecturerTopbar() {
 
           const profileResponse =
             await axios.get(
-              "http://localhost:5000/me",
+              `${API_BASE_URL}/me`,
               {
                 headers,
               }
@@ -392,7 +394,7 @@ function LecturerTopbar() {
 
           const settingsResponse =
             await axios.get(
-              "http://localhost:5000/user/settings",
+              `${API_BASE_URL}/user/settings`,
               {
                 headers,
               }
@@ -416,7 +418,7 @@ function LecturerTopbar() {
 
           const notificationsResponse =
               await axios.get(
-                  "http://localhost:5000/lecturer/notifications",
+                  `${API_BASE_URL}/lecturer/notifications`,
                   {
                       headers,
                   }

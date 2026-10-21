@@ -28,6 +28,8 @@ import {
 
 import "../styles/adminReports.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function AdminReports() {
 
@@ -90,7 +92,7 @@ function AdminReports() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/admin/reports/overview",
+              `${API_BASE_URL}/admin/reports/overview`,
               {
                 headers: {
                   Authorization:

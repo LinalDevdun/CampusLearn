@@ -29,6 +29,8 @@ import {
 
 import "../styles/myCourses.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function MyCourses() {
 
@@ -113,7 +115,7 @@ function MyCourses() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/student/dashboard",
+              `${API_BASE_URL}/student/dashboard`,
               {
                 headers: {
 

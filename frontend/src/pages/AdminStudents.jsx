@@ -34,6 +34,8 @@ import {
 
 import "../styles/adminStudents.css";
 
+import API_BASE_URL from "../config/api";
+
 
 /* =========================================
    GET INITIALS
@@ -171,7 +173,7 @@ function AdminStudents() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/admin/students/academic-summary",
+              `${API_BASE_URL}/admin/students/academic-summary`,
               {
                 headers: {
                   Authorization:

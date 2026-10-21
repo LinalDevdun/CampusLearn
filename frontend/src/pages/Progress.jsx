@@ -24,6 +24,8 @@ import {
 
 import "../styles/progress.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function Progress() {
 
@@ -102,12 +104,12 @@ function Progress() {
             await Promise.all([
 
               axios.get(
-                "http://localhost:5000/courses",
+                `${API_BASE_URL}/courses`,
                 config
               ),
 
               axios.get(
-                "http://localhost:5000/assignments",
+                `${API_BASE_URL}/assignments`,
                 config
               ),
 
@@ -149,7 +151,7 @@ function Progress() {
 
                     const response =
                       await axios.get(
-                        `http://localhost:5000/courses/${course.id}/lessons`,
+                        `${API_BASE_URL}/courses/${course.id}/lessons`,
                         config
                       );
 

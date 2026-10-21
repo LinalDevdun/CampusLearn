@@ -35,6 +35,8 @@ import {
 
 import "../styles/adminCourses.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function AdminCourses() {
 
@@ -235,7 +237,7 @@ function AdminCourses() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/admin/courses/summary",
+              `${API_BASE_URL}/admin/courses/summary`,
               {
                 headers: {
                   Authorization:
@@ -366,7 +368,7 @@ function AdminCourses() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/admin/users",
+              `${API_BASE_URL}/admin/users`,
               {
                 headers: {
                   Authorization:
@@ -655,7 +657,7 @@ function AdminCourses() {
         if (editingCourse) {
 
           await axios.put(
-            `http://localhost:5000/admin/courses/${editingCourse.id}`,
+            `${API_BASE_URL}/admin/courses/${editingCourse.id}`,
             formData,
             {
               headers: {
@@ -678,7 +680,7 @@ function AdminCourses() {
         else {
 
           await axios.post(
-            "http://localhost:5000/courses",
+            `${API_BASE_URL}/courses`,
             formData,
             {
               headers: {
@@ -795,7 +797,7 @@ function AdminCourses() {
 
 
         await axios.delete(
-          `http://localhost:5000/admin/courses/${course.id}`,
+          `${API_BASE_URL}/admin/courses/${course.id}`,
           {
             headers: {
               Authorization:
@@ -889,7 +891,7 @@ function AdminCourses() {
 
         const response =
           await axios.get(
-            `http://localhost:5000/courses/${course.id}/lessons`,
+            `${API_BASE_URL}/courses/${course.id}/lessons`,
             {
               headers: {
                 Authorization:

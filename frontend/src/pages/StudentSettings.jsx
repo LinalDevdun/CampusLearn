@@ -23,6 +23,8 @@ import {
   LoaderCircle,
 } from "lucide-react";
 
+import API_BASE_URL from "../config/api";
+
 
 function StudentSettings() {
 
@@ -82,7 +84,7 @@ function StudentSettings() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/user/settings",
+              `${API_BASE_URL}/user/settings`,
               {
                 headers: {
                   Authorization:
@@ -217,7 +219,7 @@ function StudentSettings() {
 
         const response =
           await axios.put(
-            "http://localhost:5000/user/settings",
+            `${API_BASE_URL}/user/settings`,
 
             settings,
 

@@ -26,6 +26,8 @@ import {
 
 import "../styles/lecturerStudents.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function LecturerStudents() {
 
@@ -84,7 +86,7 @@ function LecturerStudents() {
 
         const response =
           await axios.get(
-            "http://localhost:5000/lecturer/students",
+            `${API_BASE_URL}/lecturer/students`,
             {
               headers: {
                 Authorization:

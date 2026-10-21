@@ -33,6 +33,8 @@ import {
 
 import "../styles/dashboard.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function Dashboard() {
 
@@ -94,7 +96,7 @@ function Dashboard() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/student/dashboard",
+              `${API_BASE_URL}/student/dashboard`,
               {
                 headers: {
 

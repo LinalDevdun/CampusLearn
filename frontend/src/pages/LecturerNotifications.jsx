@@ -19,6 +19,8 @@ import {
 
 import "../styles/lecturerNotifications.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function LecturerNotifications() {
 
@@ -95,7 +97,7 @@ function LecturerNotifications() {
 
         const response =
           await axios.get(
-            "http://localhost:5000/lecturer/notifications",
+            `${API_BASE_URL}/lecturer/notifications`,
             {
               headers: {
                 Authorization:
@@ -160,7 +162,7 @@ function LecturerNotifications() {
 
 
         await axios.put(
-          `http://localhost:5000/lecturer/notifications/${notificationId}/read`,
+          `${API_BASE_URL}/lecturer/notifications/${notificationId}/read`,
           {},
           {
             headers: {
@@ -214,7 +216,7 @@ function LecturerNotifications() {
 
 
         await axios.put(
-          "http://localhost:5000/lecturer/notifications/read-all",
+          `${API_BASE_URL}/lecturer/notifications/read-all`,
           {},
           {
             headers: {

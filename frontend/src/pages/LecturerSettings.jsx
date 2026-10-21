@@ -22,6 +22,8 @@ import {
 
 import "../styles/lecturerSettings.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function LecturerSettings() {
 
@@ -72,7 +74,7 @@ function LecturerSettings() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/user/settings",
+              `${API_BASE_URL}/user/settings`,
               {
                 headers: {
                   Authorization:
@@ -198,7 +200,7 @@ function LecturerSettings() {
 
         const response =
           await axios.put(
-            "http://localhost:5000/user/settings",
+            `${API_BASE_URL}/user/settings`,
 
             settings,
 

@@ -33,6 +33,8 @@ import {
 
 import "../../styles/adminTopbar.css";
 
+import API_BASE_URL from "../../config/api";
+
 
 
 function AdminTopbar() {
@@ -313,7 +315,7 @@ function AdminTopbar() {
           const response =
             await axios.get(
 
-              "http://localhost:5000/me",
+              `${API_BASE_URL}/me`,
 
               {
                 headers: {
@@ -564,12 +566,12 @@ function AdminTopbar() {
           await Promise.all([
 
             axios.get(
-              "http://localhost:5000/admin/users",
+              `${API_BASE_URL}/admin/users`,
               config
             ),
 
             axios.get(
-              "http://localhost:5000/admin/courses/summary",
+              `${API_BASE_URL}/admin/courses/summary`,
               config
             ),
 

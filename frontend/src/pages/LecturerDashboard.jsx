@@ -33,6 +33,8 @@ import {
 
 import "../styles/lecturerDashboard.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function LecturerDashboard() {
 
@@ -134,12 +136,12 @@ function LecturerDashboard() {
             await Promise.all([
 
               axios.get(
-                "http://localhost:5000/me",
+                `${API_BASE_URL}/me`,
                 config
               ),
 
               axios.get(
-                "http://localhost:5000/lecturer/dashboard",
+                `${API_BASE_URL}/lecturer/dashboard`,
                 config
               ),
 

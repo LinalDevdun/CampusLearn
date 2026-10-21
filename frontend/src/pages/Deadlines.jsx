@@ -28,6 +28,8 @@ import {
 
 import "../styles/deadlines.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function Deadlines() {
 
@@ -91,7 +93,7 @@ function Deadlines() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/assignments",
+              `${API_BASE_URL}/assignments`,
               {
                 headers: {
 

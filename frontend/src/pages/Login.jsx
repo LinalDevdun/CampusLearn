@@ -23,6 +23,8 @@ import {
   AlertCircle,
 } from "lucide-react";
 
+import API_BASE_URL from "../config/api";
+
 
 function Login() {
 
@@ -70,7 +72,7 @@ const handleLogin =
 
       const response =
         await axios.post(
-          "http://localhost:5000/login",
+          `${API_BASE_URL}/login`,
           {
             email,
             password,

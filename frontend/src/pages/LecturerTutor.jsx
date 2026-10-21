@@ -29,6 +29,8 @@ import {
 
 import "../styles/lecturerTutor.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function LecturerTutor() {
 
@@ -195,7 +197,7 @@ function LecturerTutor() {
         const response =
           await axios.post(
 
-            "http://localhost:5000/tutor",
+            `${API_BASE_URL}/tutor`,
 
             {
 

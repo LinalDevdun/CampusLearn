@@ -34,6 +34,8 @@ import {
 
 import "../styles/lecturerSubmissions.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function LecturerSubmissions() {
 
@@ -99,7 +101,7 @@ function LecturerSubmissions() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/lecturer/submissions",
+              `${API_BASE_URL}/lecturer/submissions`,
               {
                 headers: {
                   Authorization:
@@ -493,7 +495,7 @@ function LecturerSubmissions() {
 
 
       return (
-        `http://localhost:5000/${relativePath}`
+        `${API_BASE_URL}/${relativePath}`
       );
 
     };

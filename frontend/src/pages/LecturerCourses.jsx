@@ -35,6 +35,8 @@ import {
 
 import "../styles/lecturerCourses.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function LecturerCourses() {
 
@@ -198,7 +200,7 @@ function LecturerCourses() {
 
         const response =
           await axios.get(
-            "http://localhost:5000/lecturer/courses",
+            `${API_BASE_URL}/lecturer/courses`,
             {
               headers: {
                 Authorization:
@@ -489,7 +491,7 @@ function LecturerCourses() {
 
 
         await axios.post(
-          "http://localhost:5000/courses",
+          `${API_BASE_URL}/courses`,
           formData,
           {
             headers: {
@@ -620,7 +622,7 @@ function LecturerCourses() {
 
 
       window.open(
-        `http://localhost:5000/${cleanPath}`,
+        `${API_BASE_URL}/${cleanPath}`,
         "_blank"
       );
 
@@ -753,7 +755,7 @@ function LecturerCourses() {
 
         const response =
           await axios.put(
-            `http://localhost:5000/lecturer/courses/${editingCourse.id}`,
+            `${API_BASE_URL}/lecturer/courses/${editingCourse.id}`,
             formData,
             {
               headers: {

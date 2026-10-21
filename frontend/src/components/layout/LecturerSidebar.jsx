@@ -21,6 +21,8 @@ import {
   LogOut,
 } from "lucide-react";
 
+import API_BASE_URL from "../../config/api";
+
 
 function LecturerSidebar() {
 
@@ -65,7 +67,7 @@ function LecturerSidebar() {
 
         const response =
           await axios.get(
-            "http://localhost:5000/me",
+            `${API_BASE_URL}/me`,
             {
               headers: {
                 Authorization:

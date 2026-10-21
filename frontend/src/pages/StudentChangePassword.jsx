@@ -22,6 +22,8 @@ import {
   LoaderCircle,
 } from "lucide-react";
 
+import API_BASE_URL from "../config/api";
+
 
 function StudentChangePassword() {
 
@@ -259,7 +261,7 @@ function StudentChangePassword() {
 
         const response =
           await axios.put(
-            "http://localhost:5000/change-password",
+            `${API_BASE_URL}/change-password`,
 
             {
               currentPassword,

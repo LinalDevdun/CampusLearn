@@ -22,6 +22,8 @@ import {
 
 import "../styles/lecturerChangePassword.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function LecturerChangePassword() {
 
@@ -239,7 +241,7 @@ function LecturerChangePassword() {
 
         const response =
           await axios.put(
-            "http://localhost:5000/change-password",
+            `${API_BASE_URL}/change-password`,
 
             {
               currentPassword:

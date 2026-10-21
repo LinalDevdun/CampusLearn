@@ -31,6 +31,8 @@ import {
 
 import "../styles/courseDetails.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function LecturerCourse() {
 
@@ -201,21 +203,21 @@ function LecturerCourse() {
             await Promise.all([
 
               axios.get(
-                `http://localhost:5000/courses/${id}`,
+                `${API_BASE_URL}/courses/${id}`,
                 {
                   headers,
                 }
               ),
 
               axios.get(
-                `http://localhost:5000/courses/${id}/lessons`,
+                `${API_BASE_URL}/courses/${id}/lessons`,
                 {
                   headers,
                 }
               ),
 
               axios.get(
-                "http://localhost:5000/lecturer/courses",
+                `${API_BASE_URL}/lecturer/courses`,
                 {
                   headers,
                 }
@@ -368,7 +370,7 @@ function LecturerCourse() {
 
 
       return (
-        `http://localhost:5000/${cleanPath}`
+        `${API_BASE_URL}/${cleanPath}`
       );
     };
 
@@ -527,7 +529,7 @@ function LecturerCourse() {
 
         const response =
           await axios.post(
-            `http://localhost:5000/lecturer/courses/${id}/lessons`,
+            `${API_BASE_URL}/lecturer/courses/${id}/lessons`,
             formData,
             {
               headers: {
@@ -780,7 +782,7 @@ function LecturerCourse() {
 
         const response =
           await axios.put(
-            `http://localhost:5000/lecturer/courses/${id}/lessons/${editingLesson.id}`,
+            `${API_BASE_URL}/lecturer/courses/${id}/lessons/${editingLesson.id}`,
             formData,
             {
               headers: {
@@ -936,7 +938,7 @@ function LecturerCourse() {
 
         const response =
           await axios.delete(
-            `http://localhost:5000/lecturer/courses/${id}/lessons/${lessonToDelete.id}`,
+            `${API_BASE_URL}/lecturer/courses/${id}/lessons/${lessonToDelete.id}`,
             {
               headers: {
                 Authorization:

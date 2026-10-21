@@ -36,6 +36,8 @@ import {
 
 import "../styles/adminUsers.css";
 
+import API_BASE_URL from "../config/api";
+
 
 /* =========================================
    STANDARD DEGREE + BATCH OPTIONS
@@ -248,7 +250,7 @@ function AdminUsers() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/admin/users",
+              `${API_BASE_URL}/admin/users`,
               {
                 headers: {
                   Authorization:
@@ -870,7 +872,7 @@ ${createdCredentials.temporaryPassword}`;
         if (editingUser) {
 
           await axios.put(
-            `http://localhost:5000/admin/users/${editingUser.id}`,
+            `${API_BASE_URL}/admin/users/${editingUser.id}`,
 
             {
 
@@ -937,7 +939,7 @@ ${createdCredentials.temporaryPassword}`;
 
         const response =
           await axios.post(
-            "http://localhost:5000/admin/users",
+            `${API_BASE_URL}/admin/users`,
 
             {
 
@@ -1146,7 +1148,7 @@ ${createdCredentials.temporaryPassword}`;
 
 
         await axios.put(
-          `http://localhost:5000/admin/users/${userId}/status`,
+          `${API_BASE_URL}/admin/users/${userId}/status`,
 
           {
             is_active:
@@ -1262,7 +1264,7 @@ ${createdCredentials.temporaryPassword}`;
 
 
         await axios.delete(
-          `http://localhost:5000/admin/users/${userId}`,
+          `${API_BASE_URL}/admin/users/${userId}`,
           {
             headers: {
               Authorization:

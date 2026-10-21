@@ -30,6 +30,8 @@ import {
 
 import "../styles/adminSettings.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function AdminSettings() {
 
@@ -174,7 +176,7 @@ function AdminSettings() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/admin/settings",
+              `${API_BASE_URL}/admin/settings`,
               {
                 headers: {
                   Authorization:
@@ -441,7 +443,7 @@ function AdminSettings() {
 
         const response =
           await axios.put(
-            "http://localhost:5000/admin/settings",
+            `${API_BASE_URL}/admin/settings`,
 
             {
 
@@ -694,7 +696,7 @@ function AdminSettings() {
 
 
         await axios.put(
-          "http://localhost:5000/admin/change-password",
+          `${API_BASE_URL}/admin/change-password`,
 
           {
 

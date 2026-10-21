@@ -26,6 +26,8 @@ import {
 
 import "../styles/notifications.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function Notifications() {
 
@@ -79,7 +81,7 @@ function Notifications() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/notifications",
+              `${API_BASE_URL}/notifications`,
               {
                 headers: {
                   Authorization:
@@ -304,7 +306,7 @@ function Notifications() {
 
 
         await axios.put(
-          `http://localhost:5000/notifications/${id}/read`,
+          `${API_BASE_URL}/notifications/${id}/read`,
           {},
           {
             headers: {
@@ -366,7 +368,7 @@ function Notifications() {
 
 
         await axios.put(
-          "http://localhost:5000/notifications/read-all",
+          `${API_BASE_URL}/notifications/read-all`,
           {},
           {
             headers: {

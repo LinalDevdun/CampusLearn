@@ -35,6 +35,8 @@ import {
 
 import "../styles/lecturerGrading.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function LecturerGrading() {
 
@@ -279,7 +281,7 @@ function LecturerGrading() {
 
         const response =
           await axios.get(
-            "http://localhost:5000/lecturer/submissions",
+            `${API_BASE_URL}/lecturer/submissions`,
             {
               headers: {
                 Authorization:
@@ -690,7 +692,7 @@ function LecturerGrading() {
 
 
     return (
-      `http://localhost:5000/${relativePath}`
+      `${API_BASE_URL}/${relativePath}`
     );
 
   };
@@ -839,7 +841,7 @@ function LecturerGrading() {
 
         const response =
           await axios.put(
-            `http://localhost:5000/submissions/${selectedSubmission.id}/grade`,
+            `${API_BASE_URL}/submissions/${selectedSubmission.id}/grade`,
             {
               marks_awarded:
                 marks,

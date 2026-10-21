@@ -29,6 +29,8 @@ import {
   X,
 } from "lucide-react";
 
+import API_BASE_URL from "../../config/api";
+
 
 /* ========================================
    STUDENT PORTAL SEARCH ITEMS
@@ -288,7 +290,7 @@ function StudentTopbar() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/me",
+              `${API_BASE_URL}/me`,
               {
                 headers: {
                   Authorization:
@@ -391,7 +393,7 @@ function StudentTopbar() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/notifications",
+              `${API_BASE_URL}/notifications`,
               {
                 headers: {
                   Authorization:
@@ -695,7 +697,7 @@ function StudentTopbar() {
 
 
       return (
-        `http://localhost:5000/${cleanPath}`
+        `${API_BASE_URL}/${cleanPath}`
       );
     };
 

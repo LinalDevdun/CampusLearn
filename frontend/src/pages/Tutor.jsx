@@ -30,6 +30,8 @@ import {
 
 import "../styles/tutor.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function Tutor() {
 
@@ -179,7 +181,7 @@ function Tutor() {
         const response =
           await axios.post(
 
-            "http://localhost:5000/tutor",
+            `${API_BASE_URL}/tutor`,
 
             {
 

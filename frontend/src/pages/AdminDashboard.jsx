@@ -33,6 +33,8 @@ import {
 
 import "../styles/adminDashboard.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function AdminDashboard() {
 
@@ -290,17 +292,17 @@ function AdminDashboard() {
             await Promise.all([
 
               axios.get(
-                "http://localhost:5000/me",
+                `${API_BASE_URL}/me`,
                 config
               ),
 
               axios.get(
-                "http://localhost:5000/admin/reports/overview",
+                `${API_BASE_URL}/admin/reports/overview`,
                 config
               ),
 
               axios.get(
-                "http://localhost:5000/admin/users",
+                `${API_BASE_URL}/admin/users`,
                 config
               ),
 

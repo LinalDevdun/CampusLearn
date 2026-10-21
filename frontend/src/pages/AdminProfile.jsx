@@ -21,6 +21,8 @@ import {
 
 import "../styles/adminProfile.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function AdminProfile() {
 
@@ -78,7 +80,7 @@ function AdminProfile() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/me",
+              `${API_BASE_URL}/me`,
               {
                 headers: {
                   Authorization:

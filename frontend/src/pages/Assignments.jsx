@@ -35,6 +35,8 @@ import {
 
 import "../styles/assignments.css";
 
+import API_BASE_URL from "../config/api";
+
 
 function Assignments() {
 
@@ -110,7 +112,7 @@ function Assignments() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/assignments",
+              `${API_BASE_URL}/assignments`,
               {
                 headers: {
 
@@ -233,7 +235,7 @@ function Assignments() {
 
         const response =
           await axios.post(
-            "http://localhost:5000/submissions",
+            `${API_BASE_URL}/submissions`,
 
             formData,
 
@@ -1212,7 +1214,7 @@ function Assignments() {
               const briefUrl =
                 assignment.file_path
 
-                  ? `http://localhost:5000/${assignment.file_path.replace(
+                  ? `${API_BASE_URL}/${assignment.file_path.replace(
                       /\\/g,
                       "/"
                     )}`

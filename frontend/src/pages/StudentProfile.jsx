@@ -24,6 +24,8 @@ import {
   X,
 } from "lucide-react";
 
+import API_BASE_URL from "../config/api";
+
 
 function StudentProfile() {
 
@@ -111,7 +113,7 @@ function StudentProfile() {
 
           const response =
             await axios.get(
-              "http://localhost:5000/me",
+              `${API_BASE_URL}/me`,
               {
                 headers: {
                   Authorization:
@@ -231,7 +233,7 @@ function StudentProfile() {
 
 
       return (
-        `http://localhost:5000/${cleanPath}`
+        `${API_BASE_URL}/${cleanPath}`
       );
 
     };
@@ -423,7 +425,7 @@ function StudentProfile() {
 
         const response =
           await axios.put(
-            "http://localhost:5000/me/profile-image",
+            `${API_BASE_URL}/me/profile-image`,
             formData,
             {
               headers: {
